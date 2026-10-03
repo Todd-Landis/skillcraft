@@ -1,0 +1,3 @@
+tags/item/.*spear
+RenderPipelines
+client/gui/components/toasts/

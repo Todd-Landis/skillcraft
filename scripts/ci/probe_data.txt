@@ -1,0 +1,3 @@
+data/minecraft/tags/item
+data/minecraft/tags/item/swords.json
+data/minecraft/tags/item/axes.json
