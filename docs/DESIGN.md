@@ -33,7 +33,13 @@ Planned for later: Magic, Prayer, Cooking, Herblore, Fletching, Thieving, Slayer
 ## XP curve
 OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config multiplier (`xpMultiplier`) scales all gains. Implemented in `skill/XpTable.java`.
 
-## Technical architecture (planned)
+## Level gates (vanilla content)
+Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
+- `item/skill_requirements.json`: tools and weapons. Pickaxes need Mining, axes need Woodcutting to chop *and* Melee to fight, swords need Melee, crossbows need Ranged. Tiers: copper 5, iron 10, gold 15, diamond 30, netherite 50.
+- `block/skill_resources.json`: ores and logs. Each entry has a skill, a level and XP. Common overworld logs are level 1, so every spawn biome can get wood; rarer woods and deeper ores are gated.
+- Blocks placed by players give no XP when broken again, which stops place-and-break farming.
+
+## Technical architecture
 - **Player skill data:** a NeoForge *data attachment* on the player stores XP for each skill and is saved with the player.
 - **Sync:** a custom network packet sends XP changes to the client for the HUD and Skills screen.
 - **Data-driven content:** level requirements, XP rewards and drop tables live in JSON data files, so content can be tuned without code changes.
@@ -41,7 +47,7 @@ OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config mu
 
 ## Roadmap
 - [x] **Phase 1 – Foundation:** project setup, skill list, XP curve
-- [ ] **Phase 2 – Skill framework:** saved XP on each player, sync to client, XP drops and level-up messages, Skills screen, `/skill` admin command
+- [x] **Phase 2 – Skill framework:** saved XP on each player, sync to client, XP drops and level-up messages, Skills screen (K), `/skill` admin command, level-gated vanilla tools/weapons/ores/logs with XP
 - [ ] **Phase 3 – Woodcutting & Mining:** level-gated trees and ores, depletion and respawn, tool tiers
 - [ ] **Phase 4 – Smithing & Crafting:** bars, forging, gear recipes with level requirements
 - [ ] **Phase 5 – Combat:** Melee, Ranged and Constitution; equipment requirements; attack styles

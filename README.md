@@ -23,7 +23,8 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ```
    ./gradlew runClient
    ```
-5. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
+5. In game: press **K** for the Skills screen. With cheats on, use `/skill set @s mining 30` to test level gates.
+6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
 
 ## Project layout
 ```
@@ -31,7 +32,14 @@ src/main/java/com/toddlandis/skillcraft/
   SkillCraft.java          main mod class (runs on client and server)
   SkillCraftClient.java    client-only setup (screens, HUD, key bindings)
   Config.java              server config values
-  skill/                   skill list and XP curve
+  skill/                   skills, XP curve, player skill data, SkillManager (XP + level-ups)
+  gathering/               Mining/Woodcutting level gates and XP
+  combat/                  weapon level gates
+  command/                 /skill admin command
+  network/                 server -> client packets
+  registry/                attachments and data map registrations
+  client/                  Skills screen, XP drop HUD, key binding, tooltips
+src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
 src/main/resources/assets/skillcraft/
   lang/en_us.json          display names
   textures/                block, item and GUI textures (to come)
