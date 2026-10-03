@@ -83,7 +83,7 @@ public final class ArenaManager {
 
     // Starts a fight for this party. Returns the instance, or empty if the arena isn't available.
     public Optional<ArenaInstance> start(ServerPlayer owner, List<ServerPlayer> party) {
-        ServerLevel arena = owner.level().getServer().getLevel(ArenaDimension.LEVEL);
+        ServerLevel arena = ArenaDimension.level(owner.level().getServer());
         if (arena == null) {
             SkillCraft.LOGGER.error("Arena dimension {} is missing", ArenaDimension.LEVEL);
             return Optional.empty();
@@ -138,7 +138,7 @@ public final class ArenaManager {
         ArenaReturn back = player.getData(ModAttachments.ARENA_RETURN);
         ServerLevel target = back.dimension().map(server::getLevel).orElse(null);
         player.setData(ModAttachments.ARENA_RETURN, ArenaReturn.NONE);
-        TeleportTransition transition = target != null && target.dimension() != ArenaDimension.LEVEL
+        TeleportTransition transition = target != null && !ArenaDimension.is(target)
                 ? new TeleportTransition(target, back.pos(), Vec3.ZERO, back.yRot(), back.xRot(), TeleportTransition.DO_NOTHING)
                 : TeleportTransition.createDefault(player, TeleportTransition.DO_NOTHING);
         player.teleport(transition);
@@ -147,7 +147,7 @@ public final class ArenaManager {
     // Removes the boss, its adds and any leftovers. The plot is rebuilt when it is next used.
     private void close(MinecraftServer server, ArenaInstance instance) {
         instances.remove(instance.id());
-        ServerLevel arena = server.getLevel(ArenaDimension.LEVEL);
+        ServerLevel arena = ArenaDimension.level(server);
         if (arena != null && instance.boss() != null) {
             Entity boss = arena.getEntity(instance.boss());
             if (boss != null) boss.discard();
@@ -179,7 +179,7 @@ public final class ArenaManager {
 
     // Sends everyone home once the post-victory window is over
     public void tick(MinecraftServer server) {
-        ServerLevel arena = server.getLevel(ArenaDimension.LEVEL);
+        ServerLevel arena = ArenaDimension.level(server);
         if (arena == null) return;
         for (ArenaInstance instance : new ArrayList<>(instances.values())) {
             if (instance.state() != ArenaInstance.State.VICTORY) continue;

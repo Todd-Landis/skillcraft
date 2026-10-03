@@ -28,6 +28,7 @@ public final class ModGameTests {
     private static final Identifier FLOOR = Identifier.fromNamespaceAndPath(SkillCraft.MODID, "test_floor");
 
     static {
+        TEST_FUNCTIONS.register("arena_dimension", () -> ArenaTests::dimensionRegistered);
         TEST_FUNCTIONS.register("arena_protection", () -> ArenaTests::protection);
         TEST_FUNCTIONS.register("arena_enter_exit", () -> ArenaTests::enterAndExit);
         TEST_FUNCTIONS.register("arena_death_and_logout", () -> ArenaTests::deathAndLogout);
@@ -43,6 +44,7 @@ public final class ModGameTests {
 
     @SubscribeEvent
     static void register(RegisterGameTestsEvent event) {
+        test(event, "arena_dimension", 20);
         test(event, "arena_protection", 100);
         test(event, "arena_enter_exit", 100);
         test(event, "arena_death_and_logout", 100);

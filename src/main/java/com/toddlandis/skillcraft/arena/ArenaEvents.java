@@ -13,6 +13,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 // Arena entry/exit rules that keep players from ever getting stuck:
@@ -57,7 +58,7 @@ public final class ArenaEvents {
 
     @SubscribeEvent
     static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getFrom() == ArenaDimension.LEVEL && event.getEntity() instanceof ServerPlayer player) {
+        if (event.getEntity() instanceof ServerPlayer player && ArenaDimension.isKey(player.level().getServer(), event.getFrom())) {
             ArenaManager manager = ArenaManager.get(player.level().getServer());
             if (manager.isInInstance(player)) manager.leave(player, ArenaManager.LeaveReason.ELSEWHERE);
         }
@@ -66,6 +67,13 @@ public final class ArenaEvents {
     @SubscribeEvent
     static void onDrops(LivingDropsEvent event) {
         if (event.getEntity() instanceof Mob mob && mob.entityTags().contains(SlagheartEntity.MITE_TAG)) event.setCanceled(true);
+    }
+
+    // Tells server admins whether the arena dimension exists (it comes from the mod's datapack)
+    @SubscribeEvent
+    static void onServerStarted(ServerStartedEvent event) {
+        if (event.getServer().getLevel(ArenaDimension.LEVEL) != null) SkillCraft.LOGGER.info("Arena dimension {} loaded", ArenaDimension.LEVEL.identifier());
+        else SkillCraft.LOGGER.warn("Arena dimension {} is not loaded; bosses can't be fought", ArenaDimension.LEVEL.identifier());
     }
 
     @SubscribeEvent

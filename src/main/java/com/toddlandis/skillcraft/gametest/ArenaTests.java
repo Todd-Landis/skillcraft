@@ -27,10 +27,23 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 public final class ArenaTests {
     private ArenaTests() {}
 
+    // The GameTest server only creates the vanilla dimensions, so the arena runs on the Nether as a
+    // stand-in there. (A real server loads skillcraft:arena; see dimensionRegistered.)
     private static ServerLevel arena(GameTestHelper helper) {
-        ServerLevel arena = helper.getLevel().getServer().getLevel(ArenaDimension.LEVEL);
-        helper.assertTrue(arena != null, "arena dimension skillcraft:arena is not loaded");
+        ServerLevel arena = ArenaDimension.level(helper.getLevel().getServer());
+        if (arena == null) {
+            ArenaDimension.useStandInForTests(helper.getLevel().getServer().getLevel(Level.NETHER));
+            arena = ArenaDimension.level(helper.getLevel().getServer());
+        }
+        helper.assertTrue(arena != null, "no arena level available");
         return arena;
+    }
+
+    static void dimensionRegistered(GameTestHelper helper) {
+        var types = helper.getLevel().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DIMENSION_TYPE);
+        helper.assertTrue(types.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION_TYPE,
+                ArenaDimension.LEVEL.identifier())).isPresent(), "dimension type skillcraft:arena did not load");
+        helper.succeed();
     }
 
     static void protection(GameTestHelper helper) {

@@ -1,6 +1,5 @@
-# TEMPORARY dev aid (removed before merge): prints Minecraft API signatures/data for the dev
-# container, which can't reach the Minecraft and NeoForge download hosts. Output is split
-# across jobs because job logs are read back in chunks.
+# TEMPORARY dev aid (removed before merge): boots a real dedicated server once to confirm the
+# arena dimension loads (the GameTest server never creates datapack dimensions).
 name: Probe
 
 on:
@@ -9,11 +8,8 @@ on:
     paths: ['scripts/ci/**', '.github/workflows/probe.yml']
 
 jobs:
-  probe:
+  server-smoke:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        part: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -21,12 +17,5 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Prepare Minecraft artifacts
-        run: ./gradlew createMinecraftArtifacts -q
-      - name: Probe
-        run: |
-          bash scripts/ci/probe.sh > /tmp/probe_out.txt 2>&1
-          echo "TOTAL LINES: $(wc -l < /tmp/probe_out.txt)"
-          split -l 4800 -d -a 2 /tmp/probe_out.txt /tmp/chunk_
-          f=/tmp/chunk_$(printf '%02d' $(( ${{ matrix.part }} - 1 )))
-          [ -f "$f" ] && cat "$f" || echo "NO CHUNK"
+      - name: Boot dedicated server
+        run: bash scripts/ci/server_smoke.sh

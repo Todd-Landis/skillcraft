@@ -382,6 +382,7 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
     private void startAction(SlagheartAction action, float speed) {
         actionTime = 0;
         timeScale = speed;
+        lockedYaw = getYRot();
         entityData.set(DATA_ACTION, action.ordinal());
         restartAnimation(speed);
         getNavigation().stop();

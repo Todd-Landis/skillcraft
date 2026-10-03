@@ -46,10 +46,12 @@ public final class CombatTests {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.setGameMode(GameType.SURVIVAL);
         Zombie zombie = helper.spawnWithNoFreeWill(EntityTypes.ZOMBIE, new Vec3(4, 1, 4));
-        zombie.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(player), 6f);
+        float before = zombie.getHealth();
+        boolean hurt = zombie.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(player), 6f);
         double melee = SkillManager.get(player).getXp(Skill.MELEE);
         double constitution = SkillManager.get(player).getXp(Skill.CONSTITUTION);
-        helper.assertTrue(melee > 0, "no Melee XP for hitting a zombie");
+        helper.assertTrue(melee > 0, "no Melee XP for hitting a zombie (hurt=" + hurt + ", health " + before + " -> " + zombie.getHealth()
+                + ", mode=" + player.gameMode() + ", baby=" + zombie.isBaby() + ", constitution=" + constitution + ")");
         helper.assertTrue(Math.abs(melee / constitution - 3.0) < 0.01, "Melee:Constitution XP should be 4:1.33, was " + melee + ":" + constitution);
         helper.assertTrue(melee <= 6 * 4.0 * 1.06, "XP should follow damage dealt (got " + melee + ")");
 
