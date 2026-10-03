@@ -1,5 +1,6 @@
 package com.toddlandis.skillcraft.gametest;
 
+import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.boss.SlagheartAction;
 import com.toddlandis.skillcraft.boss.SlagheartEntity;
 import com.toddlandis.skillcraft.combat.DamageStyle;
@@ -42,11 +43,13 @@ public final class BossTests {
             boss.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 10f);
             float taken = before - boss.getHealth();
             helper.assertTrue(taken > 0 && taken < 6f, "stoked boss should take reduced damage, took " + taken);
+            SkillCraft.LOGGER.info("[boss_phases] phase 2 with mites: 10 raw damage dealt {} (stoked + armour)", taken);
         });
         helper.runAfterDelay(160, () -> {
             boss.setHealth(boss.getMaxHealth() * 0.32f);
             boss.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 30f);
             helper.assertTrue(boss.phase() == 3, "phase 3 did not start below 30% health");
+            SkillCraft.LOGGER.info("[boss_phases] phase 3 reached at {} / {} health, tick {}", boss.getHealth(), boss.getMaxHealth(), helper.getTick());
         });
         helper.runAfterDelay(230, () -> {
             boss.discard();

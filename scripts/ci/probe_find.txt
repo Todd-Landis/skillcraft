@@ -1,5 +1,2 @@
-spear
-ThrownTrident
-AbstractHorse
-TamableAnimal
-MagmaCube
+Screenshot
+quickPlay|QuickPlay
