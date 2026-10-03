@@ -61,6 +61,18 @@ Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **
     | …within radius | 8 | 12 | 16 | 24 | 32 | 48 | 64 |
 
     Spacing is checked on placement using Minecraft's point-of-interest index (`registry/ModPoiTypes`, `node/NodePlacement`). Different node types don't count against each other.
+  - **Level reward: denser nodes.** The placing player's level adds `⌊progress × bonus⌋` extra nodes in the same radius, where bonus is I 4, II 3, III 2, IV 2, V 1, VI 1, VII 0:
+
+    | Tier | Allowance by level |
+    |---|---|
+    | I | 6 → 7 @26 → 8 @50 → 9 @75 → 10 @99 |
+    | II | 4 → 5 @43 → 6 @71 → 7 @99 |
+    | III | 3 → 4 @65 → 5 @99 |
+    | IV | 2 → 3 @72 → 4 @99 |
+    | V / VI | 1 → 2 @99 |
+    | VII | 1 (always) |
+
+    Node tooltips show your current allowance and the next level that raises it.
   - **Depletion chance scales with level:** `deplete = 1 − (1 − floor) × progress`.
     - `progress` runs from 0 at the node's required level to 1 at level 99.
     - `floor = 25% + 12% × (tier − 1)`: I 25%, II 37%, III 49%, IV 61%, V 73%, VI 85%, VII 97%.
