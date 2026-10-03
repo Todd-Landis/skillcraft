@@ -58,6 +58,10 @@ public final class ShowcaseClient {
             planBuilds(mc, server);
             return;
         }
+        if ("abilities".equals(System.getProperty("skillcraft.showcase.scene"))) {
+            planAbilities(mc, server);
+            return;
+        }
         int t = 20;
         at(t, () -> server.execute(() -> {
             ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -116,6 +120,44 @@ public final class ShowcaseClient {
                     net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset((int) view[1], 0, (int) view[2])), (float) view[3], (float) view[4])));
             at(t += view == views[0] ? 200 : 60, () -> shot(mc, (String) view[0]));
         }
+        at(t += 40, () -> {
+            SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
+            mc.stop();
+        });
+    }
+
+    // -Pshowcase=abilities: the HUD bar (ready, then with a cooldown sweep) and the Ability Book,
+    // at GUI scales 2, 3 and 4 so both the side-by-side and stacked layouts get checked
+    private static void planAbilities(Minecraft mc, IntegratedServer server) {
+        int t = 20;
+        at(t, () -> server.execute(() -> {
+            Showcase.command(server, "time set noon");
+            Showcase.command(server, "weather clear");
+            Showcase.abilityScene(server.getPlayerList().getPlayers().getFirst());
+        }));
+        at(t += 120, () -> shot(mc, "abilities_hud"));
+        at(t += 5, () -> net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new com.toddlandis.skillcraft.network.UseAbilityPayload(3)));
+        at(t += 5, () -> net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new com.toddlandis.skillcraft.network.UseAbilityPayload(0)));
+        at(t += 10, () -> shot(mc, "abilities_hud_cooldowns"));
+        int[] scales = {2, 3, 4};
+        for (int scale : scales) {
+            at(t += 10, () -> {
+                mc.options.guiScale().set(scale);
+                mc.resizeGui();
+            });
+            at(t += 10, () -> mc.gui.setScreen(new com.toddlandis.skillcraft.client.ability.AbilityBookScreen()));
+            at(t += 20, () -> shot(mc, "ability_book_scale" + scale));
+            at(t += 2, () -> {
+                if (mc.gui.screen() instanceof com.toddlandis.skillcraft.client.ability.AbilityBookScreen book) book.showTab(com.toddlandis.skillcraft.ability.AbilityCategory.WEAPON_ART);
+            });
+            at(t += 10, () -> shot(mc, "ability_book_arts_scale" + scale));
+            at(t += 2, () -> mc.gui.setScreen(null));
+            at(t += 10, () -> shot(mc, "abilities_hud_scale" + scale));
+        }
+        at(t += 10, () -> {
+            mc.options.guiScale().set(0);
+            mc.resizeGui();
+        });
         at(t += 40, () -> {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();

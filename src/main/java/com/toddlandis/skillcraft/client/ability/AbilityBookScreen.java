@@ -544,6 +544,12 @@ public class AbilityBookScreen extends Screen {
         super.onClose();
     }
 
+    // For the dev showcase (dev/Showcase): open on a given tab
+    public void showTab(AbilityCategory category) {
+        tab = category;
+        scroll = 0;
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;

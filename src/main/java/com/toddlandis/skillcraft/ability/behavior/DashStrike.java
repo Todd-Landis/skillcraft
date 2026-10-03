@@ -50,6 +50,7 @@ public record DashStrike(float distance, float damage, Optional<DamageStyle> sty
             context.level().sendParticles(ParticleTypes.CLOUD, p.x, p.y + 0.3, p.z, 1, 0.1, 0.1, 0.1, 0.01);
         }
         player.teleportTo(context.level(), to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
+        player.setPos(to.x, to.y, to.z); // the server-side position right away (fake players ignore teleport packets)
         player.resetFallDistance();
         Fx.sound(context.level(), player, SoundEvents.PLAYER_ATTACK_SWEEP, 0.8f, 1.3f);
         if (target != null && player.distanceTo(target) <= reach + target.getBbWidth() && AbilityTargeting.canSee(player, target)) {

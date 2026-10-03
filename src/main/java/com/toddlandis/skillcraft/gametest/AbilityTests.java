@@ -117,6 +117,15 @@ public final class AbilityTests {
         helper.assertTrue(result == expected, what + ": expected " + expected + ", got " + result);
     }
 
+    // Why a melee ability found no target (shown in failure messages)
+    static String targetDebug(ServerPlayer player, LivingEntity target) {
+        return String.format("player %s eye %s look %s yaw %.1f pitch %.1f | target %s box %s | canAffect %s canSee %s lookTarget(10) %s around(4) %d reach %.2f",
+                player.position(), player.getEyePosition(), player.getViewVector(1f), player.getYRot(), player.getXRot(), target.position(), target.getBoundingBox(),
+                CrowdControl.canAffect(player, target), com.toddlandis.skillcraft.ability.AbilityTargeting.canSee(player, target),
+                com.toddlandis.skillcraft.ability.AbilityTargeting.lookTarget(player, 10), com.toddlandis.skillcraft.ability.AbilityTargeting.around(player, player.position(), 4, 3).size(),
+                player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE));
+    }
+
     static float momentum(ServerPlayer player) {
         return AbilityService.data(player).momentum();
     }
@@ -193,8 +202,10 @@ public final class AbilityTests {
         zombie.hurtServer(level, level.damageSources().arrow(arrow, player), 2f);
         helper.assertTrue(Math.abs(momentum(player) - 11) < 0.01, "a projectile hit should give 5 Momentum, have " + momentum(player));
         // (a never-ticked fake player keeps its spawn protection, so use a damage type that bypasses it)
-        player.hurtServer(level, level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL, zombie), 1f);
-        helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player));
+        float hpBefore = player.getHealth();
+        boolean took = player.hurtServer(level, level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL, zombie), 1f);
+        helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player)
+                + " (hurt=" + took + ", health " + hpBefore + " -> " + player.getHealth() + ", mode " + player.gameMode() + ", invulnerable " + player.isInvulnerable() + ")");
         // Ability damage builds no Momentum by itself
         zombie.invulnerableTime = 0;
         com.toddlandis.skillcraft.ability.AbilityDamage.strike(player, zombie, 0.5, null);
@@ -233,7 +244,8 @@ public final class AbilityTests {
         double expected = weapon * 1.3 * matchup * levelBonus * style;
         float before = skeleton.getHealth();
         double xpBefore = SkillManager.get(player).getXp(Skill.MELEE);
-        ok(helper, AbilityService.use(player, id("concussive_blow")), "Concussive Blow");
+        Denied blow = AbilityService.use(player, id("concussive_blow"));
+        helper.assertTrue(blow == null, "Concussive Blow refused with " + blow + "; " + targetDebug(player, skeleton));
         float dealt = before - skeleton.getHealth();
         double xp = SkillManager.get(player).getXp(Skill.MELEE) - xpBefore;
         helper.assertTrue(Math.abs(dealt - expected) < 0.05, "Concussive Blow should deal " + expected + " (weapon " + weapon + " x 1.3 x crush " + matchup
@@ -437,6 +449,7 @@ public final class AbilityTests {
                     String.format("%.1f", dealt[1]), String.format("%.2f", dealt[1] / seconds), uses[0], uses[1], uses[2], uses[3]);
             SkillCraft.LOGGER.info("[dps] ratio: {} (spec target 1.15-1.25)", String.format("%.3f", ratio));
             helper.assertTrue(dealt[0] > 0, "the auto-attack player dealt no damage");
+            if (ratio < 1.05) SkillCraft.LOGGER.info("[dps] targeting: {}", targetDebug(rotation, dummies[1]));
             helper.assertTrue(ratio >= 1.05 && ratio <= 1.40, "rotation DPS gain out of bounds: x" + String.format("%.3f", ratio));
             helper.succeed();
         });
