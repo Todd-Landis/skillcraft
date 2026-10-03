@@ -3,7 +3,7 @@ name: Client smoke
 # Starts the real game client (virtual display, software OpenGL), loads a flat world, poses the
 # Slagheart boss through every animation, saves screenshots and quits. Catches client-only crashes
 # and missing models/textures/animations that the server-side Build job can't see.
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 concurrency:
   group: client-smoke-${{ github.ref }}

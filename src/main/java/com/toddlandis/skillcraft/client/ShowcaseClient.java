@@ -61,7 +61,6 @@ public final class ShowcaseClient {
             Showcase.command(server, "weather clear");
             boss = Showcase.buildScene(player);
         }));
-        at(t + 1, () -> mc.options.hideGui = true);
         // Give chunks time to mesh (software rendering in CI is slow)
         t += 200;
         at(t, () -> shot(mc, "idle"));
@@ -75,19 +74,13 @@ public final class ShowcaseClient {
             t = start + length + 5;
         }
         at(t += 10, () -> server.execute(() -> boss.showcasePose(SlagheartAction.NONE)));
-        at(t += 20, () -> {
-            mc.options.hideGui = false;
-            shot(mc, "hud");
-        });
+        at(t += 20, () -> shot(mc, "hud"));
         // Night: the glow layer should stand out
         at(t += 10, () -> server.execute(() -> {
             Showcase.command(server, "time set midnight");
             boss.showcasePose(SlagheartAction.VENT);
         }));
-        at(t += 30, () -> {
-            mc.options.hideGui = true;
-            shot(mc, "night_vent");
-        });
+        at(t += 30, () -> shot(mc, "night_vent"));
         at(t += 40, () -> {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();
