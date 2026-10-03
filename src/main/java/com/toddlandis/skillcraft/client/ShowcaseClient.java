@@ -45,7 +45,10 @@ public final class ShowcaseClient {
             confirmPrompts(mc.gui.screen());
             return;
         }
-        if (mc.player == null || mc.level == null || server == null) return;
+        if (mc.player == null || mc.level == null || server == null) {
+            if (++waiting % 200 == 1) SkillCraft.LOGGER.info("[showcase] waiting: player {}, level {}, server {}, screen none", mc.player != null, mc.level != null, server != null);
+            return;
+        }
         if (ticks < 0) {
             if (mc.gui.screen() != null) return; // still loading
             plan(mc, server);
