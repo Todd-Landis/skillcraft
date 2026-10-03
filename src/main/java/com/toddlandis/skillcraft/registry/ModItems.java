@@ -1,18 +1,38 @@
 package com.toddlandis.skillcraft.registry;
 
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.combat.SkillArrow;
+import com.toddlandis.skillcraft.combat.SkillArrowItem;
 import com.toddlandis.skillcraft.node.NodeType;
 
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SkillCraft.MODID);
+
+    public static final Identifier KNOCKBACK_ID = Identifier.fromNamespaceAndPath(SkillCraft.MODID, "weapon_knockback");
+    public static final Identifier WEIGHT_ID = Identifier.fromNamespaceAndPath(SkillCraft.MODID, "weapon_weight");
 
     public static final Map<NodeType, DeferredItem<BlockItem>> NODES = new EnumMap<>(NodeType.class);
 
@@ -33,4 +53,67 @@ public class ModItems {
 
     // Right-click a node with this to pick it up
     public static final DeferredItem<Item> RELOCATOR = ITEMS.registerSimpleItem("relocator", p -> p.stacksTo(1));
+
+    // --- Combat (docs/COMBAT.md) ---
+
+    // Warhammers: the crush weapon family. Slower and heavier than swords, with extra knockback.
+    // Damage = 1 (base) + material bonus + 5, speed 1.0/s
+    public static final Map<String, DeferredItem<Item>> WARHAMMERS = new LinkedHashMap<>();
+
+    static {
+        warhammer("copper", ToolMaterial.COPPER, false);
+        warhammer("iron", ToolMaterial.IRON, false);
+        warhammer("golden", ToolMaterial.GOLD, false);
+        warhammer("diamond", ToolMaterial.DIAMOND, false);
+        warhammer("netherite", ToolMaterial.NETHERITE, true);
+    }
+
+    private static void warhammer(String metal, ToolMaterial material, boolean fireResistant) {
+        WARHAMMERS.put(metal, ITEMS.registerItem(metal + "_warhammer", Item::new, p -> {
+            p = p.sword(material, 5.0f, -3.0f).attributes(weaponAttributes(5.0f + material.attackDamageBonus(), -3.0f, 0.4, 0));
+            return fireResistant ? p.fireResistant() : p;
+        }));
+    }
+
+    public static final DeferredItem<SkillArrowItem> LIGHT_ARROW = ITEMS.registerItem("light_arrow", p -> new SkillArrowItem(SkillArrow.Weight.LIGHT, p));
+    public static final DeferredItem<SkillArrowItem> HEAVY_ARROW = ITEMS.registerItem("heavy_arrow", p -> new SkillArrowItem(SkillArrow.Weight.HEAVY, p));
+
+    // Padded armour: light quilted armour that soaks up crush and ranged hits
+    public static final ResourceKey<EquipmentAsset> PADDED_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(SkillCraft.MODID, "padded"));
+    public static final ArmorMaterial PADDED = new ArmorMaterial(12,
+            Map.of(ArmorType.BOOTS, 2, ArmorType.LEGGINGS, 4, ArmorType.CHESTPLATE, 5, ArmorType.HELMET, 2, ArmorType.BODY, 5),
+            15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0f, 0.0f, ItemTags.WOOL, PADDED_ASSET);
+    public static final DeferredItem<Item> PADDED_HELMET = ITEMS.registerItem("padded_helmet", Item::new, p -> p.humanoidArmor(PADDED, ArmorType.HELMET));
+    public static final DeferredItem<Item> PADDED_CHESTPLATE = ITEMS.registerItem("padded_chestplate", Item::new, p -> p.humanoidArmor(PADDED, ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> PADDED_LEGGINGS = ITEMS.registerItem("padded_leggings", Item::new, p -> p.humanoidArmor(PADDED, ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> PADDED_BOOTS = ITEMS.registerItem("padded_boots", Item::new, p -> p.humanoidArmor(PADDED, ArmorType.BOOTS));
+
+    // --- Boss (docs/BOSS_SLAGHEART.md) ---
+
+    public static final DeferredItem<BlockItem> SUMMONING_BRAZIER = ITEMS.registerSimpleBlockItem("summoning_brazier", ModBlocks.SUMMONING_BRAZIER);
+
+    // Consumed at a Summoning Brazier to open the way to Slagheart's arena
+    public static final DeferredItem<Item> EMBER_SIGIL = ITEMS.registerSimpleItem("ember_sigil", p -> p.stacksTo(16).rarity(Rarity.UNCOMMON));
+
+    // What Slag Spit projectiles look like (not obtainable)
+    public static final DeferredItem<Item> SLAG_GLOB = ITEMS.registerSimpleItem("slag_glob");
+
+    // Slagheart's unique drop: 12 damage two-handed crush maul, 0.7 attacks/s, -10% move speed while held.
+    // Fully charged hits apply Sundered (see combat/MaulEvents).
+    public static final DeferredItem<Item> EMBERFALL_MAUL = ITEMS.registerItem("emberfall_maul", Item::new, p -> p
+            .sword(ToolMaterial.NETHERITE, 7.0f, -3.3f)
+            .attributes(weaponAttributes(7.0f + ToolMaterial.NETHERITE.attackDamageBonus(), -3.3f, 0.6, -0.10))
+            .durability(1800)
+            .rarity(Rarity.EPIC)
+            .fireResistant());
+
+    // Main-hand attributes for heavy weapons: damage, speed, extra knockback, and a movement penalty
+    private static ItemAttributeModifiers weaponAttributes(float damage, float speed, double knockback, double moveSpeed) {
+        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, damage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, speed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        if (knockback != 0) builder.add(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(KNOCKBACK_ID, knockback, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        if (moveSpeed != 0) builder.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(WEIGHT_ID, moveSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.MAINHAND);
+        return builder.build();
+    }
 }

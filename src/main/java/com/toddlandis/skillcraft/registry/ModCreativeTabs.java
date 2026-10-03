@@ -21,6 +21,16 @@ public class ModCreativeTabs {
                 output.accept(ModItems.FORGING_ANVIL.get());
                 output.accept(ModItems.CRAFTING_BENCH.get());
                 output.accept(ModItems.BANK_CHEST.get());
+                output.accept(ModItems.SUMMONING_BRAZIER.get());
+                output.accept(ModItems.EMBER_SIGIL.get());
+                ModItems.WARHAMMERS.values().forEach(item -> output.accept(item.get()));
+                output.accept(ModItems.LIGHT_ARROW.get());
+                output.accept(ModItems.HEAVY_ARROW.get());
+                output.accept(ModItems.PADDED_HELMET.get());
+                output.accept(ModItems.PADDED_CHESTPLATE.get());
+                output.accept(ModItems.PADDED_LEGGINGS.get());
+                output.accept(ModItems.PADDED_BOOTS.get());
+                output.accept(ModItems.EMBERFALL_MAUL.get());
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

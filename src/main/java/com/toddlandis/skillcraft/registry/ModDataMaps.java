@@ -2,6 +2,10 @@ package com.toddlandis.skillcraft.registry;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.bench.BenchRecipe;
+import com.toddlandis.skillcraft.boss.BossTuning;
+import com.toddlandis.skillcraft.combat.ArmorDefence;
+import com.toddlandis.skillcraft.combat.CombatProfile;
+import com.toddlandis.skillcraft.combat.WeaponStyle;
 import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.SkillRequirements;
 import com.toddlandis.skillcraft.skill.SmeltingRecipe;
@@ -9,6 +13,7 @@ import com.toddlandis.skillcraft.skill.SkillResource;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -51,8 +56,35 @@ public class ModDataMaps {
             .synced(BenchRecipe.CODEC, false)
             .build();
 
+    // weapon -> its melee damage type (stab/slash/crush); see docs/COMBAT.md
+    public static final DataMapType<Item, WeaponStyle> WEAPON_STYLES = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "weapon_styles"), Registries.ITEM, WeaponStyle.CODEC)
+            .synced(WeaponStyle.CODEC, false)
+            .build();
+
+    // armour piece -> typed defence against stab/slash/crush/ranged
+    public static final DataMapType<Item, ArmorDefence> ARMOR_DEFENCES = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "armor_defences"), Registries.ITEM, ArmorDefence.CODEC)
+            .synced(ArmorDefence.CODEC, false)
+            .build();
+
+    // monster -> damage taken per damage type, and the type its melee deals
+    public static final DataMapType<EntityType<?>, CombatProfile> COMBAT_PROFILES = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "combat_profiles"), Registries.ENTITY_TYPE, CombatProfile.CODEC)
+            .synced(CombatProfile.CODEC, false)
+            .build();
+
+    // boss -> health, damage, timings (server-side only)
+    public static final DataMapType<EntityType<?>, BossTuning> BOSS_TUNING = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "boss_tuning"), Registries.ENTITY_TYPE, BossTuning.CODEC)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(WEAPON_STYLES);
+        event.register(ARMOR_DEFENCES);
+        event.register(COMBAT_PROFILES);
+        event.register(BOSS_TUNING);
         event.register(ITEM_REQUIREMENTS);
         event.register(BLOCK_RESOURCES);
         event.register(GATHERING_TOOLS);
