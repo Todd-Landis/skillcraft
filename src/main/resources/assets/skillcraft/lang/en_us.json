@@ -1,0 +1,20 @@
+{
+  "skillcraft.configuration.title": "SkillCraft Configs",
+  "skillcraft.configuration.section.skillcraft.common.toml": "SkillCraft Configs",
+  "skillcraft.configuration.section.skillcraft.common.toml.title": "SkillCraft Configs",
+  "skillcraft.configuration.xpMultiplier": "XP Multiplier",
+
+  "skill.skillcraft.melee": "Melee",
+  "skill.skillcraft.ranged": "Ranged",
+  "skill.skillcraft.constitution": "Constitution",
+  "skill.skillcraft.mining": "Mining",
+  "skill.skillcraft.woodcutting": "Woodcutting",
+  "skill.skillcraft.fishing": "Fishing",
+  "skill.skillcraft.farming": "Farming",
+  "skill.skillcraft.smithing": "Smithing",
+  "skill.skillcraft.crafting": "Crafting",
+  "skill.skillcraft.firemaking": "Firemaking",
+  "skill.skillcraft.construction": "Construction",
+  "skill.skillcraft.agility": "Agility",
+  "skill.skillcraft.sailing": "Sailing"
+}
