@@ -8,9 +8,10 @@ public final class XpTable {
     public static final int MAX_LEVEL = 99;
     public static final long MAX_XP = 200_000_000L;
 
-    // Content tiers are 15-level bands: I = 1, II = 15, III = 30 ... VII = 90
-    public static final int LEVELS_PER_TIER = 15;
-    private static final String[] TIER_NUMERALS = {"I", "II", "III", "IV", "V", "VI", "VII"};
+    // Content tiers are 10-level bands: I = 1, II = 10, III = 20 ... X = 90.
+    // Vanilla content lives in tiers I-V (up to ~50); VI-X are reserved for custom content.
+    public static final int LEVELS_PER_TIER = 10;
+    private static final String[] TIER_NUMERALS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
 
     // XP_FOR_LEVEL[n] = total XP required to reach level n (index 0 unused)
     private static final long[] XP_FOR_LEVEL = new long[MAX_LEVEL + 1];
@@ -38,7 +39,7 @@ public final class XpTable {
         return 1;
     }
 
-    // 0-based tier index for a required level: 1-14 -> 0, 15-29 -> 1, ...
+    // 0-based tier index for a required level: 1-9 -> 0, 10-19 -> 1, ...
     public static int tierIndex(int requiredLevel) {
         return Math.min(requiredLevel / LEVELS_PER_TIER, TIER_NUMERALS.length - 1);
     }

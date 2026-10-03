@@ -34,17 +34,16 @@ Planned for later: Magic, Prayer, Cooking, Herblore, Fletching, Thieving, Slayer
 OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config multiplier (`xpMultiplier`) scales all gains. Implemented in `skill/XpTable.java`.
 
 ## Tiers
-Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **IV** = 45, **V** = 60, **VI** = 75, **VII** = 90.
+Content is grouped into 10-level tiers: **I** = 1, **II** = 10, **III** = 20 … **X** = 90. **Vanilla content tops out around level 50 (tiers I–V).** Tiers VI–X are reserved for custom woods, ores, metals and gear.
 
-| Tier | Woodcutting | Mining |
-|---|---|---|
-| I (1) | Oak, birch, spruce | Coal, copper |
-| II (15) | Jungle, acacia, mangrove | Iron, quartz |
-| III (30) | Cherry, dark oak | Redstone, gold, lapis |
-| IV (45) | Pale oak | Diamond |
-| V (60) | Crimson, warped | Emerald |
-| VI (75) | *custom wood (later)* | Ancient debris |
-| VII (90) | *custom wood (later)* | *custom ore (later)* |
+| Tier | Level | Woodcutting | Mining | Gear |
+|---|---|---|---|---|
+| I | 1 | Oak, birch, spruce | Coal, copper | Wood, stone, copper |
+| II | 10 | Jungle, acacia, mangrove | Iron, quartz | Iron |
+| III | 20 | Cherry, dark oak | Redstone, gold, lapis | Gold |
+| IV | 30 | Pale oak | Diamond | Diamond |
+| V | 40 | Crimson, warped | Emerald, ancient debris | Netherite (vanilla gear caps ~50) |
+| VI–X | 50–90 | *custom* | *custom* | *custom* |
 
 ## Gathering: world vs. nodes
 - **World blocks give no XP.** Breaking logs and ores in the world is purely for materials, and higher-tier blocks still need the level to break.
@@ -54,24 +53,24 @@ Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **
   - A success gives full XP and one item. It also has a chance to **deplete** the node into a stump or empty rock, which **regrows** after a time set by tier.
   - **Scarcity limits (per tier)** keep high-tier resources from becoming infinite. A player can only work one node at a time, so long regrow times mean needing many nodes, and spacing makes those nodes cost land and walking time:
 
-    | Tier | I | II | III | IV | V | VI | VII |
-    |---|---|---|---|---|---|---|---|
-    | Regrow | 20s | 45s | 2m | 5m | 8m | 12m | 15m |
-    | Max same-type nodes | 6 | 4 | 3 | 2 | 1 | 1 | 1 |
-    | …within radius | 8 | 12 | 16 | 24 | 32 | 48 | 64 |
+    | Tier | I | II | III | IV | V | VI | VII | VIII | IX | X |
+    |---|---|---|---|---|---|---|---|---|---|---|
+    | Regrow | 20s | 45s | 2m | 5m | 10m | 12m | 14m | 16m | 18m | 20m |
+    | Max same-type nodes | 6 | 4 | 3 | 2 | 1 | 1 | 1 | 1 | 1 | 1 |
+    | …within radius | 8 | 12 | 16 | 24 | 40 | 48 | 56 | 64 | 72 | 80 |
 
     Spacing is checked on placement using Minecraft's point-of-interest index (`registry/ModPoiTypes`, `node/NodePlacement`). Different node types don't count against each other.
   - **Gathering fatigue (per player, per resource type).** Every successful gather from any node adds 1 to that player's meter for that resource. The meter drains continuously. When it's full, the player can't gather that resource until it drains, and a message shows the wait. There's a warning at 75%. The limit is personal, so it doesn't matter whose nodes you use or how dense they are. In multiplayer, a high-level player's dense farm doesn't let lower-level friends out-gather their own limits. Spacing rules are the same for everyone.
 
-    | Tier | I | II | III | IV | V | VI | VII |
-    |---|---|---|---|---|---|---|---|
-    | Sustained rate at required level (/hr) | 400 | 200 | 100 | 40 | 20 | 8 | 4 |
-    | …at level 99 (3×) | 1200 | 600 | 300 | 120 | 60 | 24 | 12 |
+    | Tier | I | II | III | IV | V | VI | VII | VIII | IX | X |
+    |---|---|---|---|---|---|---|---|---|---|---|
+    | Sustained rate at required level (/hr) | 400 | 200 | 100 | 40 | 12 | 10 | 8 | 6 | 5 | 4 |
+    | …at level 99 (3×) | 1200 | 600 | 300 | 120 | 36 | 30 | 24 | 18 | 15 | 12 |
 
     Burst capacity is 15 minutes' worth (minimum 2). The meter is saved on the player (`node/GatheringFatigue`, attachment `gathering_fatigue`). Node tooltips show your personal limit.
   - **Depletion chance scales with level:** `deplete = 1 − (1 − floor) × progress`.
     - `progress` runs from 0 at the node's required level to 1 at level 99.
-    - `floor = 25% + 12% × (tier − 1)`: I 25%, II 37%, III 49%, IV 61%, V 73%, VI 85%, VII 97%.
+    - `floor = 25% + 8% × (tier − 1)`: I 25%, II 33%, III 41%, IV 49%, V 57% … X 97%.
     - At the required level a node always depletes after one success. Higher-tier nodes stay short-lived even at 99.
     - The node tooltip shows your current depletion chance.
   - **Level controls how much a node gives** (depletion). **Tools control how fast** you get it:
@@ -109,7 +108,7 @@ Higher tiers make every minigame faster and tighter.
 
 ## Level gates (vanilla content)
 Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
-- `item/skill_requirements.json`: tools and weapons. Pickaxes need Mining, axes need Woodcutting to chop *and* Melee to fight, swords need Melee, crossbows need Ranged. Tiers: copper 5, iron 10, gold 15, diamond 30, netherite 50.
+- `item/skill_requirements.json`: tools and weapons. Pickaxes need Mining, axes need Woodcutting to chop *and* Melee to fight, swords need Melee, crossbows need Ranged. Tiers: copper 5, iron 10, gold 20, diamond 30, netherite 40 (vanilla gear caps around 50).
 - `block/skill_resources.json`: the level needed to break each world log and ore.
 
 ## Technical architecture
