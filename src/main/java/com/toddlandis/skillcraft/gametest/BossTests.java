@@ -24,7 +24,7 @@ public final class BossTests {
 
     static void phases(GameTestHelper helper) {
         SlagheartEntity boss = spawn(helper);
-        helper.assertValueEqual(boss.getMaxHealth(), 500f, "boss health from boss_tuning");
+        helper.assertValueEqual(boss.getMaxHealth(), 350f, "boss health from boss_tuning");
         helper.assertTrue(boss.action() == SlagheartAction.AWAKEN, "boss should start by awakening");
         helper.assertFalse(boss.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 5f), "boss took damage while awakening");
 

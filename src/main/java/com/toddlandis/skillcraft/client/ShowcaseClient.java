@@ -54,6 +54,10 @@ public final class ShowcaseClient {
 
     private static void plan(Minecraft mc, IntegratedServer server) {
         ticks = 0;
+        if ("builds".equals(System.getProperty("skillcraft.showcase.scene"))) {
+            planBuilds(mc, server);
+            return;
+        }
         int t = 20;
         at(t, () -> server.execute(() -> {
             ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -81,6 +85,32 @@ public final class ShowcaseClient {
             boss.showcasePose(SlagheartAction.VENT);
         }));
         at(t += 30, () -> shot(mc, "night_vent"));
+        at(t += 40, () -> {
+            SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
+            mc.stop();
+        });
+    }
+
+    // -Pshowcase=builds: station blocks up close, then the arena (floor view, dome from below)
+    private static void planBuilds(Minecraft mc, IntegratedServer server) {
+        net.minecraft.core.BlockPos[] arena = new net.minecraft.core.BlockPos[1];
+        int t = 20;
+        at(t, () -> server.execute(() -> {
+            Showcase.command(server, "time set noon");
+            Showcase.command(server, "weather clear");
+            Showcase.buildStations(server.getPlayerList().getPlayers().getFirst());
+        }));
+        at(t += 120, () -> shot(mc, "stations"));
+        at(t += 10, () -> server.execute(() -> arena[0] = Showcase.buildArena(server.getPlayerList().getPlayers().getFirst())));
+        at(t += 20, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(0, 0, 13)), 180f, -18f)));
+        at(t += 200, () -> shot(mc, "arena_floor"));
+        at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(0, 0, 6)), 180f, -60f)));
+        at(t += 60, () -> shot(mc, "arena_dome"));
+        at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(30, 12, 30)), 135f, 15f)));
+        at(t += 120, () -> shot(mc, "arena_outside"));
         at(t += 40, () -> {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();

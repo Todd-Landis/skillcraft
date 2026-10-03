@@ -2,6 +2,7 @@ package com.toddlandis.skillcraft.dev;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.boss.SlagheartEntity;
+import com.toddlandis.skillcraft.registry.ModBlocks;
 import com.toddlandis.skillcraft.registry.ModEntities;
 import com.toddlandis.skillcraft.registry.ModItems;
 
@@ -71,6 +72,32 @@ public final class Showcase {
                 ModItems.PADDED_CHESTPLATE.get(), ModItems.SLAG_GLOB.get()};
         for (int i = 0; i < hotbar.length; i++) player.getInventory().setItem(i, new ItemStack(hotbar[i]));
         return boss;
+    }
+
+    // "builds" scene, part 1: every station block in a row, 6 blocks north of the player
+    public static void buildStations(ServerPlayer player) {
+        ServerLevel level = player.level();
+        net.minecraft.core.BlockPos base = player.blockPosition();
+        var blocks = java.util.List.of(ModBlocks.FORGING_ANVIL.get(), ModBlocks.CRAFTING_BENCH.get(), ModBlocks.SMELTER.get(),
+                ModBlocks.BANK_CHEST.get(), ModBlocks.ATTUNEMENT_ALTAR.get(), ModBlocks.SUMMONING_BRAZIER.get());
+        for (int i = 0; i < blocks.size(); i++) {
+            net.minecraft.core.BlockPos pos = base.offset(-5 + i * 2, 0, -6);
+            level.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), 3);
+            level.setBlock(pos, blocks.get(i).defaultBlockState(), 3);
+        }
+        Vec3 eye = Vec3.atBottomCenterOf(base);
+        player.teleport(new TeleportTransition(level, eye, Vec3.ZERO, 180f, 25f, TeleportTransition.DO_NOTHING));
+    }
+
+    // "builds" scene, part 2: an arena built high above the player; returns its center
+    public static net.minecraft.core.BlockPos buildArena(ServerPlayer player) {
+        net.minecraft.core.BlockPos center = player.blockPosition().offset(300, 0, 0).atY(170);
+        com.toddlandis.skillcraft.arena.ArenaBuilder.build(player.level(), center);
+        return center;
+    }
+
+    public static void view(ServerPlayer player, Vec3 at, float yaw, float pitch) {
+        player.teleport(new TeleportTransition(player.level(), at, Vec3.ZERO, yaw, pitch, TeleportTransition.DO_NOTHING));
     }
 
     private static Mob dummy(ServerLevel level, Vec3 pos, ItemLike held) {

@@ -26,7 +26,7 @@ Light a **Summoning Brazier** with an **Ember Sigil** and the warden wakes to dr
 ## Stats (data map `entity_type/boss_tuning.json`, tunable without code)
 | Stat | Value |
 |---|---|
-| Health | 500 (+60% per extra party member, up to 4 players) |
+| Health | 350 (+60% per extra party member, up to 4 players). Lowered from 500 after the first local playtest felt spongy for its tier. |
 | Armour | 8 (vanilla points) |
 | Knockback resistance | 100% |
 | Speed | 0.24 (a little slower than a player walking) |

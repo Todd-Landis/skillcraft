@@ -14,11 +14,19 @@ import net.minecraft.world.level.block.state.BlockState;
 // fight left behind on the plot is cleared first.
 //
 // Layout (radius 15): deepslate floor with a smooth basalt dais in the middle, four basalt
-// pillars for cover, a blackstone rim wall with shroomlights, an invisible barrier dome so no
-// one can leave the plot, and the Exit Portal at the south edge where players arrive.
+// pillars for cover, a blackstone rim wall with shroomlights, and a forge dome overhead:
+// an elliptical blackstone/deepslate shell with 8 gilded ribs, glowing ember veins, a
+// shroomlight oculus at the apex and chains with lanterns hanging over the floor. An invisible
+// barrier ring outside the wall keeps anyone from leaving the plot. The Exit Portal sits at the
+// south edge where players arrive.
 public final class ArenaBuilder {
     public static final int RADIUS = 15;
-    public static final int HEIGHT = 12;
+    // Dome: an ellipse rising from the top of the rim wall (y = WALL_TOP) to the apex
+    private static final int WALL_TOP = 6;
+    private static final double DOME_RADIUS = 17.5;  // horizontal semi-axis, reaches the wall's outer edge
+    private static final double DOME_RISE = 15.0;    // vertical semi-axis above WALL_TOP -> apex at y = 21
+    private static final double DOME_SHELL = 0.085;  // shell thickness as a fraction of the ellipse
+    public static final int HEIGHT = WALL_TOP + (int) DOME_RISE;
     private static final int CLEAR = RADIUS + 5;
     private static final int FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
 
@@ -51,20 +59,35 @@ public final class ArenaBuilder {
             set(level, pos.set(center.getX() + corner[0], floorY + 6, center.getZ() + corner[1]), Blocks.LANTERN.defaultBlockState());
         }
 
+        // Chains hanging from the dome with a lantern at the end, between the pillars
+        for (int[] spot : new int[][]{{0, -10}, {10, 0}, {-10, 0}, {0, 10}}) {
+            int x = center.getX() + spot[0], z = center.getZ() + spot[1];
+            // Come down from above the dome, through the shell, to the first air inside it
+            int y = floorY + HEIGHT + 1;
+            while (y > floorY && level.getBlockState(pos.set(x, y, z)).isAir()) y--;
+            while (y > floorY && !level.getBlockState(pos.set(x, y, z)).isAir()) y--;
+            int bottom = floorY + 11;
+            for (; y > bottom; y--) set(level, pos.set(x, y, z), Blocks.IRON_CHAIN.defaultBlockState());
+            set(level, pos.set(x, bottom, z), Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true));
+        }
+
         // Exit Portal where players arrive
         set(level, pos.set(center.getX(), floorY + 1, center.getZ() + RADIUS - 1), ModBlocks.EXIT_PORTAL.get().defaultBlockState());
     }
 
     private static BlockState blockAt(int dx, int dz, double d, int y, RandomSource random) {
-        double wallInner = RADIUS + 0.5, wallOuter = RADIUS + 2.5, domeOuter = RADIUS + 3.5;
-        if (d >= domeOuter) return Blocks.AIR.defaultBlockState();
-        if (y == HEIGHT + 1) return Blocks.BARRIER.defaultBlockState();          // ceiling
-        if (d >= wallOuter) return y >= -1 ? Blocks.BARRIER.defaultBlockState() : Blocks.AIR.defaultBlockState(); // dome walls
+        double wallInner = RADIUS + 0.5, wallOuter = RADIUS + 2.5, barrierOuter = RADIUS + 3.5;
+        if (d >= barrierOuter) return Blocks.AIR.defaultBlockState();
         if (y < -1) return Blocks.AIR.defaultBlockState();
+        if (y >= WALL_TOP) {
+            BlockState dome = domeAt(dx, dz, d, y, random);
+            if (dome != null) return dome;
+            // Outside the dome: barrier ring beside the wall, open air above
+            return d >= wallOuter && y <= WALL_TOP ? Blocks.BARRIER.defaultBlockState() : Blocks.AIR.defaultBlockState();
+        }
+        if (d >= wallOuter) return Blocks.BARRIER.defaultBlockState();            // barrier ring
         if (y == -1) return Blocks.DEEPSLATE_BRICKS.defaultBlockState();          // foundation
         if (d >= wallInner) {
-            if (y > 6) return Blocks.AIR.defaultBlockState();
-            if (y == 6) return Blocks.POLISHED_BLACKSTONE_BRICK_SLAB.defaultBlockState();
             boolean light = y == 3 && Math.floorMod(Math.round(Math.toDegrees(Math.atan2(dz, dx))), 30) < 4;
             return light ? Blocks.SHROOMLIGHT.defaultBlockState() : Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
         }
@@ -76,6 +99,24 @@ public final class ArenaBuilder {
         if (Math.abs(d - 12.5) < 0.6) return Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
         if (random.nextInt(9) == 0) return Blocks.CRACKED_DEEPSLATE_TILES.defaultBlockState();
         return ((dx + dz) & 1) == 0 ? Blocks.POLISHED_DEEPSLATE.defaultBlockState() : Blocks.DEEPSLATE_TILES.defaultBlockState();
+    }
+
+    // The dome shell (null = not part of it). e is the position on the ellipse: 1 at its surface.
+    private static BlockState domeAt(int dx, int dz, double d, int y, RandomSource random) {
+        double e = Math.sqrt(Math.pow(d / DOME_RADIUS, 2) + Math.pow((y - WALL_TOP) / DOME_RISE, 2));
+        if (e > 1.0 || e < 1.0 - DOME_SHELL) return null;
+        // Oculus at the apex: glowing ring around a magma "ember" core
+        if (d < 1.5) return Blocks.MAGMA_BLOCK.defaultBlockState();
+        if (d < 3.0) return Blocks.SHROOMLIGHT.defaultBlockState();
+        // 8 gilded ribs running from the wall to the oculus
+        double angle = Math.toDegrees(Math.atan2(dz, dx));
+        double offRib = Math.abs(Math.floorMod(Math.round(angle), 45) - 22.5);
+        double ribHalfWidth = Math.toDegrees(0.8 / Math.max(d, 3.0)); // about 1.5 blocks wide at any radius
+        if (offRib > 22.5 - ribHalfWidth) return Blocks.GILDED_BLACKSTONE.defaultBlockState();
+        // Lower band in polished blackstone bricks, upper shell in deepslate tiles, with ember veins
+        if (random.nextInt(16) == 0) return Blocks.MAGMA_BLOCK.defaultBlockState();
+        if (y <= WALL_TOP + 2) return Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
+        return random.nextInt(5) == 0 ? Blocks.CRACKED_DEEPSLATE_TILES.defaultBlockState() : Blocks.DEEPSLATE_TILES.defaultBlockState();
     }
 
     private static void set(ServerLevel level, BlockPos pos, BlockState state) {
