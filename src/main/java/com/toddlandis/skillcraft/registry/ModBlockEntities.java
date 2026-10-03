@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlockEntity;
+import com.toddlandis.skillcraft.bench.BenchBlockEntity;
 import com.toddlandis.skillcraft.smithing.SmelterBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -18,4 +19,8 @@ public class ModBlockEntities {
 
     public static final Supplier<BlockEntityType<SmelterBlockEntity>> SMELTER = BLOCK_ENTITIES.register("smelter",
             () -> new BlockEntityType<>(SmelterBlockEntity::new, ModBlocks.SMELTER.get()));
+
+    // Shared by the Forging Anvil and Crafting Bench
+    public static final Supplier<BlockEntityType<BenchBlockEntity>> BENCH = BLOCK_ENTITIES.register("bench",
+            () -> new BlockEntityType<>(BenchBlockEntity::new, ModBlocks.FORGING_ANVIL.get(), ModBlocks.CRAFTING_BENCH.get()));
 }

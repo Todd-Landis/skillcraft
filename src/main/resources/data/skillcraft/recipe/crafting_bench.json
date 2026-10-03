@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#minecraft:planks",
+    "L": "#minecraft:logs",
+    "T": "minecraft:crafting_table"
+  },
+  "pattern": [
+    "PPP",
+    "LTL"
+  ],
+  "result": {
+    "id": "skillcraft:crafting_bench"
+  }
+}

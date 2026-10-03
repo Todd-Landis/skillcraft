@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.bench.BenchBlock;
+import com.toddlandis.skillcraft.bench.Station;
 import com.toddlandis.skillcraft.node.NodeBlock;
 import com.toddlandis.skillcraft.node.NodeType;
 import com.toddlandis.skillcraft.skill.Skill;
@@ -40,6 +42,20 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .sound(SoundType.STONE)
                     .lightLevel(state -> state.getValue(SmelterBlock.LIT) ? 13 : 0));
+
+    public static final DeferredBlock<BenchBlock> FORGING_ANVIL = BLOCKS.registerBlock("forging_anvil",
+            p -> new BenchBlock(Station.ANVIL, p), p -> p
+                    .strength(5.0f, 1200f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.METAL)
+                    .sound(SoundType.ANVIL)
+                    .noOcclusion());
+
+    public static final DeferredBlock<BenchBlock> CRAFTING_BENCH = BLOCKS.registerBlock("crafting_bench",
+            p -> new BenchBlock(Station.CRAFTING_BENCH, p), p -> p
+                    .strength(2.5f)
+                    .mapColor(MapColor.WOOD)
+                    .sound(SoundType.WOOD));
 
     public static final DeferredBlock<AttunementAltarBlock> ATTUNEMENT_ALTAR = BLOCKS.registerBlock("attunement_altar",
             AttunementAltarBlock::new, p -> p

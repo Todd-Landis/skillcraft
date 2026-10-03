@@ -42,6 +42,9 @@ src/main/java/com/toddlandis/skillcraft/
   registry/                attachments and data map registrations
   client/                  Skills screen, XP drop HUD, key binding, tooltips
   altar/minigame/          attunement minigame rules (shared with the server for verification)
+  smithing/                Smelter (processing station)
+  bench/                   Forging Anvil + Crafting Bench (recipe benches, queue)
+  loot/                    keeps generated chests and mob drops free of crafted gear
   client/minigame/         minigame drawing
 src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
 src/main/resources/assets/skillcraft/

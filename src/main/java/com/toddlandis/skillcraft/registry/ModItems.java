@@ -26,6 +26,9 @@ public class ModItems {
 
     public static final DeferredItem<BlockItem> SMELTER = ITEMS.registerSimpleBlockItem("smelter", ModBlocks.SMELTER);
 
+    public static final DeferredItem<BlockItem> FORGING_ANVIL = ITEMS.registerSimpleBlockItem("forging_anvil", ModBlocks.FORGING_ANVIL);
+    public static final DeferredItem<BlockItem> CRAFTING_BENCH = ITEMS.registerSimpleBlockItem("crafting_bench", ModBlocks.CRAFTING_BENCH);
+
     // Right-click a node with this to pick it up
     public static final DeferredItem<Item> RELOCATOR = ITEMS.registerSimpleItem("relocator", p -> p.stacksTo(1));
 }

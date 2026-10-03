@@ -1,6 +1,7 @@
 package com.toddlandis.skillcraft.registry;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.bench.BenchRecipe;
 import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.SkillRequirements;
 import com.toddlandis.skillcraft.skill.SmeltingRecipe;
@@ -44,12 +45,19 @@ public class ModDataMaps {
             .synced(SmeltingRecipe.CODEC, false)
             .build();
 
+    // item -> how to make it at a Forging Anvil or Crafting Bench
+    public static final DataMapType<Item, BenchRecipe> BENCH_RECIPES = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "bench_recipes"), Registries.ITEM, BenchRecipe.CODEC)
+            .synced(BenchRecipe.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
         event.register(ITEM_REQUIREMENTS);
         event.register(BLOCK_RESOURCES);
         event.register(GATHERING_TOOLS);
         event.register(SMELTING);
+        event.register(BENCH_RECIPES);
     }
 
     public static SmeltingRecipe smelting(ItemStack stack) {

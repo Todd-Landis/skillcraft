@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "skillcraft:block/crafting_bench" },
+    "facing=east":  { "model": "skillcraft:block/crafting_bench", "y": 90 },
+    "facing=south": { "model": "skillcraft:block/crafting_bench", "y": 180 },
+    "facing=west":  { "model": "skillcraft:block/crafting_bench", "y": 270 }
+  }
+}

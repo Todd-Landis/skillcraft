@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "S": "#minecraft:stone_crafting_materials"
+  },
+  "pattern": [
+    "CCC",
+    " S ",
+    "SSS"
+  ],
+  "result": {
+    "id": "skillcraft:forging_anvil"
+  }
+}

@@ -16,5 +16,6 @@ public class ModNetwork {
         registrar.playToClient(XpGainPayload.TYPE, XpGainPayload.STREAM_CODEC);
         registrar.playToClient(OpenAttunementPayload.TYPE, OpenAttunementPayload.STREAM_CODEC);
         registrar.playToServer(AttunementResultPayload.TYPE, AttunementResultPayload.STREAM_CODEC, AltarAttunement::handleResult);
+        registrar.playToServer(BenchActionPayload.TYPE, BenchActionPayload.STREAM_CODEC, BenchActionPayload::handle);
     }
 }

@@ -18,6 +18,8 @@ public class ModCreativeTabs {
                 output.accept(ModItems.ATTUNEMENT_ALTAR.get());
                 output.accept(ModItems.RELOCATOR.get());
                 output.accept(ModItems.SMELTER.get());
+                output.accept(ModItems.FORGING_ANVIL.get());
+                output.accept(ModItems.CRAFTING_BENCH.get());
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

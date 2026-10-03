@@ -6,10 +6,12 @@ import java.util.Map;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.bench.BenchRecipe;
 import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
 import com.toddlandis.skillcraft.node.NodeBlock;
 import com.toddlandis.skillcraft.node.NodeType;
+import com.toddlandis.skillcraft.registry.ModDataComponents;
 import com.toddlandis.skillcraft.registry.ModMenuTypes;
 import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.SmeltingRecipe;
@@ -53,6 +55,8 @@ public class ClientEvents {
     @SubscribeEvent
     static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.SMELTER.get(), SmelterScreen::new);
+        event.register(ModMenuTypes.FORGING_ANVIL.get(), BenchScreen::new);
+        event.register(ModMenuTypes.CRAFTING_BENCH.get(), BenchScreen::new);
     }
 
     @SubscribeEvent
@@ -114,6 +118,21 @@ public class ClientEvents {
                 tooltip.add(Component.translatable("tooltip.skillcraft.resource", resource.skill().displayName(), resource.level(),
                         XpTable.tierName(resource.level())).withStyle(met ? ChatFormatting.GRAY : ChatFormatting.RED));
             }
+        }
+
+        String maker = event.getItemStack().get(ModDataComponents.CRAFTED_BY.get());
+        if (maker != null && !maker.isEmpty()) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.crafted_by", maker).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
+
+        // Gear made at a Forging Anvil or Crafting Bench
+        BenchRecipe benchRecipe = BenchRecipe.get(event.getItemStack().getItem());
+        if (benchRecipe != null) {
+            boolean met = SkillManager.level(player, benchRecipe.station().skill()) >= benchRecipe.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.made_at",
+                    Component.translatable("container.skillcraft." + benchRecipe.station().getSerializedName()),
+                    benchRecipe.station().skill().displayName(), benchRecipe.level())
+                    .withStyle(met ? ChatFormatting.DARK_GREEN : ChatFormatting.DARK_RED));
         }
 
         // Raw ores the Smelter can process
