@@ -17,6 +17,7 @@ public class ModCreativeTabs {
             .displayItems((params, output) -> {
                 output.accept(ModItems.ATTUNEMENT_ALTAR.get());
                 output.accept(ModItems.RELOCATOR.get());
+                output.accept(ModItems.SMELTER.get());
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

@@ -8,6 +8,7 @@ import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
 import com.toddlandis.skillcraft.node.NodeBlock;
 import com.toddlandis.skillcraft.node.NodeType;
 import com.toddlandis.skillcraft.skill.Skill;
+import com.toddlandis.skillcraft.smithing.SmelterBlock;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
@@ -31,6 +32,14 @@ public class ModBlocks {
                     .sound(wood ? SoundType.WOOD : SoundType.STONE)));
         }
     }
+
+    public static final DeferredBlock<SmelterBlock> SMELTER = BLOCKS.registerBlock("smelter",
+            SmelterBlock::new, p -> p
+                    .strength(3.5f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.STONE)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> state.getValue(SmelterBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<AttunementAltarBlock> ATTUNEMENT_ALTAR = BLOCKS.registerBlock("attunement_altar",
             AttunementAltarBlock::new, p -> p

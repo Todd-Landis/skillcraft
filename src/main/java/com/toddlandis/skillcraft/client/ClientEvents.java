@@ -10,7 +10,9 @@ import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
 import com.toddlandis.skillcraft.node.NodeBlock;
 import com.toddlandis.skillcraft.node.NodeType;
+import com.toddlandis.skillcraft.registry.ModMenuTypes;
 import com.toddlandis.skillcraft.skill.GatheringTool;
+import com.toddlandis.skillcraft.skill.SmeltingRecipe;
 import com.toddlandis.skillcraft.skill.XpTable;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.skill.Skill;
@@ -31,6 +33,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
@@ -45,6 +48,11 @@ public class ClientEvents {
     static void registerKeys(RegisterKeyMappingsEvent event) {
         event.registerCategory(CATEGORY);
         event.register(OPEN_SKILLS);
+    }
+
+    @SubscribeEvent
+    static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenuTypes.SMELTER.get(), SmelterScreen::new);
     }
 
     @SubscribeEvent
@@ -106,6 +114,15 @@ public class ClientEvents {
                 tooltip.add(Component.translatable("tooltip.skillcraft.resource", resource.skill().displayName(), resource.level(),
                         XpTable.tierName(resource.level())).withStyle(met ? ChatFormatting.GRAY : ChatFormatting.RED));
             }
+        }
+
+        // Raw ores the Smelter can process
+        SmeltingRecipe smelting = ModDataMaps.smelting(event.getItemStack());
+        if (smelting != null) {
+            boolean met = SkillManager.level(player, Skill.SMITHING) >= smelting.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.smeltable", smelting.result().getDefaultInstance().getHoverName(),
+                    Skill.SMITHING.displayName(), smelting.level(), smelting.coal(), XpTable.format(smelting.xp()))
+                    .withStyle(met ? ChatFormatting.GOLD : ChatFormatting.RED));
         }
 
         // Resource items that can be attuned into a node at the altar

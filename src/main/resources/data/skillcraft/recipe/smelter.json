@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "minecraft:smooth_stone",
+    "F": "minecraft:furnace",
+    "C": "#minecraft:stone_crafting_materials"
+  },
+  "pattern": [
+    "SSS",
+    "CFC",
+    "CCC"
+  ],
+  "result": {
+    "id": "skillcraft:smelter"
+  }
+}

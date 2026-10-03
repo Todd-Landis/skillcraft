@@ -22,6 +22,8 @@
 
   "block.skillcraft.attunement_altar": "Attunement Altar",
   "item.skillcraft.relocator": "Relocator",
+  "block.skillcraft.smelter": "Smelter",
+  "container.skillcraft.smelter": "Smelter",
   "block.skillcraft.oak_node": "Oak Node",
   "block.skillcraft.birch_node": "Birch Node",
   "block.skillcraft.spruce_node": "Spruce Node",
@@ -53,6 +55,7 @@
   "screen.skillcraft.next_level": "Next level at: %s",
   "screen.skillcraft.remaining": "Remaining: %s",
   "screen.skillcraft.attunement": "Attuning: %s",
+  "screen.skillcraft.smelter_xp": "%s XP",
 
   "minigame.skillcraft.strike_the_grain": "Press SPACE or click when the marker is in the green zone",
   "minigame.skillcraft.temper_the_vein": "Hold SPACE or the mouse to heat, release inside the gold band",
@@ -100,6 +103,7 @@
   "tooltip.skillcraft.node_deplete": "Depletion chance: %s%% per success",
   "tooltip.skillcraft.node_use_axe": "Place it, then right-click with an axe",
   "tooltip.skillcraft.node_use_pickaxe": "Place it, then right-click with a pickaxe",
+  "tooltip.skillcraft.smeltable": "Smelter: makes %s · %s %s · %s coal · %s XP",
   "tooltip.skillcraft.attunable": "%s can be attuned into a %s",
 
   "subtitles.skillcraft.node.chop": "Axe chops",

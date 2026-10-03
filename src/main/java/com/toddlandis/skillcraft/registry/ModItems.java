@@ -24,6 +24,8 @@ public class ModItems {
 
     public static final DeferredItem<BlockItem> ATTUNEMENT_ALTAR = ITEMS.registerSimpleBlockItem("attunement_altar", ModBlocks.ATTUNEMENT_ALTAR);
 
+    public static final DeferredItem<BlockItem> SMELTER = ITEMS.registerSimpleBlockItem("smelter", ModBlocks.SMELTER);
+
     // Right-click a node with this to pick it up
     public static final DeferredItem<Item> RELOCATOR = ITEMS.registerSimpleItem("relocator", p -> p.stacksTo(1));
 }

@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft.registry;
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.SkillRequirements;
+import com.toddlandis.skillcraft.skill.SmeltingRecipe;
 import com.toddlandis.skillcraft.skill.SkillResource;
 
 import net.minecraft.core.registries.Registries;
@@ -37,11 +38,22 @@ public class ModDataMaps {
             .synced(GatheringTool.CODEC, false)
             .build();
 
+    // raw ore -> what the Smelter makes from it, coal cost, level, XP and time
+    public static final DataMapType<Item, SmeltingRecipe> SMELTING = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "smelting"), Registries.ITEM, SmeltingRecipe.CODEC)
+            .synced(SmeltingRecipe.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
         event.register(ITEM_REQUIREMENTS);
         event.register(BLOCK_RESOURCES);
         event.register(GATHERING_TOOLS);
+        event.register(SMELTING);
+    }
+
+    public static SmeltingRecipe smelting(ItemStack stack) {
+        return stack.isEmpty() ? null : stack.typeHolder().getData(SMELTING);
     }
 
     public static GatheringTool gatheringTool(ItemStack stack) {

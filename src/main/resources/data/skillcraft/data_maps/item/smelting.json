@@ -1,0 +1,11 @@
+{
+  "values": {
+    "minecraft:raw_copper":   { "result": "minecraft:copper_ingot",    "coal": 1, "level": 1,  "xp": 6.25, "time": 100 },
+    "#minecraft:copper_ores": { "result": "minecraft:copper_ingot",    "coal": 1, "level": 1,  "xp": 6.25, "time": 100 },
+    "minecraft:raw_iron":     { "result": "minecraft:iron_ingot",      "coal": 2, "level": 10, "xp": 12.5, "time": 140 },
+    "#minecraft:iron_ores":   { "result": "minecraft:iron_ingot",      "coal": 2, "level": 10, "xp": 12.5, "time": 140 },
+    "minecraft:raw_gold":     { "result": "minecraft:gold_ingot",      "coal": 3, "level": 20, "xp": 22.5, "time": 180 },
+    "#minecraft:gold_ores":   { "result": "minecraft:gold_ingot",      "coal": 3, "level": 20, "xp": 22.5, "time": 180 },
+    "minecraft:ancient_debris": { "result": "minecraft:netherite_scrap", "coal": 8, "level": 40, "xp": 50, "time": 300 }
+  }
+}
