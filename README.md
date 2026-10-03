@@ -24,7 +24,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ./gradlew runClient
    ```
 5. In game: press **K** for the Skills screen and **V** to change attack style. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
-6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
+. Run the automated tests with `./gradlew runGameTestServer`. For a full local test plan (screenshot showcase, in-game checklist), see [docs/HANDOFF_LOCAL_TESTING.md](docs/HANDOFF_LOCAL_TESTING.md).
 
 ## Project layout
 ```
@@ -52,6 +52,7 @@ src/main/java/com/toddlandis/skillcraft/
   client/minigame/         minigame drawing
   client/boss/             Slagheart model, renderer and glow layer
   gametest/                GameTests (./gradlew runGameTestServer, also run in CI)
+  dev/                     dev-only screenshot showcase (-Pshowcase; does nothing otherwise)
 src/main/resources/data/skillcraft/data_maps/   level requirements, XP values, combat data and boss tuning (JSON)
 src/main/resources/data/skillcraft/dimension*/  the boss arena dimension
 src/main/resources/assets/skillcraft/neoforge/animations/   boss keyframe animations (JSON)
@@ -62,6 +63,9 @@ src/main/templates/META-INF/neoforge.mods.toml   mod metadata
 docs/DESIGN.md             design and roadmap
 docs/COMBAT.md             combat system rules and numbers
 docs/BOSS_SLAGHEART.md     the first boss
+docs/HANDOFF_LOCAL_TESTING.md   how to build, test and iterate locally
+CLAUDE.md                  notes for Claude Code (commands, conventions, 26.2 API notes)
+scripts/ci/                client smoke test (CI) and screenshot preview tool
 scripts/textures/          procedural texture generators (run with java <file>.java)
 ```
 
