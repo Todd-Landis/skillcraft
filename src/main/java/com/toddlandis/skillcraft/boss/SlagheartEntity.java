@@ -279,11 +279,17 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
             floorY = blockPosition().getY() - 1;
         }
         ArenaInstance instance = instanceId >= 0 ? ArenaManager.get(level.getServer()).instance(instanceId) : null;
-        if (instanceId >= 0 && instance == null) {
-            // Left over from an instance that no longer exists (e.g. after a server restart)
+        if (instanceId >= 0 && (instance == null || !getUUID().equals(instance.boss()))) {
+            // Not the arena's current boss (left over from before a restart or a reset)
             restoreBlocks(level);
             discard();
             return;
+        }
+        // Leashed to the arena floor
+        if (instance != null && home != null && action() != SlagheartAction.DEATH) {
+            double dx = getX() - (instance.center().getX() + 0.5), dz = getZ() - (instance.center().getZ() + 0.5);
+            double leash = ArenaInstance.FIGHT_RADIUS - 1;
+            if (dx * dx + dz * dz > leash * leash) teleportTo(home.x, home.y, home.z);
         }
         tickMites(level);
         tickHazards(level);
@@ -327,13 +333,13 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
         return best;
     }
 
-    // Players taking part: the instance's party, or (outside an arena) anyone close by
+    // Players taking part: everyone on the arena floor, or (outside an arena) anyone close by
     public List<ServerPlayer> fightPlayers(ServerLevel level) {
         List<ServerPlayer> players = new ArrayList<>();
         ArenaInstance instance = instanceId >= 0 ? ArenaManager.get(level.getServer()).instance(instanceId) : null;
         for (ServerPlayer player : level.players()) {
             if (!player.isAlive() || player.isSpectator() || player.isCreative()) continue;
-            if (instance != null ? !instance.isMember(player) : player.distanceToSqr(this) > 32 * 32) continue;
+            if (instance != null ? !instance.isFighting(player) : player.distanceToSqr(this) > 32 * 32) continue;
             players.add(player);
         }
         return players;

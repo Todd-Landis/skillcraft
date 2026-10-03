@@ -82,7 +82,25 @@ So a fight can't be stalled forever, but a normal kill never sees it.
 
 In melee, Slagheart only uses Hammerfall and Tong Sweep. It never punches without a telegraph.
 
-## Arena: the Sunken Forge (instanced)
+## Arena: the Sunken Forge (one shared arena per boss)
+> **Revised after the first playtest.** Every boss now has **one permanent arena** in the boss dimension, shared by everyone, instead of a private instance per fight. The points below the "Original design" line describe the first version; where they conflict, this box wins.
+>
+> - **Placement:** each boss's arena sits at its own fixed spot (`ArenaManager.arenaCenter(id)`, 2,048 blocks apart along X). Each is sealed by its dome, walls and barrier ring, so no arena can be reached from another.
+> - **Lobby:** the Summoning Brazier takes you to the arena's **lobby**, south of the arena through a gated corridor. Groups gather there. It has the **Exit Portal home**, a **Bank Chest**, benches and lanterns. The **Ember Sigil is a per-person entry fee** (like an OSRS boss key); you're no longer pulled in as a party.
+> - **Shared fight:** the boss **wakes when anyone steps onto the arena floor**. Everyone on the floor fights it, and its health scales with the number of fighters present when it wakes (+60% each). Loot eligibility is unchanged (≥5% of max health dealt).
+> - **Respawn:** after a kill, the Reward Chest appears and the boss **reforms 60 s later**. Unclaimed loot is handed to anyone still inside at that point, or when they leave.
+> - **Reset:** if nobody is on the floor for **10 s**, the boss is removed and its hazards cleared, ready to wake fresh for the next group.
+> - **Leash:** the boss and its adds can't leave the arena floor (they're put back if they reach the corridor or lobby).
+> - **Rules unchanged:** the arena can't be broken or built in; death keeps your items and sends you home; logout or crash sends you home at your next login.
+> - **Layout additions:**
+>   - **Grand columns:** 3×3 basalt on 5×5 plinths, with chiseled and gilded bands and ember inlays, rising to capitals under the dome ribs.
+>   - **The Great Forge** on the north side: a brick hearth with a lava firebox behind iron bars, a chimney into the dome, lit blast furnaces, a great anvil and a quench trough.
+>   - **The forge dome:** an elliptical shell with gilded ribs, ember veins and a shroomlight oculus.
+> - **Build:** the arena and lobby are built at the first visit after each server start, and the floor is refreshed whenever the boss wakes.
+>
+> *Original design:*
+
+## Arena (original instanced design)
 - **Dimension:** `skillcraft:arena`. A void flat generator (one air layer, `the_void` biome, no features or structures) with a custom dimension type:
   - fixed time
   - no skylight, no weather, no ceiling

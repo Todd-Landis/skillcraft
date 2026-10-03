@@ -1,8 +1,5 @@
 package com.toddlandis.skillcraft.arena;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.serialization.MapCodec;
 import com.toddlandis.skillcraft.registry.ModItems;
 
@@ -26,11 +23,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-// The overworld entrance to the boss arena. Right-click it with an Ember Sigil: the sigil is
-// used up and you, plus up to 3 players standing within 5 blocks, enter a fresh Slagheart instance.
+// The overworld entrance to Slagheart's arena. Right-click it with an Ember Sigil: the sigil is
+// used up (each player pays their own) and you are taken to the arena's lobby, where groups
+// gather before walking into the fight.
 public class SummoningBrazierBlock extends Block {
     public static final MapCodec<SummoningBrazierBlock> CODEC = simpleCodec(SummoningBrazierBlock::new);
-    public static final double PARTY_RADIUS = 5.0;
     private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 14, 14);
 
     public SummoningBrazierBlock(Properties properties) {
@@ -55,16 +52,10 @@ public class SummoningBrazierBlock extends Block {
         ArenaManager manager = ArenaManager.get(serverLevel.getServer());
         if (manager.isInInstance(owner)) return InteractionResult.FAIL;
 
-        List<ServerPlayer> party = new ArrayList<>();
-        party.add(owner);
-        for (ServerPlayer other : serverLevel.players()) {
-            if (party.size() >= ArenaManager.MAX_PARTY) break;
-            if (other == owner || other.isSpectator() || !other.isAlive() || manager.isInInstance(other)) continue;
-            if (other.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= PARTY_RADIUS * PARTY_RADIUS) party.add(other);
-        }
+        // Each player pays their own sigil to enter; groups gather in the lobby
         level.playSound(null, pos, SoundEvents.BLAZE_SHOOT, SoundSource.BLOCKS, 1f, 0.6f);
         serverLevel.sendParticles(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 40, 0.3, 0.5, 0.3, 0.05);
-        if (manager.start(owner, party).isEmpty()) {
+        if (!manager.enter(owner, ArenaManager.SLAGHEART)) {
             owner.sendOverlayMessage(Component.translatable("message.skillcraft.arena_unavailable").withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }

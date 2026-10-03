@@ -1,6 +1,6 @@
 package com.toddlandis.skillcraft.gametest;
 
-import java.util.List;
+
 
 import com.toddlandis.skillcraft.arena.ArenaDimension;
 import com.toddlandis.skillcraft.arena.ArenaInstance;
@@ -49,7 +49,7 @@ public final class ArenaTests {
 
     static void protection(GameTestHelper helper) {
         ServerLevel arena = arena(helper);
-        BlockPos pos = ArenaManager.plotCenter(900).above(3);
+        BlockPos pos = ArenaManager.arenaCenter(900).above(3); // a spot no arena uses
         arena.getChunk(pos);
         arena.setBlock(pos, Blocks.STONE.defaultBlockState(), 3);
 
@@ -77,21 +77,35 @@ public final class ArenaTests {
         Vec3 start = player.position();
         ArenaManager manager = ArenaManager.get(helper.getLevel().getServer());
 
-        ArenaInstance instance = manager.start(player, List.of(player)).orElse(null);
-        helper.assertTrue(instance != null, "instance did not start");
-        helper.assertTrue(player.level() == arena, "player was not moved into the arena");
-        helper.assertTrue(manager.isInInstance(player), "player is not a member of the instance");
-        helper.assertTrue(arena.getEntity(instance.boss()) instanceof SlagheartEntity, "boss did not spawn");
-        BlockPos floor = instance.center().below();
-        helper.assertFalse(arena.getBlockState(floor).isAir(), "arena floor was not built");
-        helper.assertTrue(arena.getBlockState(instance.center().south(14)).is(com.toddlandis.skillcraft.registry.ModBlocks.EXIT_PORTAL.get()), "exit portal missing");
+        // Entering puts you in the lobby; the boss sleeps until someone steps onto the floor
+        helper.assertTrue(manager.enter(player, ArenaManager.SLAGHEART), "could not enter the arena");
+        ArenaInstance instance = manager.instance(ArenaManager.SLAGHEART);
+        helper.assertTrue(player.level() == arena, "player was not moved into the arena dimension");
+        helper.assertTrue(player.position().distanceTo(instance.lobbySpawn()) < 2, "player did not arrive in the lobby");
+        helper.assertTrue(manager.isInInstance(player), "player is not a visitor of the arena");
+        helper.assertFalse(arena.getBlockState(instance.center().below()).isAir(), "arena floor was not built");
+        helper.assertTrue(arena.getBlockState(instance.center().south(com.toddlandis.skillcraft.arena.ArenaBuilder.LOBBY_END - 1))
+                .is(com.toddlandis.skillcraft.registry.ModBlocks.EXIT_PORTAL.get()), "exit portal missing from the lobby");
 
         helper.runAfterDelay(5, () -> {
+            helper.assertTrue(instance.state() == ArenaInstance.State.DORMANT, "boss woke while everyone was in the lobby");
+            player.teleportTo(arena, instance.center().getX() + 0.5, instance.center().getY(), instance.center().getZ() + 6.5,
+                    java.util.Set.of(), 180f, 0f, false);
+        });
+        helper.runAfterDelay(10, () -> {
+            helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING, "boss did not wake when a player stepped onto the floor");
+            helper.assertTrue(arena.getEntity(instance.boss()) instanceof SlagheartEntity, "boss entity missing");
+            // Back to the lobby: after RESET_SECONDS with nobody on the floor the boss resets
+            Vec3 lobby = instance.lobbySpawn();
+            player.teleportTo(arena, lobby.x, lobby.y, lobby.z, java.util.Set.of(), 180f, 0f, false);
+        });
+        helper.runAfterDelay(15 + ArenaManager.RESET_SECONDS * 20, () -> {
+            helper.assertTrue(instance.state() == ArenaInstance.State.DORMANT, "boss did not reset after the arena emptied");
+            helper.assertTrue(instance.boss() == null, "reset left a boss behind");
             manager.leave(player, ArenaManager.LeaveReason.EXIT);
             helper.assertTrue(player.level() == helper.getLevel(), "player was not sent back home");
             helper.assertTrue(player.position().distanceTo(start) < 2, "player did not return to where they entered");
-            helper.assertTrue(manager.instance(instance.id()) == null, "instance was not closed when the last player left");
-            helper.assertTrue(arena.getEntity(instance.boss()) == null, "boss was not removed with the instance");
+            helper.assertFalse(manager.isInInstance(player), "player still listed as a visitor after leaving");
             helper.succeed();
         });
     }
@@ -103,7 +117,7 @@ public final class ArenaTests {
         ArenaManager manager = ArenaManager.get(helper.getLevel().getServer());
 
         // Death: cancelled, healed, sent home, attempt lost
-        ArenaInstance first = manager.start(player, List.of(player)).orElseThrow();
+        manager.enter(player, ArenaManager.SLAGHEART);
         // The mock player is always in creative and can't take lethal damage, so fire the death
         // event directly: it is exactly what a real death in the arena triggers
         player.setHealth(1f);
@@ -112,13 +126,12 @@ public final class ArenaTests {
         helper.assertTrue(player.isAlive(), "player died for real in the arena");
         helper.assertTrue(player.getHealth() == player.getMaxHealth(), "player was not healed after an arena death");
         helper.assertTrue(player.level() == helper.getLevel(), "player was not sent home after dying");
-        helper.assertTrue(manager.instance(first.id()) == null, "instance stayed open after its only player died");
+        helper.assertFalse(manager.isInInstance(player), "player still listed as a visitor after dying");
 
-        // Logout mid-fight: removed from the instance at once, sent home at the next login
-        ArenaInstance second = manager.start(player, List.of(player)).orElseThrow();
+        // Logout mid-fight: removed from the arena at once, sent home at the next login
+        manager.enter(player, ArenaManager.SLAGHEART);
         NeoForge.EVENT_BUS.post(new PlayerEvent.PlayerLoggedOutEvent(player));
-        helper.assertFalse(manager.isInInstance(player), "player stayed in the instance after logging out");
-        helper.assertTrue(manager.instance(second.id()) == null, "instance stayed open after its only player logged out");
+        helper.assertFalse(manager.isInInstance(player), "player stayed in the arena after logging out");
         helper.assertTrue(player.level() == arena, "logout should leave the player where they were until they log back in");
         NeoForge.EVENT_BUS.post(new PlayerEvent.PlayerLoggedInEvent(player));
         helper.assertTrue(player.level() == helper.getLevel(), "player was not sent home on login");

@@ -102,15 +102,20 @@ public final class ShowcaseClient {
         }));
         at(t += 120, () -> shot(mc, "stations"));
         at(t += 10, () -> server.execute(() -> arena[0] = Showcase.buildArena(server.getPlayerList().getPlayers().getFirst())));
-        at(t += 20, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
-                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(0, 0, 13)), 180f, -18f)));
-        at(t += 200, () -> shot(mc, "arena_floor"));
-        at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
-                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(0, 0, 6)), 180f, -60f)));
-        at(t += 60, () -> shot(mc, "arena_dome"));
-        at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
-                net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset(30, 12, 30)), 135f, 15f)));
-        at(t += 120, () -> shot(mc, "arena_outside"));
+        // {name, dx, dz, yaw, pitch} relative to the arena center; yaw 180 = facing north
+        Object[][] views = {
+                {"arena_floor", 0, 13, 180f, -14f},     // from the gate: forge, columns, dome
+                {"arena_forge", 0, -6, 180f, -8f},      // the Great Forge up close
+                {"arena_column", 1, 1, -45f, -35f},     // a grand column
+                {"arena_dome", 0, 4, 180f, -70f},       // looking up at the dome
+                {"lobby_gate", 0, 34, 180f, 0f},        // lobby, looking toward the corridor
+                {"lobby_back", 0, 26, 0f, 5f},          // lobby, looking at the exit portal and bank
+        };
+        for (Object[] view : views) {
+            at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
+                    net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset((int) view[1], 0, (int) view[2])), (float) view[3], (float) view[4])));
+            at(t += view == views[0] ? 200 : 60, () -> shot(mc, (String) view[0]));
+        }
         at(t += 40, () -> {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();
