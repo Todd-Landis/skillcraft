@@ -1,0 +1,26 @@
+{
+  "values": {
+    "#minecraft:coal_ores":         { "skill": "mining", "level": 1,  "xp": 17 },
+    "#minecraft:copper_ores":       { "skill": "mining", "level": 1,  "xp": 18 },
+    "#minecraft:iron_ores":         { "skill": "mining", "level": 10, "xp": 35 },
+    "minecraft:nether_quartz_ore":  { "skill": "mining", "level": 15, "xp": 30 },
+    "#minecraft:redstone_ores":     { "skill": "mining", "level": 20, "xp": 40 },
+    "#minecraft:gold_ores":         { "skill": "mining", "level": 25, "xp": 55 },
+    "#minecraft:lapis_ores":        { "skill": "mining", "level": 30, "xp": 60 },
+    "#minecraft:diamond_ores":      { "skill": "mining", "level": 45, "xp": 90 },
+    "#minecraft:emerald_ores":      { "skill": "mining", "level": 55, "xp": 110 },
+    "minecraft:ancient_debris":     { "skill": "mining", "level": 65, "xp": 150 },
+
+    "#minecraft:oak_logs":      { "skill": "woodcutting", "level": 1,  "xp": 25 },
+    "#minecraft:birch_logs":    { "skill": "woodcutting", "level": 1,  "xp": 25 },
+    "#minecraft:spruce_logs":   { "skill": "woodcutting", "level": 1,  "xp": 30 },
+    "#minecraft:jungle_logs":   { "skill": "woodcutting", "level": 1,  "xp": 30 },
+    "#minecraft:acacia_logs":   { "skill": "woodcutting", "level": 1,  "xp": 30 },
+    "#minecraft:mangrove_logs": { "skill": "woodcutting", "level": 15, "xp": 45 },
+    "#minecraft:cherry_logs":   { "skill": "woodcutting", "level": 25, "xp": 60 },
+    "#minecraft:dark_oak_logs": { "skill": "woodcutting", "level": 35, "xp": 75 },
+    "#minecraft:pale_oak_logs": { "skill": "woodcutting", "level": 45, "xp": 100 },
+    "#minecraft:crimson_stems": { "skill": "woodcutting", "level": 60, "xp": 130 },
+    "#minecraft:warped_stems":  { "skill": "woodcutting", "level": 60, "xp": 130 }
+  }
+}

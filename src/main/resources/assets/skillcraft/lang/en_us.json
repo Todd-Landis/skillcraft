@@ -16,5 +16,32 @@
   "skill.skillcraft.firemaking": "Firemaking",
   "skill.skillcraft.construction": "Construction",
   "skill.skillcraft.agility": "Agility",
-  "skill.skillcraft.sailing": "Sailing"
+  "skill.skillcraft.sailing": "Sailing",
+
+  "key.category.skillcraft.main": "SkillCraft",
+  "key.skillcraft.open_skills": "Open Skills",
+
+  "screen.skillcraft.skills": "Skills",
+  "screen.skillcraft.total_level": "Total level: %s",
+  "screen.skillcraft.xp": "XP: %s",
+  "screen.skillcraft.next_level": "Next level at: %s",
+  "screen.skillcraft.remaining": "Remaining: %s",
+
+  "hud.skillcraft.xp_drop": "+%s %s",
+  "hud.skillcraft.level_up": "%s level %s!",
+
+  "message.skillcraft.level_up": "Level up! Your %s level is now %s.",
+  "message.skillcraft.tool_level": "You need %s level %s to use this tool.",
+  "message.skillcraft.weapon_level": "You need %s level %s to use this weapon.",
+  "message.skillcraft.resource_level": "You need %s level %s to gather this.",
+
+  "tooltip.skillcraft.requires": "Requires %s %s",
+  "tooltip.skillcraft.resource": "%s %s · %s XP",
+
+  "commands.skillcraft.unknown_skill": "Unknown skill: %s",
+  "commands.skillcraft.get.header": "%s — total level %s",
+  "commands.skillcraft.get.line": "  %s: level %s (%s XP)",
+  "commands.skillcraft.set": "Set %s to level %s for %s player(s)",
+  "commands.skillcraft.addxp": "Gave %s %s XP to %s player(s)",
+  "commands.skillcraft.reset": "Reset all skills for %s player(s)"
 }

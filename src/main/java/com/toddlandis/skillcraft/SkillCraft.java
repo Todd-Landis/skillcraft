@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.toddlandis.skillcraft.registry.ModAttachments;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.XpTable;
 
@@ -22,6 +23,8 @@ public class SkillCraft {
     // NeoForge passes in the mod event bus and container automatically.
     public SkillCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+
+        ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
