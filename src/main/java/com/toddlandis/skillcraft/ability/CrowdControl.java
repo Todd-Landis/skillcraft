@@ -34,7 +34,7 @@ public final class CrowdControl {
     private CrowdControl() {}
 
     public static boolean isBoss(Entity entity) {
-        return entity.getType().is(BOSSES);
+        return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(entity.getType()).is(BOSSES);
     }
 
     // Can this player's abilities affect the target at all?
