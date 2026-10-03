@@ -394,6 +394,12 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
         entityData.set(DATA_SERIAL, entityData.get(DATA_SERIAL) + 1);
     }
 
+    // Dev showcase only (dev/Showcase): plays an action's animation without its gameplay. Use with AI off.
+    public void showcasePose(SlagheartAction action) {
+        entityData.set(DATA_ACTION, action.ordinal());
+        restartAnimation(1f);
+    }
+
     private void endAction() {
         entityData.set(DATA_ACTION, SlagheartAction.NONE.ordinal());
         timeScale = 1f;

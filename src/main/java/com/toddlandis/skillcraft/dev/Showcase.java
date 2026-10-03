@@ -1,0 +1,88 @@
+package com.toddlandis.skillcraft.dev;
+
+import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.boss.SlagheartEntity;
+import com.toddlandis.skillcraft.registry.ModEntities;
+import com.toddlandis.skillcraft.registry.ModItems;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+
+// Dev-only screenshot showcase, used by the "Client smoke" CI job and handy locally:
+//   ./gradlew runServer -Pshowcase    creates the world in run/world, then stops cleanly
+//   ./gradlew runClient -Pshowcase -Pworld=<save>   poses the boss, takes screenshots, quits
+// Nothing here runs unless the skillcraft.showcase system property is set (build.gradle sets it
+// for -Pshowcase). The client half is client/ShowcaseClient.
+@EventBusSubscriber(modid = SkillCraft.MODID)
+public final class Showcase {
+    public static final boolean ENABLED = Boolean.getBoolean("skillcraft.showcase");
+
+    private Showcase() {}
+
+    @SubscribeEvent
+    static void onServerStarted(ServerStartedEvent event) {
+        if (!ENABLED || !event.getServer().isDedicatedServer()) return;
+        SkillCraft.LOGGER.info("[showcase] world created, stopping the server");
+        event.getServer().halt(false);
+    }
+
+    public static void command(MinecraftServer server, String command) {
+        server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
+    }
+
+    // The player looks north at the boss (AI off, so it only plays the poses it's given), with a
+    // zombie in padded armour holding a warhammer on the left and one holding the maul on the right
+    public static SlagheartEntity buildScene(ServerPlayer player) {
+        ServerLevel level = player.level();
+        Vec3 eye = Vec3.atBottomCenterOf(player.blockPosition());
+        player.teleport(new TeleportTransition(level, eye, Vec3.ZERO, 180f, 0f, TeleportTransition.DO_NOTHING));
+
+        SlagheartEntity boss = ModEntities.SLAGHEART.get().create(level, EntitySpawnReason.COMMAND);
+        boss.snapTo(eye.x, eye.y, eye.z - 8, 0f, 0f);
+        boss.setYBodyRot(0f);
+        boss.setYHeadRot(0f);
+        boss.setNoAi(true);
+        boss.setPersistenceRequired();
+        level.addFreshEntity(boss);
+
+        Mob left = dummy(level, eye.add(-3.5, 0, -4), ModItems.WARHAMMERS.get("diamond").get());
+        left.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ModItems.PADDED_HELMET.get()));
+        left.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ModItems.PADDED_CHESTPLATE.get()));
+        left.setItemSlot(EquipmentSlot.LEGS, new ItemStack(ModItems.PADDED_LEGGINGS.get()));
+        left.setItemSlot(EquipmentSlot.FEET, new ItemStack(ModItems.PADDED_BOOTS.get()));
+        Mob right = dummy(level, eye.add(3.5, 0, -4), ModItems.EMBERFALL_MAUL.get());
+        right.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ModItems.PADDED_HELMET.get()));
+
+        // Hotbar for the HUD screenshot: one of each new item
+        ItemLike[] hotbar = {ModItems.WARHAMMERS.get("iron").get(), ModItems.WARHAMMERS.get("netherite").get(), ModItems.EMBERFALL_MAUL.get(),
+                ModItems.LIGHT_ARROW.get(), ModItems.HEAVY_ARROW.get(), ModItems.EMBER_SIGIL.get(), ModItems.SUMMONING_BRAZIER.get(),
+                ModItems.PADDED_CHESTPLATE.get(), ModItems.SLAG_GLOB.get()};
+        for (int i = 0; i < hotbar.length; i++) player.getInventory().setItem(i, new ItemStack(hotbar[i]));
+        return boss;
+    }
+
+    private static Mob dummy(ServerLevel level, Vec3 pos, ItemLike held) {
+        Mob mob = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+        mob.snapTo(pos.x, pos.y, pos.z, 0f, 0f);
+        mob.setYBodyRot(0f);
+        mob.setYHeadRot(0f);
+        mob.setNoAi(true);
+        mob.setInvulnerable(true);
+        mob.setPersistenceRequired();
+        mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(held));
+        level.addFreshEntity(mob);
+        return mob;
+    }
+}

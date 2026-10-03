@@ -50,7 +50,13 @@ public class SlagheartModel extends EntityModel<SlagheartRenderState> {
             AnimationDefinition definition = holder.get();
             if (definition != baked) {
                 baked = definition;
-                animation = definition.bake(root);
+                try {
+                    animation = definition.bake(root);
+                } catch (RuntimeException e) {
+                    // A broken animation file (e.g. a bone name the model doesn't have) shouldn't crash the game
+                    SkillCraft.LOGGER.error("Slagheart animation {} could not be applied to the model", holder.key(), e);
+                    animation = AnimationHolder.EMPTY_ANIMATION.bake(root);
+                }
             }
             return animation;
         }
@@ -61,7 +67,7 @@ public class SlagheartModel extends EntityModel<SlagheartRenderState> {
         this.head = root.getChild("hips").getChild("torso").getChild("head");
         for (SlagheartAction action : SlagheartAction.values()) clips.put(action, new Clip(root, action.animation()));
         this.walk = new Clip(root, "walk");
-        // Bake now so a broken animation file (e.g. a typo in a bone name) shows up at resource load
+        // Bake now so a broken animation file (e.g. a typo in a bone name) is logged at resource load
         clips.values().forEach(Clip::get);
         walk.get();
     }
