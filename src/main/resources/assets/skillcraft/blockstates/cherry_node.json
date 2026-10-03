@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/cherry_node" },
+    "depleted=true": { "model": "skillcraft:block/cherry_node_depleted" }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/redstone_node" },
+    "depleted=true": { "model": "skillcraft:block/redstone_node_depleted" }
+  }
+}

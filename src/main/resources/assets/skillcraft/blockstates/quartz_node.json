@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/quartz_node" },
+    "depleted=true": { "model": "skillcraft:block/quartz_node_depleted" }
+  }
+}

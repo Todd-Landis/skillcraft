@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.toddlandis.skillcraft.network.XpGainPayload;
+import com.toddlandis.skillcraft.skill.XpTable;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -29,7 +30,7 @@ public final class XpDropOverlay {
     public static void add(XpGainPayload payload) {
         Component text = payload.newLevel() > 0
                 ? Component.translatable("hud.skillcraft.level_up", payload.skill().displayName(), payload.newLevel())
-                : Component.translatable("hud.skillcraft.xp_drop", payload.amount(), payload.skill().displayName());
+                : Component.translatable("hud.skillcraft.xp_drop", XpTable.format(payload.amount()), payload.skill().displayName());
         DROPS.add(new Drop(text, payload.newLevel() > 0 ? LEVEL_UP_COLOR : COLOR, System.currentTimeMillis()));
     }
 

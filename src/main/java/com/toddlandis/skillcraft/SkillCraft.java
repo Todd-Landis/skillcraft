@@ -4,6 +4,10 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 import com.toddlandis.skillcraft.registry.ModAttachments;
+import com.toddlandis.skillcraft.registry.ModBlockEntities;
+import com.toddlandis.skillcraft.registry.ModBlocks;
+import com.toddlandis.skillcraft.registry.ModCreativeTabs;
+import com.toddlandis.skillcraft.registry.ModItems;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.XpTable;
 
@@ -24,6 +28,10 @@ public class SkillCraft {
     public SkillCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModCreativeTabs.TABS.register(modEventBus);
         ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

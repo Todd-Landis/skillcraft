@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/crimson_node" },
+    "depleted=true": { "model": "skillcraft:block/crimson_node_depleted" }
+  }
+}

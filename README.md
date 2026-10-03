@@ -23,7 +23,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ```
    ./gradlew runClient
    ```
-5. In game: press **K** for the Skills screen. With cheats on, use `/skill set @s mining 30` to test level gates.
+5. In game: press **K** for the Skills screen. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
 6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
 
 ## Project layout
@@ -33,12 +33,15 @@ src/main/java/com/toddlandis/skillcraft/
   SkillCraftClient.java    client-only setup (screens, HUD, key bindings)
   Config.java              server config values
   skill/                   skills, XP curve, player skill data, SkillManager (XP + level-ups)
-  gathering/               Mining/Woodcutting level gates and XP
+  gathering/               level gates for breaking world blocks
+  node/                    skilling nodes, NodeType stats, auto-gathering sessions
+  altar/                   Attunement Altar (turns resources into nodes)
   combat/                  weapon level gates
   command/                 /skill admin command
   network/                 server -> client packets
   registry/                attachments and data map registrations
   client/                  Skills screen, XP drop HUD, key binding, tooltips
+  client/minigame/         modular attunement minigames
 src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
 src/main/resources/assets/skillcraft/
   lang/en_us.json          display names

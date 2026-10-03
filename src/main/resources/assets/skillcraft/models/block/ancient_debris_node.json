@@ -1,0 +1,8 @@
+{
+  "parent": "skillcraft:block/node_template",
+  "textures": {
+    "side": "minecraft:block/ancient_debris_side",
+    "end": "minecraft:block/ancient_debris_top",
+    "base": "minecraft:block/blackstone"
+  }
+}

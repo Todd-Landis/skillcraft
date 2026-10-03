@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/diamond_node" },
+    "depleted=true": { "model": "skillcraft:block/diamond_node_depleted" }
+  }
+}

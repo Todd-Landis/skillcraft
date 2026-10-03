@@ -11,12 +11,12 @@ import net.minecraft.resources.Identifier;
 
 // Server -> client: "you gained X XP in a skill" so the client can show an XP drop.
 // newLevel is 0 unless this gain caused a level-up.
-public record XpGainPayload(Skill skill, int amount, int newLevel) implements CustomPacketPayload {
+public record XpGainPayload(Skill skill, float amount, int newLevel) implements CustomPacketPayload {
     public static final Type<XpGainPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "xp_gain"));
 
     public static final StreamCodec<ByteBuf, XpGainPayload> STREAM_CODEC = StreamCodec.composite(
             Skill.STREAM_CODEC, XpGainPayload::skill,
-            ByteBufCodecs.VAR_INT, XpGainPayload::amount,
+            ByteBufCodecs.FLOAT, XpGainPayload::amount,
             ByteBufCodecs.VAR_INT, XpGainPayload::newLevel,
             XpGainPayload::new);
 

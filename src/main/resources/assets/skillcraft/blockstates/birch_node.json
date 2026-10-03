@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/birch_node" },
+    "depleted=true": { "model": "skillcraft:block/birch_node_depleted" }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "skillcraft:block/node_template",
+  "textures": {
+    "side": "minecraft:block/copper_ore",
+    "end": "minecraft:block/copper_ore",
+    "base": "minecraft:block/mossy_cobblestone"
+  }
+}

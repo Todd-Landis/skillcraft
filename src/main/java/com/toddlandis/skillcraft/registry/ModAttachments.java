@@ -3,7 +3,6 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
-import com.toddlandis.skillcraft.gathering.PlacedBlocks;
 import com.toddlandis.skillcraft.skill.PlayerSkills;
 
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -21,12 +20,5 @@ public class ModAttachments {
                     .serialize(PlayerSkills.CODEC)
                     .copyOnDeath()
                     .sync((holder, to) -> holder == to, PlayerSkills.STREAM_CODEC)
-                    .build());
-
-    // Positions of resource blocks (logs, ores) placed by players in a chunk,
-    // so re-placing and re-breaking them can't be farmed for XP.
-    public static final Supplier<AttachmentType<PlacedBlocks>> PLACED_BLOCKS = ATTACHMENT_TYPES.register("placed_blocks",
-            () -> AttachmentType.builder(PlacedBlocks::new)
-                    .serialize(PlacedBlocks.CODEC)
                     .build());
 }

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/iron_node" },
+    "depleted=true": { "model": "skillcraft:block/iron_node_depleted" }
+  }
+}

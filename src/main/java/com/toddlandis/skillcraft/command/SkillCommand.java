@@ -77,7 +77,7 @@ public class SkillCommand {
         source.sendSuccess(() -> Component.translatable("commands.skillcraft.get.header", player.getDisplayName(), skills.totalLevel()), false);
         for (Skill skill : Skill.values()) {
             source.sendSuccess(() -> Component.translatable("commands.skillcraft.get.line",
-                    skill.displayName(), skills.getLevel(skill), skills.getXp(skill)), false);
+                    skill.displayName(), skills.getLevel(skill), XpTable.format(skills.getXp(skill))), false);
         }
         return skills.totalLevel();
     }

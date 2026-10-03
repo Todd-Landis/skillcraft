@@ -1,0 +1,8 @@
+{
+  "parent": "skillcraft:block/node_template",
+  "textures": {
+    "side": "minecraft:block/emerald_ore",
+    "end": "minecraft:block/emerald_ore",
+    "base": "minecraft:block/mossy_cobblestone"
+  }
+}

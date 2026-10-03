@@ -27,11 +27,11 @@ public final class SkillManager {
 
     // XP from normal gameplay; scaled by the server's xpMultiplier config
     public static void awardXp(ServerPlayer player, Skill skill, double baseXp) {
-        addXp(player, skill, Math.round(baseXp * Config.XP_MULTIPLIER.get()));
+        addXp(player, skill, baseXp * Config.XP_MULTIPLIER.get());
     }
 
     // Raw XP change (used by commands); announces level-ups and sends an XP drop
-    public static void addXp(ServerPlayer player, Skill skill, long amount) {
+    public static void addXp(ServerPlayer player, Skill skill, double amount) {
         if (amount <= 0) return;
         PlayerSkills skills = get(player);
         int oldLevel = skills.getLevel(skill);
@@ -40,14 +40,14 @@ public final class SkillManager {
         player.setData(ModAttachments.SKILLS, skills); // triggers sync to the client
 
         boolean leveledUp = newLevel > oldLevel;
-        PacketDistributor.sendToPlayer(player, new XpGainPayload(skill, (int) Math.min(amount, Integer.MAX_VALUE), leveledUp ? newLevel : 0));
+        PacketDistributor.sendToPlayer(player, new XpGainPayload(skill, (float) amount, leveledUp ? newLevel : 0));
         if (leveledUp) {
             player.sendSystemMessage(Component.translatable("message.skillcraft.level_up", skill.displayName(), newLevel)
                     .withStyle(ChatFormatting.GOLD));
         }
     }
 
-    public static void setXp(ServerPlayer player, Skill skill, long xp) {
+    public static void setXp(ServerPlayer player, Skill skill, double xp) {
         PlayerSkills skills = get(player);
         skills.setXp(skill, xp);
         player.setData(ModAttachments.SKILLS, skills);

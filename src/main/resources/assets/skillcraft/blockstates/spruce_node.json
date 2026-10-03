@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/spruce_node" },
+    "depleted=true": { "model": "skillcraft:block/spruce_node_depleted" }
+  }
+}

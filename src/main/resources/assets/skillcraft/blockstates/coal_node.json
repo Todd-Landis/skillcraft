@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/coal_node" },
+    "depleted=true": { "model": "skillcraft:block/coal_node_depleted" }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "skillcraft:block/node_template",
+  "textures": {
+    "side": "minecraft:block/lapis_ore",
+    "end": "minecraft:block/lapis_ore",
+    "base": "minecraft:block/mossy_cobblestone"
+  }
+}

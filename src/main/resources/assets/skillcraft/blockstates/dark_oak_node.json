@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/dark_oak_node" },
+    "depleted=true": { "model": "skillcraft:block/dark_oak_node_depleted" }
+  }
+}

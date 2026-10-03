@@ -5,7 +5,12 @@ import java.util.Map;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
+import com.toddlandis.skillcraft.node.NodeBlock;
+import com.toddlandis.skillcraft.node.NodeType;
+import com.toddlandis.skillcraft.skill.XpTable;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.SkillManager;
@@ -54,6 +59,8 @@ public class ClientEvents {
                 context.player().playSound(SoundEvents.PLAYER_LEVELUP, 0.6f, 1.0f);
             }
         });
+        event.register(OpenAttunementPayload.TYPE, (payload, context) ->
+                Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload.pos(), payload.node())));
     }
 
     @SubscribeEvent
@@ -81,12 +88,33 @@ public class ClientEvents {
         }
 
         if (event.getItemStack().getItem() instanceof BlockItem blockItem) {
+            if (blockItem.getBlock() instanceof NodeBlock node) {
+                addNodeTooltip(tooltip, player, node.type());
+                return;
+            }
             SkillResource resource = blockItem.getBlock().defaultBlockState().typeHolder().getData(ModDataMaps.BLOCK_RESOURCES);
             if (resource != null) {
                 boolean met = SkillManager.level(player, resource.skill()) >= resource.level();
-                tooltip.add(Component.translatable("tooltip.skillcraft.resource", resource.skill().displayName(), resource.level(), resource.xp())
-                        .withStyle(met ? ChatFormatting.GRAY : ChatFormatting.RED));
+                tooltip.add(Component.translatable("tooltip.skillcraft.resource", resource.skill().displayName(), resource.level(),
+                        XpTable.tierName(resource.level())).withStyle(met ? ChatFormatting.GRAY : ChatFormatting.RED));
             }
         }
+
+        // Resource items that can be attuned into a node at the altar
+        NodeType attunable = NodeType.byInput(event.getItemStack().getItem());
+        if (attunable != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.attunable", attunable.inputCount(), AttunementAltarBlock.nodeName(attunable))
+                    .withStyle(ChatFormatting.DARK_AQUA));
+        }
+    }
+
+    private static void addNodeTooltip(List<Component> tooltip, Player player, NodeType type) {
+        boolean met = SkillManager.level(player, type.skill()) >= type.level();
+        tooltip.add(Component.translatable("tooltip.skillcraft.resource", type.skill().displayName(), type.level(), type.tierName())
+                .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
+        tooltip.add(Component.translatable("tooltip.skillcraft.node_xp", XpTable.format(type.xp()), type.drop().getDefaultInstance().getHoverName())
+                .withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(type.skill() == Skill.WOODCUTTING ? "tooltip.skillcraft.node_use_axe" : "tooltip.skillcraft.node_use_pickaxe")
+                .withStyle(ChatFormatting.DARK_GRAY));
     }
 }

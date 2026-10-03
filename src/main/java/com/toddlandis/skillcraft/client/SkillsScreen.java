@@ -78,22 +78,22 @@ public class SkillsScreen extends Screen {
         if (level >= XpTable.MAX_LEVEL) return 1f;
         long start = XpTable.xpForLevel(level);
         long end = XpTable.xpForLevel(level + 1);
-        return (skills.getXp(skill) - start) / (float) (end - start);
+        return (float) ((skills.getXp(skill) - start) / (end - start));
     }
 
     private static List<Component> tooltipFor(Skill skill, PlayerSkills skills) {
-        long xp = skills.getXp(skill);
+        double xp = skills.getXp(skill);
         int level = skills.getLevel(skill);
         if (level >= XpTable.MAX_LEVEL) {
             return List.of(skill.displayName().copy().withStyle(ChatFormatting.GOLD),
-                    Component.translatable("screen.skillcraft.xp", String.format("%,d", xp)));
+                    Component.translatable("screen.skillcraft.xp", XpTable.format(xp)));
         }
         long next = XpTable.xpForLevel(level + 1);
         return List.of(
                 skill.displayName().copy().withStyle(ChatFormatting.GOLD),
-                Component.translatable("screen.skillcraft.xp", String.format("%,d", xp)),
-                Component.translatable("screen.skillcraft.next_level", String.format("%,d", next)).withStyle(ChatFormatting.GRAY),
-                Component.translatable("screen.skillcraft.remaining", String.format("%,d", next - xp)).withStyle(ChatFormatting.GRAY));
+                Component.translatable("screen.skillcraft.xp", XpTable.format(xp)),
+                Component.translatable("screen.skillcraft.next_level", XpTable.format(next)).withStyle(ChatFormatting.GRAY),
+                Component.translatable("screen.skillcraft.remaining", XpTable.format(next - xp)).withStyle(ChatFormatting.GRAY));
     }
 
     private static int categoryColor(Skill.Category category) {

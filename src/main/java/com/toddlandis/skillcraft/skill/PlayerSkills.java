@@ -13,41 +13,41 @@ import net.minecraft.network.codec.StreamCodec;
 // (see SkillAttachments), saved with the world and synced to that player's client.
 public class PlayerSkills {
     // Saved as {"xp": {"mining": 1234, ...}} so adding new skills later never breaks old saves
-    public static final MapCodec<PlayerSkills> CODEC = Codec.unboundedMap(Skill.CODEC, Codec.LONG)
+    public static final MapCodec<PlayerSkills> CODEC = Codec.unboundedMap(Skill.CODEC, Codec.DOUBLE)
             .xmap(PlayerSkills::new, PlayerSkills::asMap)
             .fieldOf("xp");
 
     public static final StreamCodec<ByteBuf, PlayerSkills> STREAM_CODEC = StreamCodec.of(
             (buf, skills) -> {
-                for (Skill skill : Skill.values()) buf.writeLong(skills.xp[skill.ordinal()]);
+                for (Skill skill : Skill.values()) buf.writeDouble(skills.xp[skill.ordinal()]);
             },
             buf -> {
                 PlayerSkills skills = new PlayerSkills();
-                for (Skill skill : Skill.values()) skills.xp[skill.ordinal()] = buf.readLong();
+                for (Skill skill : Skill.values()) skills.xp[skill.ordinal()] = buf.readDouble();
                 return skills;
             });
 
-    private final long[] xp = new long[Skill.values().length];
+    private final double[] xp = new double[Skill.values().length];
 
     public PlayerSkills() {}
 
-    private PlayerSkills(Map<Skill, Long> saved) {
+    private PlayerSkills(Map<Skill, Double> saved) {
         saved.forEach((skill, value) -> xp[skill.ordinal()] = value);
     }
 
-    private Map<Skill, Long> asMap() {
-        Map<Skill, Long> map = new EnumMap<>(Skill.class);
+    private Map<Skill, Double> asMap() {
+        Map<Skill, Double> map = new EnumMap<>(Skill.class);
         for (Skill skill : Skill.values()) {
             if (xp[skill.ordinal()] > 0) map.put(skill, xp[skill.ordinal()]);
         }
         return map;
     }
 
-    public long getXp(Skill skill) {
+    public double getXp(Skill skill) {
         return xp[skill.ordinal()];
     }
 
-    public void setXp(Skill skill, long value) {
+    public void setXp(Skill skill, double value) {
         xp[skill.ordinal()] = Math.clamp(value, 0, XpTable.MAX_XP);
     }
 

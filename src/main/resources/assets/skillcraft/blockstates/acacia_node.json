@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/acacia_node" },
+    "depleted=true": { "model": "skillcraft:block/acacia_node_depleted" }
+  }
+}

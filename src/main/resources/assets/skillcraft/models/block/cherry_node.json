@@ -1,0 +1,8 @@
+{
+  "parent": "skillcraft:block/node_template",
+  "textures": {
+    "side": "minecraft:block/cherry_log",
+    "end": "minecraft:block/cherry_log_top",
+    "base": "minecraft:block/mossy_cobblestone"
+  }
+}

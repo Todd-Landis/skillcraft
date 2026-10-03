@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/gold_node" },
+    "depleted=true": { "model": "skillcraft:block/gold_node_depleted" }
+  }
+}
