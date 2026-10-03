@@ -51,7 +51,16 @@ Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **
 - **Skilling nodes are how gathering skills are trained.**
   - Place a node and right-click it with an axe or pickaxe. You then gather automatically every 1.5s while you stay within about 4 blocks.
   - Each attempt can fail. Success chance rises with level and tool tier (gold is fastest, then netherite, diamond, iron, stone, wood).
-  - A success gives full XP and one item. It also has a chance to **deplete** the node into a stump or empty rock, which **regrows** after 20–180s depending on tier.
+  - A success gives full XP and one item. It also has a chance to **deplete** the node into a stump or empty rock, which **regrows** after a time set by tier.
+  - **Scarcity limits (per tier)** keep high-tier resources from becoming infinite. A player can only work one node at a time, so long regrow times mean needing many nodes, and spacing makes those nodes cost land and walking time:
+
+    | Tier | I | II | III | IV | V | VI | VII |
+    |---|---|---|---|---|---|---|---|
+    | Regrow | 20s | 45s | 2m | 5m | 8m | 12m | 15m |
+    | Max same-type nodes | 6 | 4 | 3 | 2 | 1 | 1 | 1 |
+    | …within radius | 8 | 12 | 16 | 24 | 32 | 48 | 64 |
+
+    Spacing is checked on placement using Minecraft's point-of-interest index (`registry/ModPoiTypes`, `node/NodePlacement`). Different node types don't count against each other.
   - **Depletion chance scales with level:** `deplete = 1 − (1 − floor) × progress`.
     - `progress` runs from 0 at the node's required level to 1 at level 99.
     - `floor = 25% + 12% × (tier − 1)`: I 25%, II 37%, III 49%, IV 61%, V 73%, VI 85%, VII 97%.

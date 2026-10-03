@@ -21,32 +21,32 @@ import net.minecraft.world.item.Items;
 //   drop     - item given per success, and how many
 //   input    - resource used to create the node at the altar, and how many
 //   (depletion chance is calculated from tier and level, see depleteChance())
-//   respawn  - seconds until a depleted node regrows
+//   (regrow time and placement spacing are set by tier, see the tables below)
 public enum NodeType implements StringRepresentable {
     // --- Woodcutting ---
-    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 32, 20),
-    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 32, 20),
-    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 32, 20),
-    JUNGLE(Skill.WOODCUTTING, 15, 50, () -> Items.JUNGLE_LOG, 1, 32, 30),
-    ACACIA(Skill.WOODCUTTING, 15, 52.5, () -> Items.ACACIA_LOG, 1, 32, 30),
-    MANGROVE(Skill.WOODCUTTING, 15, 55, () -> Items.MANGROVE_LOG, 1, 32, 30),
-    CHERRY(Skill.WOODCUTTING, 30, 85, () -> Items.CHERRY_LOG, 1, 48, 45),
-    DARK_OAK(Skill.WOODCUTTING, 30, 90, () -> Items.DARK_OAK_LOG, 1, 48, 45),
-    PALE_OAK(Skill.WOODCUTTING, 45, 135, () -> Items.PALE_OAK_LOG, 1, 48, 60),
-    CRIMSON(Skill.WOODCUTTING, 60, 200, () -> Items.CRIMSON_STEM, 1, 64, 90),
-    WARPED(Skill.WOODCUTTING, 60, 200, () -> Items.WARPED_STEM, 1, 64, 90),
+    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 32),
+    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 32),
+    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 32),
+    JUNGLE(Skill.WOODCUTTING, 15, 50, () -> Items.JUNGLE_LOG, 1, 32),
+    ACACIA(Skill.WOODCUTTING, 15, 52.5, () -> Items.ACACIA_LOG, 1, 32),
+    MANGROVE(Skill.WOODCUTTING, 15, 55, () -> Items.MANGROVE_LOG, 1, 32),
+    CHERRY(Skill.WOODCUTTING, 30, 85, () -> Items.CHERRY_LOG, 1, 48),
+    DARK_OAK(Skill.WOODCUTTING, 30, 90, () -> Items.DARK_OAK_LOG, 1, 48),
+    PALE_OAK(Skill.WOODCUTTING, 45, 135, () -> Items.PALE_OAK_LOG, 1, 48),
+    CRIMSON(Skill.WOODCUTTING, 60, 200, () -> Items.CRIMSON_STEM, 1, 64),
+    WARPED(Skill.WOODCUTTING, 60, 200, () -> Items.WARPED_STEM, 1, 64),
 
     // --- Mining ---
-    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 32, 20),
-    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 32, 20),
-    IRON(Skill.MINING, 15, 35, () -> Items.RAW_IRON, 1, 32, 30),
-    QUARTZ(Skill.MINING, 15, 37.5, () -> Items.QUARTZ, 1, 32, 30),
-    REDSTONE(Skill.MINING, 30, 60, () -> Items.REDSTONE, 2, 64, 45),
-    GOLD(Skill.MINING, 30, 65, () -> Items.RAW_GOLD, 1, 24, 45),
-    LAPIS(Skill.MINING, 30, 62.5, () -> Items.LAPIS_LAZULI, 2, 48, 45),
-    DIAMOND(Skill.MINING, 45, 100, () -> Items.DIAMOND, 1, 16, 90),
-    EMERALD(Skill.MINING, 60, 140, () -> Items.EMERALD, 1, 16, 120),
-    ANCIENT_DEBRIS(Skill.MINING, 75, 200, () -> Items.ANCIENT_DEBRIS, 1, 8, 180);
+    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 32),
+    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 32),
+    IRON(Skill.MINING, 15, 35, () -> Items.RAW_IRON, 1, 32),
+    QUARTZ(Skill.MINING, 15, 37.5, () -> Items.QUARTZ, 1, 32),
+    REDSTONE(Skill.MINING, 30, 60, () -> Items.REDSTONE, 2, 64),
+    GOLD(Skill.MINING, 30, 65, () -> Items.RAW_GOLD, 1, 24),
+    LAPIS(Skill.MINING, 30, 62.5, () -> Items.LAPIS_LAZULI, 2, 48),
+    DIAMOND(Skill.MINING, 45, 100, () -> Items.DIAMOND, 1, 16),
+    EMERALD(Skill.MINING, 60, 140, () -> Items.EMERALD, 1, 16),
+    ANCIENT_DEBRIS(Skill.MINING, 75, 200, () -> Items.ANCIENT_DEBRIS, 1, 8);
 
     public static final Codec<NodeType> CODEC = StringRepresentable.fromEnum(NodeType::values);
 
@@ -60,16 +60,14 @@ public enum NodeType implements StringRepresentable {
     private final Supplier<Item> drop;
     private final int dropCount;
     private final int inputCount;
-    private final int respawnSeconds;
 
-    NodeType(Skill skill, int level, double xp, Supplier<Item> drop, int dropCount, int inputCount, int respawnSeconds) {
+    NodeType(Skill skill, int level, double xp, Supplier<Item> drop, int dropCount, int inputCount) {
         this.skill = skill;
         this.level = level;
         this.xp = xp;
         this.drop = drop;
         this.dropCount = dropCount;
         this.inputCount = inputCount;
-        this.respawnSeconds = respawnSeconds;
     }
 
     public Skill skill() { return skill; }
@@ -80,7 +78,6 @@ public enum NodeType implements StringRepresentable {
     // Nodes are attuned from the same resource they produce
     public Item input() { return drop.get(); }
     public int inputCount() { return inputCount; }
-    public int respawnTicks() { return respawnSeconds * 20; }
     public int tierIndex() { return XpTable.tierIndex(level); }
     // Change per node here if a specific node should use a different minigame
     public MinigameKind minigame() {
@@ -109,6 +106,20 @@ public enum NodeType implements StringRepresentable {
         double floor = Math.min(1.0, DEPLETE_FLOOR_BASE + DEPLETE_FLOOR_PER_TIER * tierIndex());
         return 1.0 - (1.0 - floor) * levelProgress(playerLevel);
     }
+
+    // Per-tier limits that keep high-tier resources scarce. A player can only work one node at a
+    // time, so long regrow times mean needing many nodes, and spacing makes those nodes cost
+    // land and walking time.
+    //                                          I    II   III  IV   V    VI   VII
+    private static final int[] REGROW_SECONDS = {20,  45,  120, 300, 480, 720, 900};
+    // At most SPACING_MAX nodes of the same type within SPACING_RADIUS blocks
+    private static final int[] SPACING_RADIUS = {8,   12,  16,  24,  32,  48,  64};
+    private static final int[] SPACING_MAX =    {6,   4,   3,   2,   1,   1,   1};
+
+    public int regrowSeconds() { return REGROW_SECONDS[tierIndex()]; }
+    public int respawnTicks() { return regrowSeconds() * 20; }
+    public int spacingRadius() { return SPACING_RADIUS[tierIndex()]; }
+    public int spacingMax() { return SPACING_MAX[tierIndex()]; }
 
     // 0 at the node's required level, 1 at level 99
     private double levelProgress(int playerLevel) {

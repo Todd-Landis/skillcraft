@@ -77,6 +77,7 @@
   "message.skillcraft.node_depleted": "This node is depleted. It will regrow soon.",
   "message.skillcraft.depleted_wood": "The tree has been cut down.",
   "message.skillcraft.depleted_ore": "The vein has been mined out.",
+  "message.skillcraft.node_too_close": "Too close to other %s: max %s within %s blocks.",
   "message.skillcraft.node_relocated": "You pack up the node.",
 
   "message.skillcraft.altar_empty": "Load the altar with a resource to attune it into a node.",
@@ -91,6 +92,7 @@
   "tooltip.skillcraft.resource": "%s %s · Tier %s",
   "tooltip.skillcraft.node_xp": "%s XP per %s",
   "tooltip.skillcraft.gathering_tool": "Node gathering: %ss per swing · %s× success",
+  "tooltip.skillcraft.node_limits": "Regrows in %s · Max %s per %s blocks",
   "tooltip.skillcraft.node_deplete": "Depletion chance: %s%% per success",
   "tooltip.skillcraft.node_use_axe": "Place it, then right-click with an axe",
   "tooltip.skillcraft.node_use_pickaxe": "Place it, then right-click with a pickaxe",
