@@ -49,6 +49,10 @@ neoForge {
     runs {
         client {
             client()
+            // ./gradlew runClient -Pworld="New World" loads straight into that singleplayer world
+            if (project.hasProperty('world')) {
+                programArguments.addAll '--quickPlaySingleplayer', project.property('world').toString()
+            }
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
