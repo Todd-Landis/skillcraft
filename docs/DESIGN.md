@@ -133,8 +133,9 @@ Data: `data/skillcraft/data_maps/item/smelting.json`.
 
 ### Gear only comes from players
 - Bench-made gear is stamped **"Made by <player>"** (data component `skillcraft:crafted_by`).
-- **World-generated chests** (`chests/...` loot tables) never contain station gear (global loot modifier `skillcraft:strip_crafted_gear`). Tested by rolling village weaponsmith and toolsmith chests 400 times: 477 pieces of gear normally, 0 with the modifier.
+- **World-generated chests** (`chests/...` loot tables) never contain station gear or smelted ingots/netherite scrap (global loot modifier `skillcraft:strip_crafted_gear`). Tested by rolling village weaponsmith and toolsmith chests 400 times: 477 pieces of gear normally, 0 with the modifier.
 - **Mobs** never drop station gear unless it carries a player's stamp, i.e. the mob picked up player-made gear.
+- **Villagers and wandering traders** never sell station gear or ingots. `scripts/gen_villager_trade_overrides.sh` rewrites the vanilla `villager_trade` tag pools without those trades (36 removed), so villagers still roll full trade lists from what's left. Trades that *buy* ingots stay.
 
 ## Level gates (vanilla content)
 Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:

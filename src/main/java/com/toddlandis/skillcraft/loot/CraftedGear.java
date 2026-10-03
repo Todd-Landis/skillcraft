@@ -2,6 +2,10 @@ package com.toddlandis.skillcraft.loot;
 
 import com.toddlandis.skillcraft.bench.BenchRecipe;
 import com.toddlandis.skillcraft.registry.ModDataComponents;
+import com.toddlandis.skillcraft.registry.ModDataMaps;
+import com.toddlandis.skillcraft.skill.SmeltingRecipe;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -16,6 +20,15 @@ public final class CraftedGear {
 
     public static boolean isPlayerMade(ItemStack stack) {
         return stack.has(ModDataComponents.CRAFTED_BY.get());
+    }
+
+    // Ingots and scrap: anything the Smelter produces
+    public static boolean isSmeltedMaterial(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        for (SmeltingRecipe recipe : BuiltInRegistries.ITEM.getDataMap(ModDataMaps.SMELTING).values()) {
+            if (stack.is(recipe.result())) return true;
+        }
+        return false;
     }
 
     // True if this stack must not appear from world generation or mob drops
