@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
@@ -103,8 +104,11 @@ public final class ArenaTests {
 
         // Death: cancelled, healed, sent home, attempt lost
         ArenaInstance first = manager.start(player, List.of(player)).orElseThrow();
-        // Void damage kills even the (always-creative) mock player, so the death handler runs
-        player.hurtServer(arena, arena.damageSources().fellOutOfWorld(), 1000f);
+        // The mock player is always in creative and can't take lethal damage, so fire the death
+        // event directly: it is exactly what a real death in the arena triggers
+        player.setHealth(1f);
+        LivingDeathEvent death = new LivingDeathEvent(player, arena.damageSources().generic());
+        helper.assertTrue(NeoForge.EVENT_BUS.post(death).isCanceled(), "arena death was not cancelled");
         helper.assertTrue(player.isAlive(), "player died for real in the arena");
         helper.assertTrue(player.getHealth() == player.getMaxHealth(), "player was not healed after an arena death");
         helper.assertTrue(player.level() == helper.getLevel(), "player was not sent home after dying");

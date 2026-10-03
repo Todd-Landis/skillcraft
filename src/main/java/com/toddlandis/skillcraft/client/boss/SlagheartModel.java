@@ -61,6 +61,9 @@ public class SlagheartModel extends EntityModel<SlagheartRenderState> {
         this.head = root.getChild("hips").getChild("torso").getChild("head");
         for (SlagheartAction action : SlagheartAction.values()) clips.put(action, new Clip(root, action.animation()));
         this.walk = new Clip(root, "walk");
+        // Bake now so a broken animation file (e.g. a typo in a bone name) shows up at resource load
+        clips.values().forEach(Clip::get);
+        walk.get();
     }
 
     public static LayerDefinition createBodyLayer() {
