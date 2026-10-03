@@ -45,6 +45,7 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ability_wall", () -> AbilityTests::wall);
         TEST_FUNCTIONS.register("ability_loadout", () -> AbilityTests::loadout);
         TEST_FUNCTIONS.register("ability_future", () -> AbilityTests::future);
+        TEST_FUNCTIONS.register("ability_offhand", () -> AbilityTests::offhand);
         TEST_FUNCTIONS.register("ability_dps", () -> AbilityTests::dps);
     }
 
@@ -69,6 +70,7 @@ public final class ModGameTests {
         test(event, "ability_wall", 40);
         test(event, "ability_loadout", 40);
         test(event, "ability_future", 120);
+        test(event, "ability_offhand", 40);
         test(event, "ability_dps", AbilityTests.HARNESS_TICKS + 100);
     }
 

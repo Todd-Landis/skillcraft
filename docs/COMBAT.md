@@ -154,6 +154,7 @@ The ability bar adds a few decisions per fight on top of the rules above. The fu
 - **Damage** is a share of the held weapon's normal hit, so abilities scale with gear and stay horizontal.
 - **No extra XP:** abilities give the usual XP for the damage they deal and nothing on top.
 - **Weapon Arts:** they only work with their weapon class (item tags in `tags/item/weapon_class/`, or a damage type from `weapon_styles`), so a warhammer fights differently from a spear.
+- **Off-hand arts:** some arts need an item in the off hand. Shield Bash needs a shield, Torchbrand a torch, and Twinfang a sword or axe. Twinfang hits with the off-hand blade's own damage and type, and that blade's level gate still applies.
 - **Bosses:**
   - stuns become **Daze** (the next attack comes 1 s later, at most once every 20 s, and a started windup is never cancelled)
   - roots and slows become at most −30% for half the time

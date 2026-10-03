@@ -206,7 +206,7 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - Slagheart in an instanced arena dimension with phases, telegraphs, a unique drop and a resource table
 - [x] **Phase 6 – Combat abilities:** (see [ABILITIES_SPEC.md](ABILITIES_SPEC.md))
   - a 4-slot ability bar with Momentum, cooldowns and a global cooldown
-  - 25 abilities (Melee, Ranged, Defence, Weapon Arts, Utility), unlocked by level or Codex
+  - 27 abilities (Melee, Ranged, Defence, Weapon Arts including off-hand arts, Utility), unlocked by level or Codex
   - the Ability Book (J) with 3 saved bars
   - boss crowd-control rules (Daze, capped slows, no knockback)
   - a framework ready for Spells (item costs) and Prayers (toggles with drain)

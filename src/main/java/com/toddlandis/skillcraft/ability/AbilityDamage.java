@@ -6,9 +6,12 @@ import com.toddlandis.skillcraft.combat.DamageStyles;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 // Ability damage. Every hit goes through the Phase 5 pipeline (CombatDamage), so type matchups,
 // Sundered, level bonuses, attack styles, typed armour and combat XP all apply exactly as for a
@@ -28,6 +31,23 @@ public final class AbilityDamage {
     // The held weapon's normal fully charged hit (attack damage attribute, which includes the weapon)
     public static double weaponHit(Player player) {
         return player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+    }
+
+    // The off-hand item's hit, as if it were swung in the main hand: the attack damage attribute
+    // (base damage, Strength and so on) minus the main-hand weapon's bonus plus the off-hand item's
+    public static double offhandHit(Player player) {
+        return Math.max(1, weaponHit(player) - attackBonus(player.getMainHandItem()) + attackBonus(player.getOffhandItem()));
+    }
+
+    // The flat attack damage an item adds when held in the main hand (+6 for a diamond sword)
+    public static double attackBonus(ItemStack stack) {
+        double[] bonus = {0};
+        stack.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+            if (attribute.value() == Attributes.ATTACK_DAMAGE.value() && modifier.operation() == AttributeModifier.Operation.ADD_VALUE) {
+                bonus[0] += modifier.amount();
+            }
+        });
+        return bonus[0];
     }
 
     // Deals `share` x the weapon's hit as `style` (null = the held weapon's own type)

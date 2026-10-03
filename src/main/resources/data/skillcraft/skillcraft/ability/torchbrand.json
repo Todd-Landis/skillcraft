@@ -1,0 +1,19 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 5,
+    "offhand": "skillcraft:weapon_class/torch"
+  },
+  "cooldown": 240,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 0.6,
+    "ignite": 100
+  },
+  "icon": "skillcraft:ability/torchbrand"
+}

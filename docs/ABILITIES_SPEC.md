@@ -128,6 +128,8 @@ Damage is given as **% of the held weapon's normal hit** (RS3-style), so abiliti
 | **Skewer** | Melee 20 | spear / trident (melee) | Surge | Line thrust 5 blocks long, 130% stab to every enemy in the line. | 18 s |
 | **Cleaving Chop** | Melee 15 | axe | Basic | 140% slash; it disables a shield-raising target for 3 s (players / blocking mobs). | 14 s |
 | **Shield Bash** | Defence 10 | shield in offhand | Basic | 70% crush hit, interrupts mobs (bosses: Daze), and knockback. | 15 s |
+| **Twinfang** | Melee 20 | melee weapon + sword or axe in offhand | Basic | 100% of the **off-hand** blade's hit, as that blade's damage type. Added in the build (§8.7). | 10 s |
+| **Torchbrand** | Melee 5 | torch in offhand | Basic | 60% hit that sets the target on fire for 5 s. Added in the build (§8.7). | 12 s |
 | **Piercing Bolt** | Ranged 20 | crossbow | Surge | The next bolt pierces up to 4 targets at 120%. | 18 s |
 | **Undertow** | Ranged 30 | trident (thrown) | Basic | The thrown trident returns and **pulls** the target 3 blocks towards you (mobs only). | 16 s |
 | **Forgequake** | Codex (Slagheart) + Melee 35 | **Emberfall Maul only** | Ultimate | Slam, radius 4: 200% crush and applies **Sundered** to everything hit. | 90 s |
@@ -220,7 +222,7 @@ This section records what the first build does wherever the spec left a choice o
 - **Requirements** extend the spec's `weapon_tag`:
   - `weapon`: an item tag for the main hand
   - `weapon_style`: a damage type of the main-hand weapon, read from the existing `weapon_styles` data map, so "slash" means swords and axes without a second list to maintain
-  - `offhand`: an item tag, e.g. a shield for Shield Bash
+  - `offhand`: an item tag for the off hand, e.g. a shield for Shield Bash. It can be combined with `weapon` (§8.7).
   - `codex`: whether a Codex must be read first
 - **Weapon classes** are item tags in `skillcraft:weapon_class/`:
   - single weapon types: `sword`, `axe`, `spear`, `trident`, `warhammer`, `mace`, `maul`, `bow`, `crossbow`, `shield`
@@ -271,13 +273,13 @@ This section records what the first build does wherever the spec left a choice o
 - **Codex of the Forgequake:** Slagheart drops it at 1/60 per eligible kill (measured 1/60.8 over 20,000 rolls). The other loot rates are unchanged.
 
 ### 8.5 The first build's catalogue
-- **25 of the 26 abilities** are built: everything in §3 except **Undertow**.
+- **27 abilities** are built: 25 of §3's 26 (everything except **Undertow**) plus the two off-hand arts in §8.7.
   - Undertow is deferred to v2. It needs the thrown trident's return to drive a pull, and the trident's return logic is private.
 - **Bars and HUD:** 3 bars per player, the HUD bar and the Ability Book are built as specified.
   - On narrow GUI scales the HUD bar becomes a 2×2 grid, or a row above the hunger and air bars.
 
 ### 8.6 Verified numbers
-These come from `./gradlew runGameTestServer` in CI. **All 19 GameTests pass**: 11 from Phase 5 and 8 new ability tests.
+These come from `./gradlew runGameTestServer` in CI. **All 20 GameTests pass**: 11 from Phase 5 and 9 new ability tests.
 
 - **`ability_dps`** (§6), 60 s on a training dummy (a husk with full knockback resistance), diamond sword, Melee 40, a swing every 13 ticks:
   - Auto-attacks only: **885.8 damage = 14.76 DPS**.
@@ -310,8 +312,36 @@ These come from `./gradlew runGameTestServer` in CI. **All 19 GameTests pass**: 
   - An item-cost ability (a stand-in rune spell) consumed 2 of 3 items.
   - A toggle draining 10 per second ran, switched off on a second press, and switched itself off when Momentum ran dry.
   - Both are built in code and round-trip through the JSON codec.
+- **`ability_offhand`:**
+  - Twinfang is refused with nothing or a shield in the off hand, and with an off-hand netherite sword at Melee 30 (it needs 40). A refusal deals no damage.
+  - With an iron sword in the main hand and a diamond sword in the off hand, Twinfang uses the diamond sword's hit and its slash type: OFFHAND_RESULT.
+  - Torchbrand is refused without a torch, and with one it sets a husk on fire.
 - **`loot_rates`** (20,000 rolls):
   - Codex of the Forgequake 329 = **1/60.8** (target 1/60)
   - Emberfall Maul 1/114.3
   - Sigil refund 1/19.7
   - **7.80** gathering-minutes per kill, unchanged
+
+### 8.7 Off-hand arts
+Todd pointed out after the first build that the off hand can carry an ability too. Here is what's built.
+
+- **Off-hand requirements:** any ability can require an item class in the off hand (`requires.offhand`), on its own or together with a main-hand `weapon`.
+  - Shield Bash was the first. Two more were added:
+    - **Twinfang** (Melee 20): with a melee weapon in the main hand and a sword or axe in the off hand, you cut with the **off-hand** blade.
+      - It uses that blade's own hit (`AbilityDamage.offhandHit`): the attack-damage attribute, minus the main-hand weapon's bonus, plus the off-hand weapon's.
+      - It also uses that blade's own damage type. So a dual-wielder can mix types, for example crush from a mace in the main hand and slash from an axe in the off hand.
+      - The off-hand weapon's own Melee gate (`skill_requirements`) still applies, so moving a weapon to the off hand doesn't get around its level.
+    - **Torchbrand** (Melee 5): with a torch in the off hand, a 60% hit with the main weapon that sets the target on fire for 5 s.
+      - Torches are `weapon_class/torch`: torch, soul torch and copper torch.
+      - Fire-immune mobs, Slagheart included, only take the hit.
+  - Both are Weapon Arts, because they depend on what you hold.
+- **Behaviour options:** `melee_strike` gained two JSON options:
+  - `off_hand: true`: strike with the off-hand item. It uses that item's hit and damage type, and the off-hand arm swings.
+  - `ignite: <ticks>`: set the target on fire.
+- **Requirement text:** the Ability Book and the refusal message name both hands, e.g. "a melee weapon, with a sword or axe in your off hand".
+- **Not built:** a dedicated 5th "off-hand slot" that fires whichever off-hand art fits the item you're holding.
+  - Off-hand arts sit in the normal 4 slots, like Weapon Arts (§8.1, answer 1).
+  - A dedicated key is a small follow-up if playtesting wants it. The bar size is one constant, and the matching rule already exists (`Requirement.weaponMatches`).
+- **Ideas for later:**
+  - off-hand items other than weapons: a lantern, a totem, or a spellbook that holds Spells
+  - a parry art for an off-hand dagger

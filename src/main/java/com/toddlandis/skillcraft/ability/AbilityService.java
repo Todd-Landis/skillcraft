@@ -319,7 +319,10 @@ public final class AbilityService {
 
     public static Component weaponName(AbilityDefinition def) {
         AbilityDefinition.Requirement req = def.requires();
-        return req.offhand().isPresent() ? tagName(req.offhand().get()) : req.weapon().map(AbilityService::tagName).orElse(Component.empty());
+        if (req.offhand().isEmpty()) return req.weapon().map(AbilityService::tagName).orElse(Component.empty());
+        Component offhand = tagName(req.offhand().get());
+        return req.weapon().map(tag -> Component.translatable("weapon_class.skillcraft.with_offhand", tagName(tag), offhand))
+                .orElse(Component.translatable("weapon_class.skillcraft.in_offhand", offhand));
     }
 
     public static Component tagName(TagKey<Item> tag) {

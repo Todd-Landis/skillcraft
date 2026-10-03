@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:torch",
+    "minecraft:soul_torch",
+    {
+      "id": "minecraft:copper_torch",
+      "required": false
+    }
+  ]
+}

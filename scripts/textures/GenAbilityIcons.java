@@ -56,6 +56,8 @@ public class GenAbilityIcons {
         ability("shield_bash", ART, c -> { shield(c, STEEL_D, STEEL); impact(c, 13, 3); });
         ability("piercing_bolt", ART, c -> { c.disc(6, 8, 2, RED); c.disc(10, 8, 2, RED); arrow(c, 1, 8, 15, 8); });
         ability("forgequake", ART, c -> { lavaRing(c); maul(c); });
+        ability("twinfang", ART, c -> twinBlades(c));
+        ability("torchbrand", ART, c -> torch(c));
         // --- Utility ---
         ability("sprint_burst", UTILITY, c -> { speedLines(c, 1, 5, 4); wing(c, CYAN); });
 
@@ -221,6 +223,23 @@ public class GenAbilityIcons {
         c.line(3, 3, 12, 12, STEEL, 1);
         c.line(2, 10, 5, 13, GOLD, 1);
         c.line(10, 13, 13, 10, GOLD, 1);
+    }
+
+    // Two short parallel blades: one per hand
+    static void twinBlades(Canvas c) {
+        c.line(3, 9, 8, 4, STEEL, 2);
+        c.set(9, 3, WHITE);
+        c.line(1, 8, 3, 10, GOLD, 1);
+        c.line(7, 13, 12, 8, STEEL, 2);
+        c.set(13, 7, WHITE);
+        c.line(5, 12, 7, 14, GOLD, 1);
+    }
+
+    // A slanted torch with a flame at its tip
+    static void torch(Canvas c) {
+        c.line(3, 14, 8, 8, WOOD, 2);
+        c.poly(new int[]{7, 8, 9, 11, 12, 13, 12}, new int[]{9, 5, 7, 2, 6, 5, 10}, EMBER);
+        c.poly(new int[]{9, 10, 11}, new int[]{9, 6, 9}, LAVA);
     }
 
     static void slash(Canvas c, int rgb) {

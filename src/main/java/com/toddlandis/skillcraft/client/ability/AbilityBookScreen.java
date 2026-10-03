@@ -365,7 +365,7 @@ public class AbilityBookScreen extends Screen {
             boolean ok = req.weaponMatches(player.getMainHandItem(), player.getOffhandItem());
             Component weapon = req.weaponStyle().map(style -> (Component) Component.translatable("screen.skillcraft.ability_weapon_styled",
                     AbilityService.weaponName(def), style.displayName())).orElse(AbilityService.weaponName(def));
-            lines.add(Component.translatable(req.offhand().isPresent() ? "screen.skillcraft.ability_offhand" : "screen.skillcraft.ability_weapon", weapon)
+            lines.add(Component.translatable("screen.skillcraft.ability_weapon", weapon)
                     .withStyle(ok ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if (req.codex()) {

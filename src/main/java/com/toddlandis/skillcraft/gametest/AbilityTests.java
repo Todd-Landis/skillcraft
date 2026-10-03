@@ -265,6 +265,64 @@ public final class AbilityTests {
         helper.succeed();
     }
 
+    // --- Off-hand arts: Twinfang hits with the off-hand blade (its own hit, type and level gate), Torchbrand ignites ---
+
+    static void offhand(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = player(helper, "skillcraft_ability_offhand", new Vec3(4, 1, 8), -90f);
+        level(player, Skill.MELEE, 30);
+        hold(player, new ItemStack(Items.IRON_SWORD));
+        Skeleton skeleton = helper.spawnWithNoFreeWill(EntityTypes.SKELETON, new Vec3(6, 1, 8));
+        skeleton.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        face(player, skeleton);
+        Identifier twinfang = id("twinfang");
+
+        is(helper, AbilityService.check(player, twinfang, AbilityManager.get(twinfang)), Denied.WEAPON, "Twinfang with an empty off hand");
+        player.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
+        is(helper, AbilityService.check(player, twinfang, AbilityManager.get(twinfang)), Denied.WEAPON, "Twinfang with a shield in the off hand");
+        // The off-hand weapon's own level gate: a netherite sword needs Melee 40
+        player.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.NETHERITE_SWORD));
+        float start = skeleton.getHealth();
+        is(helper, AbilityService.use(player, twinfang), Denied.NO_TARGET, "Twinfang with an off-hand weapon above your level");
+        helper.assertTrue(skeleton.getHealth() == start, "a refused Twinfang must not deal damage");
+
+        ItemStack diamond = new ItemStack(Items.DIAMOND_SWORD);
+        player.setItemSlot(EquipmentSlot.OFFHAND, diamond);
+        double mainHit = com.toddlandis.skillcraft.ability.AbilityDamage.weaponHit(player);
+        double offHit = com.toddlandis.skillcraft.ability.AbilityDamage.offhandHit(player);
+        double expectedHit = mainHit - com.toddlandis.skillcraft.ability.AbilityDamage.attackBonus(player.getMainHandItem())
+                + com.toddlandis.skillcraft.ability.AbilityDamage.attackBonus(diamond);
+        helper.assertTrue(Math.abs(offHit - expectedHit) < 1.0E-4 && offHit > mainHit,
+                "the off-hand hit should use the diamond sword (" + expectedHit + "), was " + offHit + " (main hand " + mainHit + ")");
+        double matchup = DamageStyles.modifier(skeleton, DamageStyles.weapon(diamond));
+        double levelBonus = 1 + CombatDamage.LEVEL_DAMAGE_BONUS * (30 - 1);
+        double style = player.getData(ModAttachments.ATTACK_STYLE).damageDealtMultiplier();
+        double expected = offHit * 1.0 * matchup * levelBonus * style;
+        Denied cut = AbilityService.use(player, twinfang);
+        helper.assertTrue(cut == null, "Twinfang refused with " + cut + "; " + targetDebug(player, skeleton));
+        float dealt = start - skeleton.getHealth();
+        helper.assertTrue(Math.abs(dealt - expected) < 0.05, "Twinfang should deal " + expected + " (off hand " + offHit + " x " + DamageStyles.weapon(diamond)
+                + " " + matchup + " x level " + levelBonus + " x style " + style + "), dealt " + dealt);
+
+        // Torchbrand: a main-hand strike that sets the target alight (husks don't burn in daylight)
+        ServerPlayer torch = player(helper, "skillcraft_ability_torch", new Vec3(4, 1, 3), -90f);
+        level(torch, Skill.MELEE, 5);
+        hold(torch, new ItemStack(Items.STONE_SWORD));
+        Husk husk = helper.spawnWithNoFreeWill(EntityTypes.HUSK, new Vec3(6, 1, 3));
+        face(torch, husk);
+        Identifier brand = id("torchbrand");
+        is(helper, AbilityService.check(torch, brand, AbilityManager.get(brand)), Denied.WEAPON, "Torchbrand without a torch");
+        torch.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.TORCH));
+        Denied lit = AbilityService.use(torch, brand);
+        helper.assertTrue(lit == null, "Torchbrand refused with " + lit + "; " + targetDebug(torch, husk));
+        helper.assertTrue(husk.getRemainingFireTicks() > 0, "Torchbrand should set the target on fire");
+
+        SkillCraft.LOGGER.info("[abilities] offhand: Twinfang with an off-hand diamond sword (main hand iron) dealt {} = off-hand hit {} x {} {} x level {} x style {}; Torchbrand fire {} ticks",
+                String.format("%.2f", dealt), String.format("%.2f", offHit), DamageStyles.weapon(diamond).getSerializedName(), matchup,
+                String.format("%.4f", levelBonus), style, husk.getRemainingFireTicks());
+        helper.succeed();
+    }
+
     // --- Bosses: stun -> Daze (once per 20 s, never cancels a windup), capped slows, no knockback ---
 
     static void bossDaze(GameTestHelper helper) {

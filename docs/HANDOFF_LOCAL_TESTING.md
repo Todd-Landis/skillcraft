@@ -141,6 +141,9 @@ Details are in `docs/ABILITIES_SPEC.md` §8.
     - Vault needs a spear; check it clears Forge Quake rings.
     - Skewer, Cleaving Chop with an axe, and Shield Bash with a shield in the off hand.
     - Piercing Bolt needs a crossbow.
+    - **Off-hand arts:**
+      - Twinfang: a sword or axe in the off hand. The off-hand arm should swing, and the damage should follow the off-hand blade.
+      - Torchbrand: a torch in the off hand sets the target alight.
     - Forgequake: read the Codex (`/give @s skillcraft:codex[skillcraft:codex_ability="skillcraft:forgequake"]`), then hold the Emberfall Maul.
 - [ ] **Walls and the arena:** Lunge, Vault and Tumble never pass through walls and can't leave the arena.
 - [ ] **In combat:** switching bars is refused with a message.
