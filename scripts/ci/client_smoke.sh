@@ -43,7 +43,15 @@ EOF
   rm -rf run/screenshots run/crash-reports
   # Mesa software rendering: slow but enough to load the game and draw the scene
   export LIBGL_ALWAYS_SOFTWARE=1
-  timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClient -Pshowcase -Pworld=showcase --console=plain > client.log 2>&1
+  # SCENE picks the showcase scene ("" = the boss, "builds", "abilities")
+  timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClient -Pshowcase=${SCENE:-} -Pworld=showcase --console=plain > client.log 2>&1 &
+  pid=$!
+  # A heartbeat, so a slow or stuck run shows where it is
+  while kill -0 $pid 2>/dev/null; do
+    sleep 60
+    echo "--- $(date +%T) $(wc -l < client.log) log lines; last:"; tail -2 client.log | cut -c1-200
+  done
+  wait $pid
   echo "client exited with $?"
   ;;
 check)

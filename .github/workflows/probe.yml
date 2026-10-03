@@ -9,6 +9,7 @@ on:
 
 jobs:
   probe:
+    if: false
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,3 +28,23 @@ jobs:
           cp scripts/ci/probe_classes_${{ matrix.part }}.txt scripts/ci/probe_classes.txt
           if [ "${{ matrix.part }}" != "a" ]; then : > scripts/ci/probe_decompile.txt; : > scripts/ci/probe_data.txt; : > scripts/ci/probe_find.txt; fi
           bash scripts/ci/probe.sh 2>&1 | grep -vE "lambda\\$|synthetic|access\\$" | grep -vE "^\s*$"
+
+  showcase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q xvfb libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers
+      - run: bash scripts/ci/client_smoke.sh world
+      - run: SCENE=abilities bash scripts/ci/client_smoke.sh client
+      - run: bash scripts/ci/client_smoke.sh check
+        continue-on-error: true
+      - if: always()
+        run: java scripts/ci/Preview.java run/screenshots 640 || true

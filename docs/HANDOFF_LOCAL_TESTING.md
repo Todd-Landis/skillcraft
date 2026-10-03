@@ -104,6 +104,53 @@ Use a creative superflat world with cheats on. Commands:
    - [ ] You move 10% slower while holding it.
    - [ ] You can't raise a shield in the offhand.
 
+### D. Combat abilities (Phase 6)
+Details are in `docs/ABILITIES_SPEC.md` §8.
+
+**Screenshots first.** Run `./gradlew runClient -Pshowcase=abilities -Pworld=showcase`. It saves about 11 screenshots: the HUD bar ready and on cooldown, plus the Ability Book at GUI scales 2, 3 and 4.
+
+**Setup:** run `/skill set @s melee 40`, `/skill set @s ranged 40`, `/skill set @s defence 40` and `/skill set @s constitution 40`, then switch to **survival**. Creative unlocks everything, which hides the level gates.
+
+- [ ] **Ability Book (J):**
+  - Tabs work, including the locked Spells and Prayers tabs.
+  - Locked cards say what unlocks them.
+  - Search and the "My weapon" filter work.
+  - Drag a card onto a slot, click a slot and then a card, and right-click a slot to clear it.
+  - Switch between the 3 bars, rename one, and use "Use this bar".
+- [ ] **HUD bar:**
+  - It sits right of the hotbar and doesn't overlap the offhand slot, attack indicator or XP drops.
+  - Try GUI scales 1–4 and a left-handed main hand.
+  - The cooldown sweep, the global cooldown flash and the windup bar show up.
+  - Slots dim when you're holding the wrong weapon or lack Momentum.
+  - The Momentum bar fills as you fight and drains about 10 s after combat ends.
+- [ ] **Keys:** R, Z, B and N fire the 4 slots, and you can rebind them under Controls → "SkillCraft – Abilities".
+- [ ] **Feel of each ability:**
+  - **Lunge:** dash and hit.
+  - **Hamstring:** the target is slowed.
+  - **Rending Cut:** Bleed damage numbers appear.
+  - **Sweeping Arc:** a short windup, then hits everything in front of you.
+  - **Battle Trance:** you hit harder and take more damage.
+  - **Quick Draw:** an instant full-power bow shot.
+  - **Pinning Shot:** the target is rooted.
+  - **Tumble:** you leap backwards.
+  - **Volley:** a fan of 5 arrows that uses up to 3 of yours.
+  - **Deadeye:** arrows fly straight; heavy arrows pierce.
+  - **Brace, Riposte** (time it right before a hit), **Unshackle, Second Wind, Bulwark, Last Stand, Sprint Burst.**
+  - **Weapon Arts:**
+    - Concussive Blow and Earthbreaker need a warhammer or mace.
+    - Vault needs a spear; check it clears Forge Quake rings.
+    - Skewer, Cleaving Chop with an axe, and Shield Bash with a shield in the off hand.
+    - Piercing Bolt needs a crossbow.
+    - Forgequake: read the Codex (`/give @s skillcraft:codex[skillcraft:codex_ability="skillcraft:forgequake"]`), then hold the Emberfall Maul.
+- [ ] **Walls and the arena:** Lunge, Vault and Tumble never pass through walls and can't leave the arena.
+- [ ] **In combat:** switching bars is refused with a message.
+- [ ] **Unlock toast:** level up into a new ability, e.g. `/skill set @s defence 9`, then earn XP to reach 10. A toast should appear.
+- [ ] **Slagheart:**
+  - Concussive Blow dazes it and its next attack is delayed, but a slam that's already winding up still happens.
+  - Slows are mild and knockback does nothing.
+  - Spending Surges and Ultimates during **Vent** feels rewarding.
+  - Kills should feel roughly 15–20% faster than without abilities.
+
 ### C. Things only a person can judge
 These matter most:
 - **Slagheart model and animations:** proportions, whether every attack reads clearly, and whether windups are long enough to react to.
@@ -111,6 +158,7 @@ These matter most:
 - **Item icons:** warhammers, arrows, padded armour, sigil and maul.
 - **Padded armour** worn on a player.
 - **Sounds:** they currently reuse vanilla audio (anvil, ravager, blaze and so on). Check that the volumes are sensible.
+- **Ability feel:** windup lengths, cooldowns and Momentum pacing. They're tuned in `data/skillcraft/skillcraft/ability/*.json` (applied with `/reload`) and in the server config.
 - **Fight feel:** is it too easy or too hard at combat 25–40 with iron or diamond gear? The numbers to tune are in `data/skillcraft/data_maps/entity_type/boss_tuning.json` (`/reload` applies them).
 
 ## 4. Iterating with local Claude
