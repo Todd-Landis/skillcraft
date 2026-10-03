@@ -24,29 +24,29 @@ import net.minecraft.world.item.Items;
 //   respawn  - seconds until a depleted node regrows
 public enum NodeType implements StringRepresentable {
     // --- Woodcutting ---
-    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 32, 1 / 6.0, 20),
-    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 32, 1 / 6.0, 20),
-    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 32, 1 / 6.0, 20),
-    JUNGLE(Skill.WOODCUTTING, 15, 50, () -> Items.JUNGLE_LOG, 1, 32, 1 / 8.0, 30),
-    ACACIA(Skill.WOODCUTTING, 15, 52.5, () -> Items.ACACIA_LOG, 1, 32, 1 / 8.0, 30),
-    MANGROVE(Skill.WOODCUTTING, 15, 55, () -> Items.MANGROVE_LOG, 1, 32, 1 / 8.0, 30),
-    CHERRY(Skill.WOODCUTTING, 30, 85, () -> Items.CHERRY_LOG, 1, 48, 1 / 10.0, 45),
-    DARK_OAK(Skill.WOODCUTTING, 30, 90, () -> Items.DARK_OAK_LOG, 1, 48, 1 / 10.0, 45),
-    PALE_OAK(Skill.WOODCUTTING, 45, 135, () -> Items.PALE_OAK_LOG, 1, 48, 1 / 12.0, 60),
-    CRIMSON(Skill.WOODCUTTING, 60, 200, () -> Items.CRIMSON_STEM, 1, 64, 1 / 15.0, 90),
-    WARPED(Skill.WOODCUTTING, 60, 200, () -> Items.WARPED_STEM, 1, 64, 1 / 15.0, 90),
+    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 32, 1 / 3.0, 20),
+    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 32, 1 / 3.0, 20),
+    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 32, 1 / 3.0, 20),
+    JUNGLE(Skill.WOODCUTTING, 15, 50, () -> Items.JUNGLE_LOG, 1, 32, 1 / 4.0, 30),
+    ACACIA(Skill.WOODCUTTING, 15, 52.5, () -> Items.ACACIA_LOG, 1, 32, 1 / 4.0, 30),
+    MANGROVE(Skill.WOODCUTTING, 15, 55, () -> Items.MANGROVE_LOG, 1, 32, 1 / 4.0, 30),
+    CHERRY(Skill.WOODCUTTING, 30, 85, () -> Items.CHERRY_LOG, 1, 48, 1 / 4.0, 45),
+    DARK_OAK(Skill.WOODCUTTING, 30, 90, () -> Items.DARK_OAK_LOG, 1, 48, 1 / 4.0, 45),
+    PALE_OAK(Skill.WOODCUTTING, 45, 135, () -> Items.PALE_OAK_LOG, 1, 48, 1 / 5.0, 60),
+    CRIMSON(Skill.WOODCUTTING, 60, 200, () -> Items.CRIMSON_STEM, 1, 64, 1 / 5.0, 90),
+    WARPED(Skill.WOODCUTTING, 60, 200, () -> Items.WARPED_STEM, 1, 64, 1 / 5.0, 90),
 
     // --- Mining ---
-    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 32, 1 / 5.0, 20),
-    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 32, 1 / 5.0, 20),
-    IRON(Skill.MINING, 15, 35, () -> Items.RAW_IRON, 1, 32, 1 / 6.0, 30),
-    QUARTZ(Skill.MINING, 15, 37.5, () -> Items.QUARTZ, 1, 32, 1 / 6.0, 30),
-    REDSTONE(Skill.MINING, 30, 60, () -> Items.REDSTONE, 2, 64, 1 / 8.0, 45),
-    GOLD(Skill.MINING, 30, 65, () -> Items.RAW_GOLD, 1, 24, 1 / 8.0, 45),
-    LAPIS(Skill.MINING, 30, 62.5, () -> Items.LAPIS_LAZULI, 2, 48, 1 / 8.0, 45),
-    DIAMOND(Skill.MINING, 45, 100, () -> Items.DIAMOND, 1, 16, 1 / 12.0, 90),
-    EMERALD(Skill.MINING, 60, 140, () -> Items.EMERALD, 1, 16, 1 / 14.0, 120),
-    ANCIENT_DEBRIS(Skill.MINING, 75, 200, () -> Items.ANCIENT_DEBRIS, 1, 8, 1 / 16.0, 180);
+    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 32, 1 / 3.0, 20),
+    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 32, 1 / 3.0, 20),
+    IRON(Skill.MINING, 15, 35, () -> Items.RAW_IRON, 1, 32, 1 / 4.0, 30),
+    QUARTZ(Skill.MINING, 15, 37.5, () -> Items.QUARTZ, 1, 32, 1 / 4.0, 30),
+    REDSTONE(Skill.MINING, 30, 60, () -> Items.REDSTONE, 2, 64, 1 / 4.0, 45),
+    GOLD(Skill.MINING, 30, 65, () -> Items.RAW_GOLD, 1, 24, 1 / 4.0, 45),
+    LAPIS(Skill.MINING, 30, 62.5, () -> Items.LAPIS_LAZULI, 2, 48, 1 / 4.0, 45),
+    DIAMOND(Skill.MINING, 45, 100, () -> Items.DIAMOND, 1, 16, 1 / 5.0, 90),
+    EMERALD(Skill.MINING, 60, 140, () -> Items.EMERALD, 1, 16, 1 / 5.0, 120),
+    ANCIENT_DEBRIS(Skill.MINING, 75, 200, () -> Items.ANCIENT_DEBRIS, 1, 8, 1 / 6.0, 180);
 
     public static final Codec<NodeType> CODEC = StringRepresentable.fromEnum(NodeType::values);
 
