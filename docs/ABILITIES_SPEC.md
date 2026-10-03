@@ -278,6 +278,12 @@ This section records what the first build does wherever the spec left a choice o
 - **Bars and HUD:** 3 bars per player, the HUD bar and the Ability Book are built as specified.
   - On narrow GUI scales the HUD bar becomes a 2×2 grid, or a row above the hunger and air bars.
 
+**Screenshots** from the CI showcase (`-Pshowcase=abilities`, software rendering, 1280×720, shown here at half size):
+
+| HUD bar (GUI scale 2) | Ability Book (scale 2) | Weapon Arts tab with a tooltip (scale 3) |
+|---|---|---|
+| ![HUD bar](images/phase6/hud.jpg) | ![Ability Book](images/phase6/book_scale2.jpg) | ![Weapon Arts tab](images/phase6/book_arts_scale3.jpg) |
+
 ### 8.6 Verified numbers
 These come from `./gradlew runGameTestServer` in CI. **All 20 GameTests pass**: 11 from Phase 5 and 9 new ability tests.
 
@@ -314,7 +320,7 @@ These come from `./gradlew runGameTestServer` in CI. **All 20 GameTests pass**: 
   - Both are built in code and round-trip through the JSON codec.
 - **`ability_offhand`:**
   - Twinfang is refused with nothing or a shield in the off hand, and with an off-hand netherite sword at Melee 30 (it needs 40). A refusal deals no damage.
-  - With an iron sword in the main hand and a diamond sword in the off hand, Twinfang uses the diamond sword's hit and its slash type: OFFHAND_RESULT.
+  - With an iron sword in the main hand and a diamond sword in the off hand, Twinfang uses the diamond sword's hit and its slash type. It dealt **7.09** = off-hand hit 7.00 × slash vs. skeleton 0.9 × level bonus 1.0725 (Melee 30) × Aggressive style 1.05.
   - Torchbrand is refused without a torch, and with one it sets a husk on fire.
 - **`loot_rates`** (20,000 rolls):
   - Codex of the Forgequake 329 = **1/60.8** (target 1/60)

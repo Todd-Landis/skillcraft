@@ -37,7 +37,7 @@ It then plays every boss animation, saves screenshots and quits the game.
    - **Log:** it should contain `[showcase] done: N screenshots`.
    - **Problems:** search the log for `ERROR` or `WARN` lines that mention `skillcraft`, `Missing`, `Unable to load model` or `animation`.
 
-The **Client smoke** workflow can run the same steps in CI (manual trigger only; Xvfb and software rendering). Its first run did not finish within 11 minutes and was cancelled, so running it locally is the reliable route for now.
+The **Client smoke** workflow can run the same steps in CI (manual trigger only; Xvfb and software rendering). Pick the scene with the workflow's `scene` input (empty for the boss, or `builds` or `abilities`). An early run stalled on a world-open prompt; the showcase now clicks through those, and the abilities scene finished in about 3 minutes.
 
 ## 3. In-game test plan (Todd)
 Use a creative superflat world with cheats on. Commands:

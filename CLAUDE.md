@@ -23,8 +23,9 @@ SkillCraft is an OSRS-inspired RPG mod for Minecraft Java. The owner, Todd, is n
 
 ## CI (GitHub Actions)
 - **Build** (`.github/workflows/build.yml`): `./gradlew build`, then `runGameTestServer`. It prints the `[loot_rates]` lines and warns on SkillCraft WARN/ERROR lines in the server log.
-- **Client smoke** (`client-smoke.yml`, **manual only**: Actions tab → Run workflow): starts the real client under Xvfb with software OpenGL, using `scripts/ci/client_smoke.sh`. Its first run did not finish within 11 minutes and was cancelled; the cause has not been looked into. Running the showcase locally is faster.
-  - It loads a flat world and runs the boss showcase.
+- **Client smoke** (`client-smoke.yml`, **manual only**: Actions tab → Run workflow): starts the real client under Xvfb with software OpenGL, using `scripts/ci/client_smoke.sh`. Running the showcase locally is faster.
+  - It loads a flat world and runs a showcase scene. The workflow's `scene` input picks it: empty for the boss, or `builds` or `abilities`.
+  - The showcase clicks through world-open prompts such as the "backup / I know what I'm doing" screen. An early run stalled on one of them. With that fixed, the abilities scene takes about 3 minutes.
   - It fails on a crash or missing screenshots, and lists model, texture and animation warnings.
   - The screenshots are uploaded as the `client-smoke` artifact.
 - Keep Build green on every push.

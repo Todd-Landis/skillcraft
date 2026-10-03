@@ -1,8 +1,0 @@
-Options
-Screen
-EditBox
-MouseButtonEvent
-KeyEvent
-KeyMapping
-AttackIndicatorStatus
-HumanoidArm
