@@ -18,7 +18,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
 1. Install **JDK 25**, for example [Eclipse Temurin](https://adoptium.net/).
 2. Install **IntelliJ IDEA Community Edition**.
 3. In IntelliJ, open this folder (`File → Open`) and wait for the Gradle import to finish. The first import downloads Minecraft and takes several minutes.
-4. Launch the game with your mod loaded: open the Gradle panel and run `Tasks → neoforge runs → runClient`.
+4. Launch the game with your mod loaded: open the Gradle panel and run `skillcraft → Tasks → mod development → runClient`. After the first run, it is also in the run dropdown at the top of the window.
    You can also run it from a terminal:
    ```
    ./gradlew runClient
