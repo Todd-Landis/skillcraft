@@ -168,7 +168,7 @@ There's no separate kill bonus. Damage XP through the normal system works out to
 
 ## Model, animation and effects
 - **Model:**
-  - `client/boss/SlagheartModel`, a Java `LayerDefinition` with 30+ cubes on a 256×256 texture
+  - `client/boss/SlagheartModel`, a Java `LayerDefinition` with 30+ cubes on a 256×128 texture
   - bones: root → hips → torso → (head, chest doors L/R, heart, chimneys L/R, shoulders → arms → forearms → hammer / tongs) and legs → feet
   - an **emissive layer** (`slagheart_glow.png`) so the heart, visor and grille cracks glow in the dark. Its brightness follows the stance.
 - **Animations:**
@@ -190,4 +190,52 @@ There's no separate kill bonus. Damage XP through the normal system works out to
 It teaches the combat triangle (crush for the shell, stab for the heart, slash for the adds) before the mod's custom tiers VI–X arrive.
 
 ## Verified numbers
-*(Filled in from the GameTest server run; see the PR description.)*
+From `./gradlew runGameTestServer` in CI (GitHub Actions, build run on commit `ae58cdb`). All 11 required GameTests pass.
+
+**Loot harness** (`gametest/LootRateTests`, 20,000 rolls, one roll = one eligible player's kill):
+
+| Item | Per kill | Gathering-minutes |
+|---|---|---|
+| coal | 8.02 | 1.20 |
+| raw iron | 2.18 | 0.65 |
+| raw copper | 2.23 | 0.33 |
+| raw gold | 1.14 | 0.68 |
+| redstone | 1.81 | 1.09 |
+| lapis | 0.96 | 0.58 |
+| quartz | 0.88 | 0.26 |
+| dark oak logs | 1.43 | 0.86 |
+| cherry logs | 0.92 | 0.55 |
+| pale oak logs | 0.61 | 0.91 |
+| amethyst shards | 0.44 | – |
+| diamond | 0.185 | 0.28 |
+| emerald | 0.058 | 0.29 |
+| ancient debris | 0.022 | 0.11 |
+| seeds (all kinds) | 2.63 | – |
+| **Total** | | **7.79** |
+
+- **Emberfall Maul:** 183 in 20,000 = 1/109 (target 1/120; expected 167 ± 13, so within 1.3 sd). Every one was stamped `earned_by`.
+- **Ember Sigil refund:** 1,045 in 20,000 = 1/19.1 (target 1/20).
+- **Gear rules:** no ingot or other smelted material and no unstamped gear in any of the 20,000 rolls (asserted per stack).
+- **Rebalance:** the first table measured 12.74 gathering-minutes. See the decision note under *Balance against gathering*.
+
+**Boss fight** (`boss_phases`, `boss_stances`):
+- A 10-damage hit during phase 2 with mites alive, while stoked, landed for 5.0.
+- Phase 3 starts at 145 / 500 health (29%) on tick 160 of the scripted fight.
+- Stances: banked ×1.25 crush / ×0.6 slash and vented ×1.5 stab, read from `boss_tuning.json`.
+- The boss starts in its awaken animation and is invulnerable during it. Phase 2 starts below 65% with a roar and mites, and the boss is stoked while the mites live.
+
+**Arena** (`arena_*`):
+- The `skillcraft:arena` dimension type loads.
+- Survival players can't break blocks, place blocks or blow anything up there.
+- Enter, then exit, returns you to where you started, closes the instance and removes the boss.
+- Death in the arena is cancelled: you're healed and sent home, and the instance closes. On logout you're removed from the instance and sent home at your next login.
+- A dedicated server started with the mod logs `Arena dimension skillcraft:arena loaded`. The GameTest server only creates vanilla dimensions, so the arena tests use the Nether as a stand-in (`ArenaDimension.useStandInForTests`).
+
+**Combat** (`combat_matchups`, `combat_xp`, `constitution`):
+- Data maps resolve:
+  - skeletons take ×1.4 from crush and ×0.7 from stab
+  - warhammers crush, swords slash, spears stab
+  - a full padded set gives +18% crush defence
+- A survival player hitting a zombie gets Melee XP that follows the damage dealt, at a 3:1 Melee to Constitution ratio (4 : 1.33 per damage point).
+- Baby mobs give no XP. (The spawner and creative rules are code paths that aren't covered by a test.)
+- Constitution bonus: +0 HP at level 1, +6 at 35, +20 at 99. Max health is 28 at Constitution 40.
