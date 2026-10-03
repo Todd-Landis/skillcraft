@@ -207,8 +207,9 @@ public final class AbilityTests {
         helper.assertTrue(Math.abs(momentum(player) - 11) < 0.01, "a projectile hit should give 5 Momentum, have " + momentum(player));
         // A fake player can never be hurt (its client never "loads"), so post the event a real hit fires
         float hpBefore = player.getHealth();
-        boolean took = !net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post(player,
-                new net.neoforged.neoforge.common.damagesource.DamageContainer(level.damageSources().mobAttack(zombie), 1f))).isCanceled();
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post(player,
+                new net.neoforged.neoforge.common.damagesource.DamageContainer(level.damageSources().mobAttack(zombie), 1f)));
+        boolean took = true;
         helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player)
                 + " (hurt=" + took + ", health " + hpBefore + " -> " + player.getHealth() + ", mode " + player.gameMode() + ", invulnerable " + player.isInvulnerable() + ")");
         // Ability damage builds no Momentum by itself

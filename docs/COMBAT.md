@@ -135,3 +135,37 @@ Unlisted monsters take ×1.0 from everything and hit as crush.
 - **New armour:** add `armor_defences` and `skill_requirements` (Defence) entries.
 - **New ammo:** add a `SkillArrow.Weight`, or any projectile whose damage style resolves through `DamageStyles.of(...)`.
 - **New monster:** add a `combat_profiles` entry.
+
+## Combat abilities (Phase 6)
+The ability bar adds a few decisions per fight on top of the rules above. The full design is in [ABILITIES_SPEC.md](ABILITIES_SPEC.md); §8 there records what was built.
+- **The bar:** 4 slots on the HUD (keys **R, Z, B, N**), 3 saved bars, and the **Ability Book** on **J**.
+- **Momentum (0–100):** built by landing hits and taking them.
+  - Basic abilities are free, and many build Momentum.
+  - Surges need 50 and spend 25.
+  - Ultimates need a full bar and spend all of it.
+- **Cooldowns:** each ability has its own, plus a 1 s global cooldown. Defensives are off the global cooldown.
+- **How abilities use the combat rules:** every ability hit is dealt through `CombatDamage`, so all of the following apply exactly as for a normal swing:
+  - type matchups
+  - the Melee/Ranged level bonus
+  - attack style
+  - Sundered
+  - typed armour
+  - combat XP
+- **Damage** is a share of the held weapon's normal hit, so abilities scale with gear and stay horizontal.
+- **No extra XP:** abilities give the usual XP for the damage they deal and nothing on top.
+- **Weapon Arts:** they only work with their weapon class (item tags in `tags/item/weapon_class/`, or a damage type from `weapon_styles`), so a warhammer fights differently from a spear.
+- **Bosses:**
+  - stuns become **Daze** (the next attack comes 1 s later, at most once every 20 s, and a started windup is never cancelled)
+  - roots and slows become at most −30% for half the time
+  - knockback does nothing
+  - Bleed and Sundered work normally
+- **Tuning without code:**
+  - ability numbers: `data/skillcraft/skillcraft/ability/*.json`
+  - effect numbers: `data_maps/mob_effect/effect_tuning.json`
+  - Momentum gain, global cooldown and combat window: `config/skillcraft-common.toml`
+  - The JSON files reload with `/reload`.
+- **Balance check (`ability_dps` GameTest, measured):** 60 s on a dummy with a diamond sword at Melee 40.
+  - Auto-attacks alone: **14.76 DPS**.
+  - Auto-attacks plus a sword rotation (Battle Trance, Sweeping Arc, Rending Cut, Lunge): **17.97 DPS**.
+  - That's **×1.217**, inside the +15–25% target.
+- **Extending:** a new ability is usually just a JSON file reusing a behaviour (see the list in the spec, §8.2). A new behaviour is a small class registered in `AbilityBehaviors`.

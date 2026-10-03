@@ -23,8 +23,9 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ```
    ./gradlew runClient
    ```
-5. In game: press **K** for the Skills screen and **V** to change attack style. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
-. Run the automated tests with `./gradlew runGameTestServer`. For a full local test plan (screenshot showcase, in-game checklist), see [docs/HANDOFF_LOCAL_TESTING.md](docs/HANDOFF_LOCAL_TESTING.md).
+5. In game: press **K** for the Skills screen, **V** to change attack style, **J** for the Ability Book, and **R / Z / B / N** for the four ability slots. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
+6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
+7. Run the automated tests with `./gradlew runGameTestServer`. For a full local test plan (screenshot showcase, in-game checklist), see [docs/HANDOFF_LOCAL_TESTING.md](docs/HANDOFF_LOCAL_TESTING.md).
 
 ## Project layout
 ```
@@ -36,6 +37,8 @@ src/main/java/com/toddlandis/skillcraft/
   gathering/               level gates for breaking world blocks
   node/                    skilling nodes, NodeType stats, auto-gathering sessions
   altar/                   Attunement Altar (turns resources into nodes)
+  ability/                 combat abilities: definitions (JSON), behaviours, the ability bar,
+                           Momentum, cooldowns, crowd control, Codex
   combat/                  damage types, matchups, typed armour, combat XP, attack styles,
                            Constitution health, equipment level gates, light/heavy arrows
   arena/                   instanced boss arena dimension: plots, protection, entry/exit
@@ -51,9 +54,11 @@ src/main/java/com/toddlandis/skillcraft/
   bank/                    OSRS-style player bank (Bank Chest)
   client/minigame/         minigame drawing
   client/boss/             Slagheart model, renderer and glow layer
+  client/ability/          ability HUD bar, Ability Book screen, ability keys
   gametest/                GameTests (./gradlew runGameTestServer, also run in CI)
   dev/                     dev-only screenshot showcase (-Pshowcase; does nothing otherwise)
-src/main/resources/data/skillcraft/data_maps/   level requirements, XP values, combat data and boss tuning (JSON)
+src/main/resources/data/skillcraft/data_maps/   level requirements, XP values, combat data, boss and effect tuning (JSON)
+src/main/resources/data/skillcraft/skillcraft/ability/   one JSON per combat ability
 src/main/resources/data/skillcraft/dimension*/  the boss arena dimension
 src/main/resources/assets/skillcraft/neoforge/animations/   boss keyframe animations (JSON)
 src/main/resources/assets/skillcraft/
@@ -63,6 +68,7 @@ src/main/templates/META-INF/neoforge.mods.toml   mod metadata
 docs/DESIGN.md             design and roadmap
 docs/COMBAT.md             combat system rules and numbers
 docs/BOSS_SLAGHEART.md     the first boss
+docs/ABILITIES_SPEC.md     combat abilities: spec and as-built decisions
 docs/HANDOFF_LOCAL_TESTING.md   how to build, test and iterate locally
 CLAUDE.md                  notes for Claude Code (commands, conventions, 26.2 API notes)
 scripts/ci/                client smoke test (CI) and screenshot preview tool

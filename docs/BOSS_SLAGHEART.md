@@ -171,6 +171,22 @@ Measured with the loot-rate GameTest (`gametest/LootRateTests`, 20,000 rolls), w
 ### Combat XP
 There's no separate kill bonus. Damage XP through the normal system works out to about **2,000 Melee/Ranged/Defence + 667 Constitution per solo kill**. That's roughly one level per kill around level 35, which is comparable to an OSRS mid-boss.
 
+### Combat abilities against Slagheart (Phase 6)
+- **Stuns become Daze.** Concussive Blow and Shield Bash daze Slagheart instead of stunning it:
+  - its next attack comes 1 s later
+  - at most once every 20 s
+  - an attack that is already winding up always finishes, so abilities can't trivialise the telegraphs
+- **Roots and slows** become Slowed III (−30%) for half the time.
+- **Knockback and pulls** do nothing.
+- **What sticks:** Bleed (Rending Cut) and Sundered (the maul, and Forgequake) work normally.
+- **Burst window:** **Vent** (stab ×1.5) is where to spend Momentum. Stab Weapon Arts (Skewer) and Surges or Ultimates timed for the vent pay off most.
+- **Codex of the Forgequake** (1/60 per eligible kill) teaches **Forgequake**, the Emberfall Maul's Ultimate:
+  - a radius-4 slam for 200% crush that Sunders everything it hits
+  - needs Melee 35 and the maul in hand
+  - measured 329 in 20,000 rolls = 1/60.8
+  - It's tradeable. The other drop rates are unchanged.
+- **Kill time:** the DPS harness puts a good sword rotation at ×1.22 sustained damage, which works out to roughly 18% shorter kills. That's inside the spec's 15–20% target. Vent bursts may add a little.
+
 ## Expected kill time and death risk (solo, at the target level)
 - **Combat 30, diamond warhammer** (9 damage, 1.0/s):
   - × 1.25 crush matchup × 1.07 level bonus ≈ 12 DPS at full uptime.
