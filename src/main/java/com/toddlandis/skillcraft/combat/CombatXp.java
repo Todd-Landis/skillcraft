@@ -59,7 +59,7 @@ public final class CombatXp {
 
         if (target instanceof PlayerDamageTracker tracker) tracker.recordPlayerDamage(player, dealt);
         DamageStyle style = DamageStyles.of(event.getSource());
-        award(player, dealt, style != null && style.isRanged(), target.getTags().contains(SPAWNER_TAG) ? SPAWNER_FACTOR : 1.0);
+        award(player, dealt, style != null && style.isRanged(), target.entityTags().contains(SPAWNER_TAG) ? SPAWNER_FACTOR : 1.0);
     }
 
     public static void award(ServerPlayer player, double damage, boolean ranged, double factor) {

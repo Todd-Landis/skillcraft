@@ -65,7 +65,7 @@ public final class ArenaEvents {
 
     @SubscribeEvent
     static void onDrops(LivingDropsEvent event) {
-        if (event.getEntity() instanceof Mob mob && mob.getTags().contains(SlagheartEntity.MITE_TAG)) event.setCanceled(true);
+        if (event.getEntity() instanceof Mob mob && mob.entityTags().contains(SlagheartEntity.MITE_TAG)) event.setCanceled(true);
     }
 
     @SubscribeEvent

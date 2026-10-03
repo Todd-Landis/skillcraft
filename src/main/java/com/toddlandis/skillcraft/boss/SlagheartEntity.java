@@ -254,11 +254,6 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
     }
 
     @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
-    }
-
-    @Override
     public boolean removeWhenFarAway(double distance) {
         return false;
     }
@@ -529,7 +524,7 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
             double angle = Math.toDegrees(Math.acos(Mth.clamp((to.x * facing.x + to.z * facing.z) / distance, -1, 1)));
             if (angle > SWEEP_HALF_ANGLE) continue;
             if (CombatDamage.hurtWithStyle(level, player, damageSources().mobAttack(this), scaled(damage), DamageStyle.SLASH)) {
-                player.knockback(1.2, -to.x, -to.z);
+                shove(player, getX(), getZ(), 1.2, 0.3);
                 player.hurtMarked = true;
             }
         }
@@ -644,7 +639,7 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
                 if (Math.abs(d - radius) > 0.7 || !player.onGround()) continue;
                 ring.hit.add(player.getUUID());
                 if (CombatDamage.hurtWithStyle(level, player, damageSources().mobAttack(this), damage, DamageStyle.CRUSH)) {
-                    player.knockback(0.8, ring.center.x - player.getX(), ring.center.z - player.getZ());
+                    shove(player, ring.center.x, ring.center.z, 0.8, 0.3);
                     player.hurtMarked = true;
                 }
             }
@@ -657,7 +652,7 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
         for (ServerPlayer player : fightPlayers(level)) {
             if (player.distanceToSqr(this) > 36) continue;
             if (player.hurtServer(level, damageSources().mobAttack(this), damage)) {
-                player.knockback(1.5, getX() - player.getX(), getZ() - player.getZ());
+                shove(player, getX(), getZ(), 1.5, 0.4);
                 player.hurtMarked = true;
             }
         }
@@ -801,6 +796,14 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
     }
 
     // --- helpers ---
+
+    // Pushes a player away from a point (horizontal strength plus a little lift)
+    private static void shove(ServerPlayer player, double fromX, double fromZ, double strength, double lift) {
+        Vec3 away = new Vec3(player.getX() - fromX, 0, player.getZ() - fromZ);
+        away = away.lengthSqr() < 1.0E-4 ? Vec3.ZERO : away.normalize().scale(strength);
+        player.push(away.x, lift, away.z);
+        player.hurtMarked = true;
+    }
 
     private void ringParticles(ServerLevel level, Vec3 centre, double radius, net.minecraft.core.particles.SimpleParticleType particle) {
         int points = Math.min(64, Math.max(10, (int) (radius * 6)));

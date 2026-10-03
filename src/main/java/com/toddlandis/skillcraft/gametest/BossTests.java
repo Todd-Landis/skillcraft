@@ -36,7 +36,7 @@ public final class BossTests {
         });
         helper.runAfterDelay(130, () -> {
             helper.assertTrue(!helper.getLevel().getEntitiesOfClass(MagmaCube.class, boss.getBoundingBox().inflate(8),
-                    mite -> mite.getTags().contains(SlagheartEntity.MITE_TAG)).isEmpty(), "Cinder Mites did not spawn in phase 2");
+                    mite -> mite.entityTags().contains(SlagheartEntity.MITE_TAG)).isEmpty(), "Cinder Mites did not spawn in phase 2");
             helper.assertTrue(boss.isStoked(), "boss should be stoked while mites live");
             float before = boss.getHealth();
             boss.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 10f);

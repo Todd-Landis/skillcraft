@@ -23,3 +23,15 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Run GameTests
+        run: |
+          set -o pipefail
+          ./gradlew runGameTestServer --console=plain 2>&1 | tee gametest.log
+
+      - name: Check server log for SkillCraft problems
+        run: |
+          grep -E "\[loot_rates\]" gametest.log || true
+          if grep -E "(WARN|ERROR).*(skillcraft|SkillCraft)" gametest.log; then
+            echo "::warning::SkillCraft warnings/errors in the GameTest server log (see above)"
+          fi

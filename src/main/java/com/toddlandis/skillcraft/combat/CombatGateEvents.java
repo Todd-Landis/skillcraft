@@ -7,6 +7,7 @@ import com.toddlandis.skillcraft.skill.SkillGate;
 import com.toddlandis.skillcraft.skill.SkillManager;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
@@ -49,7 +49,7 @@ public class CombatGateEvents {
             SkillGate.deny(player, "message.skillcraft.weapon_level", Skill.RANGED, needed);
             return;
         }
-        if (item.canPerformAction(ItemAbilities.SHIELD_BLOCK) && player.getMainHandItem().is(ModItems.EMBERFALL_MAUL.get())) {
+        if (item.has(DataComponents.BLOCKS_ATTACKS) && player.getMainHandItem().is(ModItems.EMBERFALL_MAUL.get())) {
             event.setCanceled(true);
             player.sendOverlayMessage(Component.translatable("message.skillcraft.two_handed").withStyle(ChatFormatting.RED));
         }
