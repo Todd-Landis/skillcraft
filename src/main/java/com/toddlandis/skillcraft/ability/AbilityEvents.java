@@ -102,9 +102,13 @@ public final class AbilityEvents {
         target.addEffect(new MobEffectInstance(ModEffects.BLEEDING, seconds * 20, 0), source);
     }
 
-    // Stunned mobs stand still and don't attack
+    // Stunned mobs stand still and don't attack; Deadeye's straight-flying arrows drop again after 3 s
     @SubscribeEvent
     static void onEntityTick(EntityTickEvent.Pre event) {
+        if (event.getEntity() instanceof AbstractArrow arrow && arrow.isNoGravity() && arrow.tickCount > 60 && !arrow.level().isClientSide()
+                && arrow.getPersistentData().contains(SHOT_TAG)) {
+            arrow.setNoGravity(false);
+        }
         if (event.getEntity() instanceof Mob mob && !mob.level().isClientSide() && mob.hasEffect(ModEffects.STUNNED)) {
             mob.getNavigation().stop();
             mob.setTarget(null);
@@ -272,7 +276,8 @@ public final class AbilityEvents {
             event.setCanceled(true);
             return;
         }
-        if (!(projectile.getOwner() instanceof ServerPlayer player) || isAbilityProjectile(projectile)) return;
+        // Only arrows and tridents carry next-shot bonuses (not snowballs, pearls or fishing hooks)
+        if (!(projectile instanceof AbstractArrow) || !(projectile.getOwner() instanceof ServerPlayer player) || isAbilityProjectile(projectile)) return;
         AbilityRuntime runtime = AbilityRuntime.of(player);
         float damage = 1f;
         int root = 0, pierce = 0;

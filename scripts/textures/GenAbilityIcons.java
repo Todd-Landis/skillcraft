@@ -381,9 +381,12 @@ public class GenAbilityIcons {
         c.set(x - 2, y - 2, WHITE); c.set(x + 2, y + 2, WHITE); c.set(x + 2, y - 2, WHITE); c.set(x - 2, y + 2, WHITE);
     }
 
+    // A swept wing: three feathers fanning up and back from the joint
     static void wing(Canvas c, int rgb) {
-        c.poly(new int[]{5, 15, 13, 10, 12, 8, 9}, new int[]{12, 3, 6, 6, 9, 9, 12}, rgb);
-        c.line(5, 12, 14, 4, WHITE, 1);
+        c.poly(new int[]{4, 14, 15, 9}, new int[]{13, 2, 5, 13}, rgb);
+        c.poly(new int[]{6, 15, 15, 10}, new int[]{13, 6, 9, 13}, shade(rgb, 0.8));
+        c.poly(new int[]{8, 14, 14, 11}, new int[]{13, 10, 12, 13}, shade(rgb, 0.65));
+        c.line(4, 13, 14, 3, WHITE, 1);
     }
 
     static void spiral(Canvas c, int rgb) {

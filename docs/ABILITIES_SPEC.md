@@ -275,3 +275,43 @@ This section records what the first build does wherever the spec left a choice o
   - Undertow is deferred to v2. It needs the thrown trident's return to drive a pull, and the trident's return logic is private.
 - **Bars and HUD:** 3 bars per player, the HUD bar and the Ability Book are built as specified.
   - On narrow GUI scales the HUD bar becomes a 2×2 grid, or a row above the hunger and air bars.
+
+### 8.6 Verified numbers
+These come from `./gradlew runGameTestServer` in CI. **All 19 GameTests pass**: 11 from Phase 5 and 8 new ability tests.
+
+- **`ability_dps`** (§6), 60 s on a training dummy (a husk with full knockback resistance), diamond sword, Melee 40, a swing every 13 ticks:
+  - Auto-attacks only: **885.8 damage = 14.76 DPS**.
+  - Auto-attacks plus a rotation: **1078.3 damage = 17.97 DPS**. The rotation, highest priority first: Battle Trance, then Sweeping Arc, Rending Cut and Lunge. Uses in 60 s: Battle Trance ×1, Sweeping Arc ×4, Rending Cut ×4, Lunge ×5.
+  - **Ratio: ×1.217**, inside the +15–25% target.
+  - The test fails outside ×1.05–1.40, so balance changes can't drift unnoticed.
+  - That works out to roughly **18% shorter Slagheart kills**, within the 15–20% guardrail. Vent bursts can add a little.
+- **`ability_pipeline`:** Concussive Blow on a skeleton dealt **15.63**.
+  - That's weapon 8.00 × 1.30 × crush matchup 1.4 × level bonus 1.0225 (Melee 10) × Aggressive style 1.05: exactly the Phase 5 formula.
+  - It paid **62.5 Melee XP**, i.e. 4 per damage point, nothing extra.
+  - The skeleton was stunned.
+- **`ability_validation`:**
+  - Refusals: locked by level, wrong weapon (including a warhammer for the slash-only Rending Cut), Codex not read, not enough Momentum (Surge 48 at Melee 40 after the discount, Ultimate 100), the ability's own cooldown and the global cooldown.
+  - Allowed: off-GCD defensives during the global cooldown.
+  - Lunge generated exactly 8 Momentum.
+- **`ability_momentum`:**
+  - Gains: +6 per full-strength melee hit, +5 per projectile hit, +2 per hit taken, +0 from ability damage.
+  - Out of combat it drained 13 → 3 over 45 ticks (5 per second).
+- **`ability_boss_daze`:**
+  - On Slagheart, a stun becomes Daze: +20 ticks before its next attack, then refused for 400 ticks.
+  - A boss mid-Hammerfall keeps its attack, and its cooldown is untouched until the attack ends.
+  - A root becomes Slowed III for half the time; a Slowed VI is capped to III for half the time.
+  - Ability knockback has no effect.
+- **`ability_wall`:** Lunge toward a wall 1.5 blocks away stopped 0.65 blocks short of the wall face.
+- **`ability_loadout`:**
+  - A locked ability can't be slotted.
+  - In combat, editing the active bar or switching bars is refused, while editing a spare bar works.
+  - Out of combat, switching works.
+- **`ability_future`:**
+  - An item-cost ability (a stand-in rune spell) consumed 2 of 3 items.
+  - A toggle draining 10 per second ran, switched off on a second press, and switched itself off when Momentum ran dry.
+  - Both are built in code and round-trip through the JSON codec.
+- **`loot_rates`** (20,000 rolls):
+  - Codex of the Forgequake 329 = **1/60.8** (target 1/60)
+  - Emberfall Maul 1/114.3
+  - Sigil refund 1/19.7
+  - **7.80** gathering-minutes per kill, unchanged

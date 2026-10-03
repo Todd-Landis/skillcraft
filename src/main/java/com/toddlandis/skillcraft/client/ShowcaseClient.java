@@ -41,6 +41,10 @@ public final class ShowcaseClient {
         Minecraft mc = Minecraft.getInstance();
         mc.options.pauseOnLostFocus = false;
         IntegratedServer server = mc.getSingleplayerServer();
+        if (mc.player == null && mc.gui.screen() != null) {
+            confirmPrompts(mc.gui.screen());
+            return;
+        }
         if (mc.player == null || mc.level == null || server == null) return;
         if (ticks < 0) {
             if (mc.gui.screen() != null) return; // still loading
@@ -162,6 +166,26 @@ public final class ShowcaseClient {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();
         });
+    }
+
+    // Opening a world can stop on a "are you sure?" screen (backup or experimental-features prompt)
+    // that nobody can click in CI: log what we are waiting on, and press its confirm button
+    private static int waiting;
+
+    private static void confirmPrompts(net.minecraft.client.gui.screens.Screen screen) {
+        waiting++;
+        if (waiting % 100 == 1) SkillCraft.LOGGER.info("[showcase] waiting on screen {} \"{}\"", screen.getClass().getName(), screen.getTitle().getString());
+        if (waiting % 100 != 50) return;
+        for (var child : screen.children()) {
+            if (!(child instanceof net.minecraft.client.gui.components.Button button) || !button.active) continue;
+            String label = button.getMessage().getString().toLowerCase(java.util.Locale.ROOT);
+            if (label.contains("yes") || label.contains("proceed") || label.contains("continue") || label.contains("know what")) {
+                SkillCraft.LOGGER.info("[showcase] pressing \"{}\" on {}", button.getMessage().getString(), screen.getClass().getSimpleName());
+                button.onPress(new net.minecraft.client.input.MouseButtonEvent(button.getX() + button.getWidth() / 2., button.getY() + button.getHeight() / 2.,
+                        new net.minecraft.client.input.MouseButtonInfo(org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)));
+                return;
+            }
+        }
     }
 
     private static void at(int tick, Runnable action) {

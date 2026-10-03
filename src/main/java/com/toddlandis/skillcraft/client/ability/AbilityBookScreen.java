@@ -35,9 +35,9 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 // (e.g. switching the active bar in combat); the book then snaps back to what the server has.
 public class AbilityBookScreen extends Screen {
     private static final int MARGIN = 6, GAP = 6, PAD = 6;
-    private static final int CARD_W = 132, CARD_H = 30, CARD_GAP = 4;
+    private static final int CARD_W = 120, CARD_H = 30, CARD_GAP = 4;
     private static final int TAB_H = 13;
-    private static final int BAR_W = 130, BAR_H = 92, BIG_SLOT = 22;
+    private static final int BAR_W = 130, BAR_H = 102, BIG_SLOT = 22;
 
     private static final int PANEL = 0xF0181820, PANEL_EDGE = 0xFF3A3A48, CARD = 0xFF262630, CARD_HOVER = 0xFF33333F, CARD_LOCKED = 0xFF1C1C22;
     private static final int GOLD = 0xFFFFD34A, GRAY = 0xFF9A9AA6, WHITE = 0xFFFFFFFF, RED = 0xFFE06060, GREEN = 0xFF7EDB6A;
@@ -104,7 +104,8 @@ public class AbilityBookScreen extends Screen {
 
     private void layout() {
         int full = width - MARGIN * 2;
-        boolean sideBySide = full >= cardsWidth(2) + GAP + BAR_W;
+        // Side by side whenever one column of cards fits next to the bar panel (stacked only on very narrow screens)
+        boolean sideBySide = full >= cardsWidth(1) + GAP + BAR_W;
         int available = sideBySide ? full - GAP - BAR_W : full;
         columns = Math.clamp((available - PAD * 2 + CARD_GAP) / (CARD_W + CARD_GAP), 1, 3);
         catW = cardsWidth(columns);
@@ -294,7 +295,7 @@ public class AbilityBookScreen extends Screen {
             }
         }
         g.text(font, Component.translatable("screen.skillcraft.ability_momentum", Math.round(data.momentum())), barX + PAD, barY + 74, GRAY, false);
-        g.text(font, Component.translatable("screen.skillcraft.ability_hint"), barX + PAD, barY + 83, 0xFF6A6A78, false);
+        g.textWithWordWrap(font, Component.translatable("screen.skillcraft.ability_hint"), barX + PAD, barY + 83, BAR_W - PAD * 2, 0xFF6A6A78, false);
 
         // Dragged card follows the mouse
         if (dragging && pressed != null) {
