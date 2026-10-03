@@ -3,12 +3,20 @@
 set -u
 BIN=$(ls build/moddev/artifacts/minecraft-patched-*.jar | grep -v sources | head -1)
 curl -sSLo /tmp/vf.jar https://repo1.maven.org/maven2/org/vineflower/vineflower/1.12.0/vineflower-1.12.0.jar
-mkdir -p /tmp/mcout /tmp/mc && java -jar /tmp/vf.jar -dgs=1 -ind="    " -log=WARN "$BIN" /tmp/mcout > /dev/null 2>&1
-(cd /tmp/mc && jar xf /tmp/mcout/*.jar) ; echo "decompiled: $(find /tmp/mc -name '*.java' | wc -l) files"
+jar tf "$BIN" | grep '\.class$' > /tmp/classes.txt
+NAMES=$(grep -v '^#' scripts/ci/probe_classes.txt | tr '\n' ' ')
+mkdir -p /tmp/cls /tmp/mcout /tmp/mc
+SEL=""
+for n in $NAMES; do SEL="$SEL $(grep -E "/$n(\\$[^/]*)?\.class$" /tmp/classes.txt | tr '\n' ' ')"; done
+(cd /tmp/cls && jar xf "$GITHUB_WORKSPACE/$BIN" $SEL)
+(cd /tmp/cls && jar cf /tmp/sel.jar .)
+java -jar /tmp/vf.jar -dgs=1 -log=WARN -e="$BIN" /tmp/sel.jar /tmp/mcout > /dev/null 2>&1
+(cd /tmp/mc && jar xf /tmp/mcout/sel.jar); echo "decompiled: $(find /tmp/mc -name '*.java' | wc -l) files"
+for q in $(grep -v '^#' scripts/ci/probe_find.txt 2>/dev/null); do echo "=================== FIND $q"; grep -iE "$q" /tmp/classes.txt | head -40; done
 for j in build/moddev/artifacts/*.jar; do echo "== $j"; done
 show() { for n in "$@"; do f=$(find /tmp/mc -name "$n.java" | head -1); echo "=================== FILE $n ($f)"; [ -n "$f" ] && grep -v '^import ' "$f"; done; }
 sig() { for n in "$@"; do f=$(find /tmp/mc -name "$n.java" | head -1); echo "=================== SIG $n ($f)"; [ -n "$f" ] && grep -nE '^\s*(public|protected|static|private)?\s*(abstract |static |final |default )*[A-Za-z<>\[\], ?.]+ [a-zA-Z]+\(.*\)?\s*\{?$|^\s*(public |protected )?(abstract |static |final )*(class|record|interface|enum) ' "$f" | grep -v ' private ' | head -400; done; }
-show AnimationState KeyframeAnimation AnimationDefinition AnimationChannel Keyframe KeyframeAnimations TeleportTransition SavedDataType SavedData DimensionDataStorage FunctionGameTestInstance GameTestInstance TestData GameTestHelper EyesLayer RenderLayer ThrownItemRenderer ArrowRenderer TippableArrowRenderer SpectralArrowRenderer ArrowRenderState SpectralArrow SpectralArrowItem Arrow ArrowItem AbstractArrow Projectile ThrowableProjectile ThrowableItemProjectile Snowball SmallFireball ServerBossEvent BossEvent ToolMaterial ArmorMaterial ArmorMaterials EquipmentAssets ArmorType AttributeModifier AttributeInstance Attributes BreezeModel BreezeRenderer CreakingModel CreakingRenderer IronGolemModel IronGolemRenderer RavagerModel LivingEntityRenderState LivingEntityRenderer MobRenderer EntityRenderer EntityRendererProvider EntityModel Model ModelPart PartDefinition CubeListBuilder PartPose LayerDefinition MeshDefinition CubeDeformation ModelLayerLocation ModelLayers EntitySpawnReason Mob PathfinderMob Monster WitherBoss Warden WardenModel WardenRenderer WardenEmissiveLayer WardenRenderState LivingEntity Entity Item Items ItemStack EntityType ServerPlayer ServerLevel Level Player SynchedEntityData EntityDataSerializers DamageSource DamageSources DamageTypes LootParams LootTable LootContextParamSets LootContextParams ReloadableServerRegistries DimensionType Explosion ServerExplosion RenderTypes RenderType SubmitNodeCollector MobEffect MobEffects MobEffectInstance Ravager RavagerRenderer SpearItem MaceItem EquipmentSlot Equippable ItemAttributeModifiers BossHealthOverlay TrialSpawner EntityTypeTags ItemTags ArmorStand SoundEvents ParticleTypes FlatLevelSource FlatLevelGeneratorSettings ServerChunkCache TicketType Ticket BlockState Block Blocks ExplosionDamageCalculator NaturalSpawner LevelRenderer BlockParticleOption DustParticleOptions ColorParticleOption KineticWeapon PiercingWeapon Weapon Tool DataComponents Tiers
+show $NAMES
 echo "=================== DATA FILES"
 mkdir -p /tmp/res
 for j in build/moddev/artifacts/*.jar; do case "$j" in *sources*) ;; *) (cd /tmp/res && jar xf "$GITHUB_WORKSPACE/$j" data assets 2>/dev/null) ;; esac; done
