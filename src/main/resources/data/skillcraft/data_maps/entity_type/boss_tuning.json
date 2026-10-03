@@ -1,0 +1,31 @@
+{
+  "values": {
+    "skillcraft:slagheart": {
+      "health": 500,
+      "party_health_scale": 0.6,
+      "damage": {
+        "hammerfall": 14,
+        "tong_sweep": 10,
+        "slag_glob": 6,
+        "ember_rain": 8,
+        "forge_quake": 8,
+        "heat_pulse": 4
+      },
+      "windup": {
+        "hammerfall": 30,
+        "tong_sweep": 18,
+        "slag_spit": 20,
+        "ember_rain": 25,
+        "forge_quake": 20
+      },
+      "vent_ticks": { "1": 60, "2": 50, "3": 40 },
+      "vent_multiplier": 1.5,
+      "stoked_multiplier": 0.5,
+      "enrage_seconds": 360,
+      "stances": {
+        "banked": { "stab": 0.8, "slash": 0.6, "crush": 1.25, "light": 0.6, "medium": 0.85, "heavy": 1.2 },
+        "vented": { "stab": 1.5, "slash": 1.2, "crush": 1.0, "light": 1.4, "medium": 1.2, "heavy": 1.0 }
+      }
+    }
+  }
+}

@@ -7,6 +7,14 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
 import com.toddlandis.skillcraft.bench.BenchRecipe;
+import com.toddlandis.skillcraft.client.boss.SlagheartModel;
+import com.toddlandis.skillcraft.client.boss.SlagheartRenderer;
+import com.toddlandis.skillcraft.combat.ArmorDefence;
+import com.toddlandis.skillcraft.combat.DamageStyle;
+import com.toddlandis.skillcraft.combat.WeaponStyle;
+import com.toddlandis.skillcraft.loot.EarnedBy;
+import com.toddlandis.skillcraft.network.CycleAttackStylePayload;
+import com.toddlandis.skillcraft.registry.ModEntities;
 import com.toddlandis.skillcraft.network.BankSyncPayload;
 import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
@@ -26,6 +34,7 @@ import com.toddlandis.skillcraft.skill.SkillResource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
@@ -35,6 +44,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -46,11 +57,26 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 public class ClientEvents {
     private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "main"));
     public static final KeyMapping OPEN_SKILLS = new KeyMapping("key.skillcraft.open_skills", InputConstants.KEY_K, CATEGORY);
+    public static final KeyMapping ATTACK_STYLE = new KeyMapping("key.skillcraft.attack_style", InputConstants.KEY_V, CATEGORY);
 
     @SubscribeEvent
     static void registerKeys(RegisterKeyMappingsEvent event) {
         event.registerCategory(CATEGORY);
         event.register(OPEN_SKILLS);
+        event.register(ATTACK_STYLE);
+    }
+
+    @SubscribeEvent
+    static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntities.SLAGHEART.get(), SlagheartRenderer::new);
+        event.registerEntityRenderer(ModEntities.SLAG_GLOB.get(), context -> new ThrownItemRenderer<>(context, 1.4f, true));
+        event.registerEntityRenderer(ModEntities.LIGHT_ARROW.get(), SkillArrowRenderer::new);
+        event.registerEntityRenderer(ModEntities.HEAVY_ARROW.get(), SkillArrowRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(SlagheartModel.LAYER, SlagheartModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -84,6 +110,9 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getInstance();
         while (OPEN_SKILLS.consumeClick()) {
             if (mc.player != null && mc.gui.screen() == null) mc.gui.setScreen(new SkillsScreen());
+        }
+        while (ATTACK_STYLE.consumeClick()) {
+            if (mc.player != null && mc.gui.screen() == null) ClientPacketDistributor.sendToServer(new CycleAttackStylePayload());
         }
     }
 
@@ -123,6 +152,23 @@ public class ClientEvents {
             }
         }
 
+        addCombatTooltip(tooltip, event.getItemStack());
+
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.EMBERFALL_MAUL.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.emberfall_maul.sunder").withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.translatable("tooltip.skillcraft.emberfall_maul.weight").withStyle(ChatFormatting.RED));
+        } else if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.EMBER_SIGIL.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ember_sigil").withStyle(ChatFormatting.GOLD));
+        } else if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.SUMMONING_BRAZIER.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.summoning_brazier").withStyle(ChatFormatting.GRAY));
+        }
+
+        EarnedBy earned = event.getItemStack().get(ModDataComponents.EARNED_BY.get());
+        if (earned != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.earned_by", Component.translatable(earned.source()), earned.player())
+                    .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.ITALIC));
+        }
+
         String maker = event.getItemStack().get(ModDataComponents.CRAFTED_BY.get());
         if (maker != null && !maker.isEmpty()) {
             tooltip.add(Component.translatable("tooltip.skillcraft.crafted_by", maker).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
@@ -152,6 +198,32 @@ public class ClientEvents {
         if (attunable != null) {
             tooltip.add(Component.translatable("tooltip.skillcraft.attunable", attunable.inputCount(), AttunementAltarBlock.nodeName(attunable))
                     .withStyle(ChatFormatting.DARK_AQUA));
+        }
+    }
+
+    // Damage type for weapons and ammo, typed defence for armour (see docs/COMBAT.md)
+    private static void addCombatTooltip(List<Component> tooltip, net.minecraft.world.item.ItemStack stack) {
+        WeaponStyle weapon = stack.typeHolder().getData(ModDataMaps.WEAPON_STYLES);
+        if (weapon != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.weapon_style", weapon.style().displayName()).withStyle(ChatFormatting.GRAY));
+        }
+        if (stack.getItem() == com.toddlandis.skillcraft.registry.ModItems.LIGHT_ARROW.get()) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ammo_style", DamageStyle.LIGHT.displayName()).withStyle(ChatFormatting.GRAY));
+        } else if (stack.getItem() == com.toddlandis.skillcraft.registry.ModItems.HEAVY_ARROW.get()) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ammo_style", DamageStyle.HEAVY.displayName()).withStyle(ChatFormatting.GRAY));
+        } else if (stack.is(net.minecraft.tags.ItemTags.ARROWS)) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ammo_style", DamageStyle.MEDIUM.displayName()).withStyle(ChatFormatting.GRAY));
+        }
+        ArmorDefence defence = stack.typeHolder().getData(ModDataMaps.ARMOR_DEFENCES);
+        if (defence != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.defence_header").withStyle(ChatFormatting.GRAY));
+            for (DamageStyle.Group group : DamageStyle.Group.values()) {
+                double value = defence.get(group);
+                if (value == 0) continue;
+                String text = (value > 0 ? "+" : "") + XpTable.format(value) + "%";
+                tooltip.add(Component.literal(" ").append(group.displayName()).append(": " + text)
+                        .withStyle(value > 0 ? ChatFormatting.DARK_GREEN : ChatFormatting.DARK_RED));
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.toddlandis.skillcraft.client;
 
 import java.util.List;
 
+import com.toddlandis.skillcraft.registry.ModAttachments;
 import com.toddlandis.skillcraft.skill.PlayerSkills;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.SkillManager;
@@ -15,7 +16,7 @@ import net.minecraft.network.chat.Component;
 // The skills panel (default key: K). A grid of every skill with its level and progress to the next level.
 public class SkillsScreen extends Screen {
     private static final int COLUMNS = 3;
-    private static final int CELL_W = 96;
+    private static final int CELL_W = 104;
     private static final int CELL_H = 26;
     private static final int GAP = 4;
     private static final int HEADER = 22;
@@ -51,7 +52,10 @@ public class SkillsScreen extends Screen {
             drawCell(graphics, skill, skills, x, y, isHovered);
         }
 
-        Component total = Component.translatable("screen.skillcraft.total_level", skills.totalLevel());
+        Component total = Component.translatable("screen.skillcraft.total_level", skills.totalLevel())
+                .append("   ")
+                .append(Component.translatable("screen.skillcraft.attack_style", minecraft.player.getData(ModAttachments.ATTACK_STYLE).displayName(),
+                        ClientEvents.ATTACK_STYLE.getTranslatedKeyMessage()));
         graphics.centeredText(font, total, width / 2, top + panelH - FOOTER + 2, 0xFFFFD700);
 
         if (hovered != null) {

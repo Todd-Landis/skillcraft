@@ -2,18 +2,42 @@
   "node.chop": {
     "subtitle": "subtitles.skillcraft.node.chop",
     "sounds": [
-      { "name": "minecraft:item/axe/strip1", "volume": 0.7 },
-      { "name": "minecraft:item/axe/strip2", "volume": 0.7 },
-      { "name": "minecraft:item/axe/strip3", "volume": 0.7 },
-      { "name": "minecraft:item/axe/strip4", "volume": 0.7 }
+      {
+        "name": "minecraft:item/axe/strip1",
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:item/axe/strip2",
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:item/axe/strip3",
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:item/axe/strip4",
+        "volume": 0.7
+      }
     ]
   },
   "node.pick": {
     "subtitle": "subtitles.skillcraft.node.pick",
     "sounds": [
-      { "name": "minecraft:random/anvil_land", "volume": 0.18, "pitch": 1.9 },
-      { "name": "minecraft:random/anvil_land", "volume": 0.18, "pitch": 1.75 },
-      { "name": "minecraft:random/anvil_land", "volume": 0.18, "pitch": 2.0 }
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.18,
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.18,
+        "pitch": 1.75
+      },
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.18,
+        "pitch": 2.0
+      }
     ]
   },
   "node.success_wood": {
@@ -38,19 +62,43 @@
   "node.deplete_wood": {
     "subtitle": "subtitles.skillcraft.node.deplete_wood",
     "sounds": [
-      { "name": "minecraft:block/nether_wood/break1", "pitch": 0.6 },
-      { "name": "minecraft:block/nether_wood/break2", "pitch": 0.6 },
-      { "name": "minecraft:block/nether_wood/break3", "pitch": 0.6 },
-      { "name": "minecraft:block/nether_wood/break4", "pitch": 0.6 }
+      {
+        "name": "minecraft:block/nether_wood/break1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/nether_wood/break2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/nether_wood/break3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/nether_wood/break4",
+        "pitch": 0.6
+      }
     ]
   },
   "node.deplete_ore": {
     "subtitle": "subtitles.skillcraft.node.deplete_ore",
     "sounds": [
-      { "name": "minecraft:block/deepslate/break1", "pitch": 0.7 },
-      { "name": "minecraft:block/deepslate/break2", "pitch": 0.7 },
-      { "name": "minecraft:block/deepslate/break3", "pitch": 0.7 },
-      { "name": "minecraft:block/deepslate/break4", "pitch": 0.7 }
+      {
+        "name": "minecraft:block/deepslate/break1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/deepslate/break2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/deepslate/break3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/deepslate/break4",
+        "pitch": 0.7
+      }
     ]
   },
   "node.regrow": {
@@ -60,6 +108,202 @@
       "minecraft:block/amethyst/resonate2",
       "minecraft:block/amethyst/resonate3",
       "minecraft:block/amethyst/resonate4"
+    ]
+  },
+  "slagheart.awaken": {
+    "subtitle": "subtitles.skillcraft.slagheart.awaken",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/emerge",
+        "volume": 1.0,
+        "pitch": 0.7
+      }
+    ]
+  },
+  "slagheart.step": {
+    "subtitle": "subtitles.skillcraft.slagheart.step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/walk1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.hammer_windup": {
+    "subtitle": "subtitles.skillcraft.slagheart.hammer_windup",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_use",
+        "volume": 0.8,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.hammer_slam": {
+    "subtitle": "subtitles.skillcraft.slagheart.hammer_slam",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 1.0,
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:random/explode1",
+        "volume": 0.6,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "slagheart.sweep_windup": {
+    "subtitle": "subtitles.skillcraft.slagheart.sweep_windup",
+    "sounds": [
+      {
+        "name": "minecraft:block/grindstone/grindstone1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/grindstone/grindstone2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.sweep": {
+    "subtitle": "subtitles.skillcraft.slagheart.sweep",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/sweep1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep2",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "slagheart.inhale": {
+    "subtitle": "subtitles.skillcraft.slagheart.inhale",
+    "sounds": [
+      {
+        "name": "minecraft:mob/blaze/breathe1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/blaze/breathe2",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "slagheart.spit": {
+    "subtitle": "subtitles.skillcraft.slagheart.spit",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ghast/fireball4",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.ember": {
+    "subtitle": "subtitles.skillcraft.slagheart.ember",
+    "sounds": [
+      {
+        "name": "minecraft:block/respawn_anchor/charge1",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.erupt": {
+    "subtitle": "subtitles.skillcraft.slagheart.erupt",
+    "sounds": [
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:liquid/lavapop",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.quake": {
+    "subtitle": "subtitles.skillcraft.slagheart.quake",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode2",
+        "volume": 0.8,
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "volume": 0.8,
+        "pitch": 0.5
+      }
+    ]
+  },
+  "slagheart.vent": {
+    "subtitle": "subtitles.skillcraft.slagheart.vent",
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "volume": 1.0,
+        "pitch": 0.5
+      }
+    ]
+  },
+  "slagheart.roar": {
+    "subtitle": "subtitles.skillcraft.slagheart.roar",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/roar2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.hurt": {
+    "subtitle": "subtitles.skillcraft.slagheart.hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/hit1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "slagheart.death": {
+    "subtitle": "subtitles.skillcraft.slagheart.death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/death",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "arena.enter": {
+    "subtitle": "subtitles.skillcraft.arena.enter",
+    "sounds": [
+      {
+        "name": "minecraft:block/portal/travel",
+        "volume": 0.3,
+        "pitch": 1.4
+      }
     ]
   }
 }
