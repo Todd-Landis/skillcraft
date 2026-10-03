@@ -143,9 +143,11 @@
       "shade": false,
       "faces": {
         "north": {
+          "uv": [4, 0, 12, 8],
           "texture": "#fire"
         },
         "south": {
+          "uv": [4, 0, 12, 8],
           "texture": "#fire"
         }
       }
@@ -164,9 +166,11 @@
       "shade": false,
       "faces": {
         "east": {
+          "uv": [4, 0, 12, 8],
           "texture": "#fire"
         },
         "west": {
+          "uv": [4, 0, 12, 8],
           "texture": "#fire"
         }
       }

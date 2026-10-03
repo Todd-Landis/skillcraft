@@ -300,7 +300,7 @@
     "subtitle": "subtitles.skillcraft.arena.enter",
     "sounds": [
       {
-        "name": "minecraft:block/portal/travel",
+        "name": "minecraft:portal/travel",
         "volume": 0.3,
         "pitch": 1.4
       }
