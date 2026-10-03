@@ -1,25 +1,187 @@
 {
   "values": {
-    "minecraft:copper_pickaxe":    { "mining": 5 },
-    "minecraft:iron_pickaxe":      { "mining": 10 },
-    "minecraft:golden_pickaxe":    { "mining": 20 },
-    "minecraft:diamond_pickaxe":   { "mining": 30 },
-    "minecraft:netherite_pickaxe": { "mining": 40 },
-
-    "minecraft:copper_axe":    { "woodcutting": 5,  "melee": 5 },
-    "minecraft:iron_axe":      { "woodcutting": 10, "melee": 10 },
-    "minecraft:golden_axe":    { "woodcutting": 20, "melee": 20 },
-    "minecraft:diamond_axe":   { "woodcutting": 30, "melee": 30 },
-    "minecraft:netherite_axe": { "woodcutting": 40, "melee": 40 },
-
-    "minecraft:copper_sword":    { "melee": 5 },
-    "minecraft:iron_sword":      { "melee": 10 },
-    "minecraft:golden_sword":    { "melee": 20 },
-    "minecraft:diamond_sword":   { "melee": 30 },
-    "minecraft:netherite_sword": { "melee": 40 },
-    "minecraft:trident":         { "melee": 35, "ranged": 35 },
-    "minecraft:mace":            { "melee": 40 },
-
-    "minecraft:crossbow": { "ranged": 10 }
+    "minecraft:copper_pickaxe": {
+      "mining": 5
+    },
+    "minecraft:iron_pickaxe": {
+      "mining": 10
+    },
+    "minecraft:golden_pickaxe": {
+      "mining": 20
+    },
+    "minecraft:diamond_pickaxe": {
+      "mining": 30
+    },
+    "minecraft:netherite_pickaxe": {
+      "mining": 40
+    },
+    "minecraft:copper_axe": {
+      "woodcutting": 5,
+      "melee": 5
+    },
+    "minecraft:iron_axe": {
+      "woodcutting": 10,
+      "melee": 10
+    },
+    "minecraft:golden_axe": {
+      "woodcutting": 20,
+      "melee": 20
+    },
+    "minecraft:diamond_axe": {
+      "woodcutting": 30,
+      "melee": 30
+    },
+    "minecraft:netherite_axe": {
+      "woodcutting": 40,
+      "melee": 40
+    },
+    "minecraft:copper_sword": {
+      "melee": 5
+    },
+    "minecraft:iron_sword": {
+      "melee": 10
+    },
+    "minecraft:golden_sword": {
+      "melee": 20
+    },
+    "minecraft:diamond_sword": {
+      "melee": 30
+    },
+    "minecraft:netherite_sword": {
+      "melee": 40
+    },
+    "minecraft:trident": {
+      "melee": 35,
+      "ranged": 35
+    },
+    "minecraft:mace": {
+      "melee": 40
+    },
+    "minecraft:crossbow": {
+      "ranged": 10
+    },
+    "minecraft:copper_spear": {
+      "melee": 5
+    },
+    "skillcraft:copper_warhammer": {
+      "melee": 5
+    },
+    "minecraft:iron_spear": {
+      "melee": 10
+    },
+    "skillcraft:iron_warhammer": {
+      "melee": 10
+    },
+    "minecraft:golden_spear": {
+      "melee": 20
+    },
+    "skillcraft:golden_warhammer": {
+      "melee": 20
+    },
+    "minecraft:diamond_spear": {
+      "melee": 30
+    },
+    "skillcraft:diamond_warhammer": {
+      "melee": 30
+    },
+    "minecraft:netherite_spear": {
+      "melee": 40
+    },
+    "skillcraft:netherite_warhammer": {
+      "melee": 40
+    },
+    "skillcraft:emberfall_maul": {
+      "melee": 45
+    },
+    "skillcraft:heavy_arrow": {
+      "ranged": 20
+    },
+    "minecraft:copper_helmet": {
+      "defence": 5
+    },
+    "minecraft:copper_chestplate": {
+      "defence": 5
+    },
+    "minecraft:copper_leggings": {
+      "defence": 5
+    },
+    "minecraft:copper_boots": {
+      "defence": 5
+    },
+    "minecraft:chainmail_helmet": {
+      "defence": 10
+    },
+    "minecraft:chainmail_chestplate": {
+      "defence": 10
+    },
+    "minecraft:chainmail_leggings": {
+      "defence": 10
+    },
+    "minecraft:chainmail_boots": {
+      "defence": 10
+    },
+    "minecraft:iron_helmet": {
+      "defence": 10
+    },
+    "minecraft:iron_chestplate": {
+      "defence": 10
+    },
+    "minecraft:iron_leggings": {
+      "defence": 10
+    },
+    "minecraft:iron_boots": {
+      "defence": 10
+    },
+    "minecraft:golden_helmet": {
+      "defence": 20
+    },
+    "minecraft:golden_chestplate": {
+      "defence": 20
+    },
+    "minecraft:golden_leggings": {
+      "defence": 20
+    },
+    "minecraft:golden_boots": {
+      "defence": 20
+    },
+    "minecraft:diamond_helmet": {
+      "defence": 30
+    },
+    "minecraft:diamond_chestplate": {
+      "defence": 30
+    },
+    "minecraft:diamond_leggings": {
+      "defence": 30
+    },
+    "minecraft:diamond_boots": {
+      "defence": 30
+    },
+    "minecraft:netherite_helmet": {
+      "defence": 40
+    },
+    "minecraft:netherite_chestplate": {
+      "defence": 40
+    },
+    "minecraft:netherite_leggings": {
+      "defence": 40
+    },
+    "minecraft:netherite_boots": {
+      "defence": 40
+    },
+    "skillcraft:padded_helmet": {
+      "defence": 20
+    },
+    "skillcraft:padded_chestplate": {
+      "defence": 20
+    },
+    "skillcraft:padded_leggings": {
+      "defence": 20
+    },
+    "skillcraft:padded_boots": {
+      "defence": 20
+    },
+    "minecraft:turtle_helmet": {
+      "defence": 15
+    }
   }
 }

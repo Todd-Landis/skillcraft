@@ -1,11 +1,16 @@
 package com.toddlandis.skillcraft.loot;
 
+import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.bench.BenchRecipe;
 import com.toddlandis.skillcraft.registry.ModDataComponents;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.skill.SmeltingRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -14,12 +19,16 @@ import net.minecraft.world.item.ItemStack;
 public final class CraftedGear {
     private CraftedGear() {}
 
+    // Bench-made consumables (ammo, boss keys) aren't gear; see data/skillcraft/tags/item/consumables.json
+    public static final TagKey<Item> CONSUMABLES = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(SkillCraft.MODID, "consumables"));
+
     public static boolean isStationGear(ItemStack stack) {
-        return !stack.isEmpty() && BenchRecipe.get(stack.getItem()) != null;
+        return !stack.isEmpty() && BenchRecipe.get(stack.getItem()) != null && !stack.is(CONSUMABLES);
     }
 
+    // Made at a station by a player, or won from a boss by a player
     public static boolean isPlayerMade(ItemStack stack) {
-        return stack.has(ModDataComponents.CRAFTED_BY.get());
+        return stack.has(ModDataComponents.CRAFTED_BY.get()) || stack.has(ModDataComponents.EARNED_BY.get());
     }
 
     // Ingots and scrap: anything the Smelter produces

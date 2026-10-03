@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "skillcraft:copper_warhammer",
+    "skillcraft:iron_warhammer",
+    "skillcraft:golden_warhammer",
+    "skillcraft:diamond_warhammer",
+    "skillcraft:netherite_warhammer",
+    "skillcraft:emberfall_maul",
+    "skillcraft:padded_helmet",
+    "skillcraft:padded_chestplate",
+    "skillcraft:padded_leggings",
+    "skillcraft:padded_boots"
+  ]
+}

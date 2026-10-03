@@ -1,0 +1,64 @@
+{
+  "values": {
+    "#minecraft:swords": {
+      "style": "slash"
+    },
+    "#minecraft:axes": {
+      "style": "slash"
+    },
+    "#minecraft:hoes": {
+      "style": "slash"
+    },
+    "#minecraft:pickaxes": {
+      "style": "stab"
+    },
+    "minecraft:trident": {
+      "style": "stab"
+    },
+    "minecraft:wooden_spear": {
+      "style": "stab"
+    },
+    "minecraft:stone_spear": {
+      "style": "stab"
+    },
+    "minecraft:copper_spear": {
+      "style": "stab"
+    },
+    "minecraft:iron_spear": {
+      "style": "stab"
+    },
+    "minecraft:golden_spear": {
+      "style": "stab"
+    },
+    "minecraft:diamond_spear": {
+      "style": "stab"
+    },
+    "minecraft:netherite_spear": {
+      "style": "stab"
+    },
+    "#minecraft:shovels": {
+      "style": "crush"
+    },
+    "minecraft:mace": {
+      "style": "crush"
+    },
+    "skillcraft:copper_warhammer": {
+      "style": "crush"
+    },
+    "skillcraft:iron_warhammer": {
+      "style": "crush"
+    },
+    "skillcraft:golden_warhammer": {
+      "style": "crush"
+    },
+    "skillcraft:diamond_warhammer": {
+      "style": "crush"
+    },
+    "skillcraft:netherite_warhammer": {
+      "style": "crush"
+    },
+    "skillcraft:emberfall_maul": {
+      "style": "crush"
+    }
+  }
+}

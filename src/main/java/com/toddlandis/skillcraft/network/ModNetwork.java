@@ -20,5 +20,6 @@ public class ModNetwork {
         registrar.playToServer(BenchActionPayload.TYPE, BenchActionPayload.STREAM_CODEC, BenchActionPayload::handle);
         registrar.playToServer(BankActionPayload.TYPE, BankActionPayload.STREAM_CODEC, BankActions::handle);
         registrar.playToClient(BankSyncPayload.TYPE, BankSyncPayload.STREAM_CODEC);
+        registrar.playToServer(CycleAttackStylePayload.TYPE, CycleAttackStylePayload.STREAM_CODEC, CycleAttackStylePayload::handle);
     }
 }
