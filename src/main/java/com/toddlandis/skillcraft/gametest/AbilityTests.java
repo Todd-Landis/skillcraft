@@ -74,6 +74,8 @@ public final class AbilityTests {
         player.setGameMode(GameType.SURVIVAL);
         Vec3 pos = helper.absoluteVec(relative);
         player.snapTo(pos.x, pos.y, pos.z, yaw, 0f);
+        player.setYHeadRot(yaw); // abilities aim with the head (a real client keeps it in step)
+        player.setYBodyRot(yaw);
         player.setHealth(player.getMaxHealth());
         player.removeAllEffects();
         player.setData(ModAttachments.ABILITIES, new AbilityData());
@@ -100,6 +102,8 @@ public final class AbilityTests {
         float yaw = (float) Math.toDegrees(Math.atan2(to.z, to.x)) - 90f;
         float pitch = (float) -Math.toDegrees(Math.atan2(to.y, to.horizontalDistance()));
         player.snapTo(player.getX(), player.getY(), player.getZ(), yaw, pitch);
+        player.setYHeadRot(yaw);
+        player.setYBodyRot(yaw);
     }
 
     // What a fake player's tick would do for effects: count them down and remove expired ones
@@ -202,6 +206,7 @@ public final class AbilityTests {
         zombie.hurtServer(level, level.damageSources().arrow(arrow, player), 2f);
         helper.assertTrue(Math.abs(momentum(player) - 11) < 0.01, "a projectile hit should give 5 Momentum, have " + momentum(player));
         // (a never-ticked fake player keeps its spawn protection, so use a damage type that bypasses it)
+        player.setInvulnerable(false); // fake players are flagged invulnerable
         float hpBefore = player.getHealth();
         boolean took = player.hurtServer(level, level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL, zombie), 1f);
         helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player)
@@ -369,6 +374,7 @@ public final class AbilityTests {
 
         // Toggle: on, drains 10 Momentum/s, off on a second press, and switches itself off when dry
         setMomentum(player, 30);
+        AbilityService.markCombat(player); // so normal out-of-combat decay doesn't mix in
         ok(helper, AbilityService.use(player, prayer), "toggle on");
         helper.assertTrue(player.hasEffect(ModEffects.FLEET), "the toggle's effect should be on");
         helper.onEachTick(() -> AbilityService.tick(player));
@@ -430,10 +436,12 @@ public final class AbilityTests {
                 }
                 AbilityService.tick(player);
                 tickEffects(level, player);
+                dummy.setDeltaMovement(Vec3.ZERO);
                 // Keep the dummy topped up and count the damage
                 dealt[i] += dummy.getMaxHealth() - dummy.getHealth();
                 dummy.setHealth(dummy.getMaxHealth());
                 if (player.distanceTo(dummy) < 1.5) player.snapTo(dummy.getX() - 2.0, player.getY(), dummy.getZ(), player.getYRot(), 0f); // Lunge closes in; step back to swing range
+                if (t % 20 == 0) SkillCraft.LOGGER.debug("[dps] t={} player {} momentum {}", t, i, momentum(player));
             }
         });
         helper.runAfterDelay(HARNESS_TICKS + 30, () -> {
@@ -458,6 +466,7 @@ public final class AbilityTests {
     private static Husk dummy(GameTestHelper helper, Vec3 pos) {
         Husk husk = helper.spawnWithNoFreeWill(EntityTypes.HUSK, pos);
         husk.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
+        husk.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0); // a training dummy stays put
         husk.setHealth(husk.getMaxHealth());
         husk.setPersistenceRequired();
         return husk;
