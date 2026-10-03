@@ -115,26 +115,25 @@ public enum NodeType implements StringRepresentable {
     // At most SPACING_MAX nodes of the same type within SPACING_RADIUS blocks
     private static final int[] SPACING_RADIUS = {8,   12,  16,  24,  32,  48,  64};
     private static final int[] SPACING_MAX =    {6,   4,   3,   2,   1,   1,   1};
-    // Level reward: extra nodes allowed in the same radius, unlocked evenly between the
-    // node's level and 99 (e.g. Tier I: +1 at ~25, ~50, ~74 and 99)
-    private static final int[] SPACING_BONUS =  {4,   3,   2,   2,   1,   1,   0};
+    // Gathering fatigue (see GatheringFatigue): how many of this resource a player can gather
+    // per hour, sustained, at the node's required level. Rises to 3x by level 99.
+    private static final int[] FATIGUE_BASE_PER_HOUR = {400, 200, 100, 40, 20, 8, 4};
+    private static final double FATIGUE_LEVEL_SCALING = 2.0; // +200% at 99
+    private static final double FATIGUE_BURST_HOURS = 0.25;  // can bank 15 minutes' worth
 
     public int regrowSeconds() { return REGROW_SECONDS[tierIndex()]; }
     public int respawnTicks() { return regrowSeconds() * 20; }
     public int spacingRadius() { return SPACING_RADIUS[tierIndex()]; }
+    public int spacingMax() { return SPACING_MAX[tierIndex()]; }
 
-    // How many nodes of this type a player at this level may have within spacingRadius()
-    public int spacingMax(int playerLevel) {
-        return SPACING_MAX[tierIndex()] + (int) Math.floor(levelProgress(playerLevel) * SPACING_BONUS[tierIndex()] + 1e-9);
+    // Sustained gathering rate for a player at this level
+    public double fatiguePerHour(int playerLevel) {
+        return FATIGUE_BASE_PER_HOUR[tierIndex()] * (1 + FATIGUE_LEVEL_SCALING * levelProgress(playerLevel));
     }
 
-    // The next level that raises spacingMax, or -1 if already at the maximum
-    public int nextSpacingLevel(int playerLevel) {
-        int current = spacingMax(playerLevel);
-        for (int lv = Math.max(playerLevel, level) + 1; lv <= XpTable.MAX_LEVEL; lv++) {
-            if (spacingMax(lv) > current) return lv;
-        }
-        return -1;
+    // How much can be gathered in a burst before fatigue blocks gathering
+    public double fatigueCapacity(int playerLevel) {
+        return Math.max(2, fatiguePerHour(playerLevel) * FATIGUE_BURST_HOURS);
     }
 
     // 0 at the node's required level, 1 at level 99

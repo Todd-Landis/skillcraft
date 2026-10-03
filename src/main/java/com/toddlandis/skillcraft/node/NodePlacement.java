@@ -3,7 +3,6 @@ package com.toddlandis.skillcraft.node;
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
 import com.toddlandis.skillcraft.registry.ModPoiTypes;
-import com.toddlandis.skillcraft.skill.SkillManager;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -15,9 +14,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-// Enforces node spacing: at most NodeType.spacingMax(level) nodes of the same type within
-// NodeType.spacingRadius() blocks. Higher tiers must be spread further apart; the placing
-// player's level in that skill unlocks a few extra nodes per area.
+// Enforces node spacing: at most NodeType.spacingMax() nodes of the same type within
+// NodeType.spacingRadius() blocks. Higher tiers must be spread further apart.
+// The limits are the same for every player; per-player limits come from GatheringFatigue.
 @EventBusSubscriber(modid = SkillCraft.MODID)
 public final class NodePlacement {
     private NodePlacement() {}
@@ -35,8 +34,7 @@ public final class NodePlacement {
                 .filter(record -> !record.getPos().equals(pos))
                 .count();
 
-        int playerLevel = event.getEntity() instanceof ServerPlayer p ? SkillManager.level(p, type.skill()) : type.level();
-        int allowed = type.spacingMax(playerLevel);
+        int allowed = type.spacingMax();
         if (nearby >= allowed) {
             event.setCanceled(true);
             if (event.getEntity() instanceof ServerPlayer player) {

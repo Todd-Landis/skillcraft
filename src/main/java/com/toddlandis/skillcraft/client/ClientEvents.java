@@ -128,12 +128,13 @@ public class ClientEvents {
         }
         int regrow = type.regrowSeconds();
         String regrowText = regrow < 60 ? regrow + "s" : (regrow / 60) + "m";
-        int playerLevel = SkillManager.level(player, type.skill());
-        tooltip.add(Component.translatable("tooltip.skillcraft.node_limits", regrowText, type.spacingMax(playerLevel), type.spacingRadius())
+        tooltip.add(Component.translatable("tooltip.skillcraft.node_limits", regrowText, type.spacingMax(), type.spacingRadius())
                 .withStyle(ChatFormatting.GRAY));
-        int nextLevel = type.nextSpacingLevel(playerLevel);
-        if (nextLevel > 0) {
-            tooltip.add(Component.translatable("tooltip.skillcraft.node_next_spacing", nextLevel).withStyle(ChatFormatting.DARK_GRAY));
+        if (met) {
+            int playerLevel = SkillManager.level(player, type.skill());
+            tooltip.add(Component.translatable("tooltip.skillcraft.node_fatigue",
+                    (int) Math.round(type.fatiguePerHour(playerLevel)), (int) Math.floor(type.fatigueCapacity(playerLevel)))
+                    .withStyle(ChatFormatting.GRAY));
         }
         tooltip.add(Component.translatable(type.skill() == Skill.WOODCUTTING ? "tooltip.skillcraft.node_use_axe" : "tooltip.skillcraft.node_use_pickaxe")
                 .withStyle(ChatFormatting.DARK_GRAY));

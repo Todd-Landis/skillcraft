@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.node.GatheringFatigue;
 import com.toddlandis.skillcraft.skill.PlayerSkills;
 
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -20,5 +21,12 @@ public class ModAttachments {
                     .serialize(PlayerSkills.CODEC)
                     .copyOnDeath()
                     .sync((holder, to) -> holder == to, PlayerSkills.STREAM_CODEC)
+                    .build());
+
+    // Recently gathered resources per node type (server-side only), see GatheringFatigue
+    public static final Supplier<AttachmentType<GatheringFatigue>> FATIGUE = ATTACHMENT_TYPES.register("gathering_fatigue",
+            () -> AttachmentType.builder(GatheringFatigue::new)
+                    .serialize(GatheringFatigue.CODEC)
+                    .copyOnDeath()
                     .build());
 }

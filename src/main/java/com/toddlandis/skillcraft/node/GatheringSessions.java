@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.registry.ModAttachments;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.registry.ModSounds;
 import com.toddlandis.skillcraft.skill.Skill;
@@ -63,6 +64,10 @@ public final class GatheringSessions {
             player.sendOverlayMessage(Component.translatable(problem, type.skill().displayName(), type.level()).withStyle(ChatFormatting.RED));
             return;
         }
+        if (isFatigued(player, type)) {
+            sendFatigued(player, type);
+            return;
+        }
         SESSIONS.put(player.getUUID(), new Session(pos, node, player.level().getGameTime() + swingTicks(player), 1));
         player.sendOverlayMessage(Component.translatable(type.skill() == Skill.WOODCUTTING
                 ? "message.skillcraft.gather_start_wood" : "message.skillcraft.gather_start_ore"));
@@ -91,6 +96,11 @@ public final class GatheringSessions {
             return;
         }
         if (level.getGameTime() < session.nextSwing()) return;
+        if (isFatigued(player, type)) {
+            SESSIONS.remove(player.getUUID());
+            sendFatigued(player, type);
+            return;
+        }
 
         int swings = session.swings() + 1;
         SESSIONS.put(player.getUUID(), new Session(session.pos(), session.node(), level.getGameTime() + swingTicks(player), swings));
@@ -115,6 +125,7 @@ public final class GatheringSessions {
         ItemStack drop = new ItemStack(type.drop(), type.dropCount());
         if (!player.getInventory().add(drop)) player.drop(drop, false);
         SkillManager.awardXp(player, type.skill(), type.xp());
+        addFatigue(player, type);
         level.playSound(null, pos, (wood ? ModSounds.NODE_SUCCESS_WOOD : ModSounds.NODE_SUCCESS_ORE).get(), SoundSource.BLOCKS, 0.9f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         chips(level, pos, state, 10, 0.1);
 
@@ -144,6 +155,36 @@ public final class GatheringSessions {
     // Both come from data/skillcraft/data_maps/item/gathering_tools.json
     public static int swingTicks(ServerPlayer player) {
         return Math.max(MIN_SWING_TICKS, BASE_SWING_TICKS - ModDataMaps.gatheringTool(player.getMainHandItem()).tier());
+    }
+
+    // --- Gathering fatigue: a per-player cap on how fast each resource can be gathered ---
+
+    private static final double FATIGUE_WARNING = 0.75;
+
+    private static boolean isFatigued(ServerPlayer player, NodeType type) {
+        int level = SkillManager.level(player, type.skill());
+        return player.getData(ModAttachments.FATIGUE).isExhausted(type, level, player.level().getGameTime());
+    }
+
+    private static void addFatigue(ServerPlayer player, NodeType type) {
+        GatheringFatigue fatigue = player.getData(ModAttachments.FATIGUE);
+        int level = SkillManager.level(player, type.skill());
+        long now = player.level().getGameTime();
+        double capacity = type.fatigueCapacity(level);
+        boolean wasBelowWarning = fatigue.current(type, level, now) < capacity * FATIGUE_WARNING;
+        fatigue.add(type, level, now, 1);
+        if (wasBelowWarning && fatigue.current(type, level, now) >= capacity * FATIGUE_WARNING) {
+            player.sendSystemMessage(Component.translatable("message.skillcraft.fatigue_warning", type.drop().getDefaultInstance().getHoverName())
+                    .withStyle(ChatFormatting.YELLOW));
+        }
+    }
+
+    private static void sendFatigued(ServerPlayer player, NodeType type) {
+        int level = SkillManager.level(player, type.skill());
+        int seconds = player.getData(ModAttachments.FATIGUE).secondsUntilReady(type, level, player.level().getGameTime());
+        String wait = seconds < 60 ? seconds + "s" : (seconds / 60) + "m " + (seconds % 60) + "s";
+        player.sendOverlayMessage(Component.translatable("message.skillcraft.fatigued", type.drop().getDefaultInstance().getHoverName(), wait)
+                .withStyle(ChatFormatting.RED));
     }
 
     private static void stop(ServerPlayer player, String messageKey) {
