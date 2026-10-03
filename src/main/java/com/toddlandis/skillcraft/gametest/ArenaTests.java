@@ -103,7 +103,8 @@ public final class ArenaTests {
 
         // Death: cancelled, healed, sent home, attempt lost
         ArenaInstance first = manager.start(player, List.of(player)).orElseThrow();
-        player.hurtServer(arena, arena.damageSources().generic(), 1000f);
+        // Void damage kills even the (always-creative) mock player, so the death handler runs
+        player.hurtServer(arena, arena.damageSources().fellOutOfWorld(), 1000f);
         helper.assertTrue(player.isAlive(), "player died for real in the arena");
         helper.assertTrue(player.getHealth() == player.getMaxHealth(), "player was not healed after an arena death");
         helper.assertTrue(player.level() == helper.getLevel(), "player was not sent home after dying");

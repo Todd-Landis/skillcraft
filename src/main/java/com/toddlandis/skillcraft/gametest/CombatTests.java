@@ -1,5 +1,8 @@
 package com.toddlandis.skillcraft.gametest;
 
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 import com.toddlandis.skillcraft.combat.CombatDamage;
 import com.toddlandis.skillcraft.combat.Constitution;
 import com.toddlandis.skillcraft.combat.DamageStyle;
@@ -18,6 +21,7 @@ import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
 // Combat GameTests: data maps load and drive matchups and typed armour; damage to mobs pays
 // combat XP (and babies don't); Constitution raises max health.
@@ -43,7 +47,8 @@ public final class CombatTests {
     }
 
     static void combatXp(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        // The vanilla mock player is always in creative (which earns no combat XP), so use a fake survival player
+        ServerPlayer player = FakePlayerFactory.get(helper.getLevel(), new GameProfile(UUID.randomUUID(), "skillcraft_xp_test"));
         player.setGameMode(GameType.SURVIVAL);
         Zombie zombie = helper.spawnWithNoFreeWill(EntityTypes.ZOMBIE, new Vec3(4, 1, 4));
         float before = zombie.getHealth();
