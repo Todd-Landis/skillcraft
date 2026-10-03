@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.registry.ModSounds;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.SkillManager;
@@ -21,7 +22,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,8 +34,11 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 // attempt (success roll); the swings in between are just for feel.
 @EventBusSubscriber(modid = SkillCraft.MODID)
 public final class GatheringSessions {
-    private static final int SWING_TICKS = 15; // a swing every 0.75s
-    private static final int SWINGS_PER_ATTEMPT = 2; // so one attempt every 1.5s
+    // Swing interval: 15 ticks (0.75s) with a tier-0 tool, 1 tick faster per tool tier
+    // (stone/copper/gold 14, iron 13, diamond 12, netherite 11 = 0.55s)
+    private static final int BASE_SWING_TICKS = 15;
+    private static final int MIN_SWING_TICKS = 8;
+    private static final int SWINGS_PER_ATTEMPT = 2; // every 2nd swing is an attempt
     private static final double MAX_DISTANCE_SQ = 4.5 * 4.5;
 
     private record Session(BlockPos pos, NodeBlock node, long nextSwing, int swings) {}
@@ -60,7 +63,7 @@ public final class GatheringSessions {
             player.sendOverlayMessage(Component.translatable(problem, type.skill().displayName(), type.level()).withStyle(ChatFormatting.RED));
             return;
         }
-        SESSIONS.put(player.getUUID(), new Session(pos, node, player.level().getGameTime() + SWING_TICKS, 1));
+        SESSIONS.put(player.getUUID(), new Session(pos, node, player.level().getGameTime() + swingTicks(player), 1));
         player.sendOverlayMessage(Component.translatable(type.skill() == Skill.WOODCUTTING
                 ? "message.skillcraft.gather_start_wood" : "message.skillcraft.gather_start_ore"));
         swing(player, player.level(), pos, state, type);
@@ -90,7 +93,7 @@ public final class GatheringSessions {
         if (level.getGameTime() < session.nextSwing()) return;
 
         int swings = session.swings() + 1;
-        SESSIONS.put(player.getUUID(), new Session(session.pos(), session.node(), level.getGameTime() + SWING_TICKS, swings));
+        SESSIONS.put(player.getUUID(), new Session(session.pos(), session.node(), level.getGameTime() + swingTicks(player), swings));
         swing(player, level, session.pos(), state, type);
         if (swings % SWINGS_PER_ATTEMPT == 0) attempt(player, level, session.pos(), state, session.node());
     }
@@ -106,7 +109,7 @@ public final class GatheringSessions {
     private static void attempt(ServerPlayer player, ServerLevel level, BlockPos pos, BlockState state, NodeBlock node) {
         NodeType type = node.type();
         boolean wood = type.skill() == Skill.WOODCUTTING;
-        double chance = type.successChance(SkillManager.level(player, type.skill()), toolPower(player.getMainHandItem(), type));
+        double chance = type.successChance(SkillManager.level(player, type.skill()), ModDataMaps.gatheringTool(player.getMainHandItem()).power());
         if (level.getRandom().nextDouble() >= chance) return; // missed this attempt
 
         ItemStack drop = new ItemStack(type.drop(), type.dropCount());
@@ -137,11 +140,10 @@ public final class GatheringSessions {
         return null;
     }
 
-    // Better tools succeed more often. Based on the tool's vanilla mining speed:
-    // wood 0.85, stone 1.0, iron 1.15, diamond 1.3, netherite 1.375, gold 1.6
-    private static double toolPower(ItemStack tool, NodeType type) {
-        BlockState reference = type.skill() == Skill.WOODCUTTING ? Blocks.OAK_LOG.defaultBlockState() : Blocks.STONE.defaultBlockState();
-        return 0.7 + 0.075 * tool.getDestroySpeed(reference);
+    // Better tools swing faster (tool tier) and succeed more often (tool power).
+    // Both come from data/skillcraft/data_maps/item/gathering_tools.json
+    public static int swingTicks(ServerPlayer player) {
+        return Math.max(MIN_SWING_TICKS, BASE_SWING_TICKS - ModDataMaps.gatheringTool(player.getMainHandItem()).tier());
     }
 
     private static void stop(ServerPlayer player, String messageKey) {

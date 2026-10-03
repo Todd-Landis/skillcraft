@@ -95,11 +95,13 @@ public enum NodeType implements StringRepresentable {
         return Math.min(0.95, base * toolPower);
     }
 
-    // Chance that a successful attempt depletes the node.
-    //   At the required level it always depletes (1 success per node). It falls linearly as the
-    //   player levels up, down to a per-tier floor at level 99:
-    //   floor = 25% + 12% per tier -> I 25%, II 37%, III 49%, IV 61%, V 73%, VI 85%, VII 97%
-    //   So high-tier nodes stay short-lived even for maxed players.
+    // Chance that a successful attempt depletes the node. Depends only on level (tools affect
+    // speed instead, see GatheringSessions):
+    //   deplete = 1 - (1 - floor) * progress
+    //   progress - 0 at the node's required level, 1 at level 99
+    //   floor    - chance at level 99 = 25% + 12% per tier -> I 25%, II 37% ... VI 85%, VII 97%
+    // At the required level a node always depletes after one success, and high-tier nodes
+    // stay short-lived even for maxed players.
     private static final double DEPLETE_FLOOR_BASE = 0.25;
     private static final double DEPLETE_FLOOR_PER_TIER = 0.12;
 

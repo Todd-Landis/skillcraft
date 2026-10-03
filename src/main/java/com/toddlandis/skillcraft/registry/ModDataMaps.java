@@ -1,12 +1,14 @@
 package com.toddlandis.skillcraft.registry;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.SkillRequirements;
 import com.toddlandis.skillcraft.skill.SkillResource;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -29,9 +31,21 @@ public class ModDataMaps {
             .synced(SkillResource.CODEC, false)
             .build();
 
+    // axe/pickaxe -> gathering tier and power used on skilling nodes
+    public static final DataMapType<Item, GatheringTool> GATHERING_TOOLS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "gathering_tools"), Registries.ITEM, GatheringTool.CODEC)
+            .synced(GatheringTool.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
         event.register(ITEM_REQUIREMENTS);
         event.register(BLOCK_RESOURCES);
+        event.register(GATHERING_TOOLS);
+    }
+
+    public static GatheringTool gatheringTool(ItemStack stack) {
+        GatheringTool tool = stack.isEmpty() ? null : stack.typeHolder().getData(GATHERING_TOOLS);
+        return tool != null ? tool : GatheringTool.NONE;
     }
 }

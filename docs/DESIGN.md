@@ -57,7 +57,10 @@ Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **
     - `floor = 25% + 12% × (tier − 1)`: I 25%, II 37%, III 49%, IV 61%, V 73%, VI 85%, VII 97%.
     - At the required level a node always depletes after one success. Higher-tier nodes stay short-lived even at 99.
     - The node tooltip shows your current depletion chance.
-  - Each gathering cycle is two swings, one every 0.75s. The second swing is the real attempt, so there's one attempt every 1.5s.
+  - **Level controls how much a node gives** (depletion). **Tools control how fast** you get it:
+    - **Tool tier → swing speed:** one swing every 0.75s with wood, 0.05s faster per tier, down to 0.55s with netherite. Every second swing is the real attempt.
+    - **Tool power → success chance:** wood ×0.85, stone ×1.0, copper ×1.05, iron ×1.15, diamond ×1.3, netherite ×1.4, and **gold ×1.5**. Gold is low tier but high power: it swings slowly but hits often.
+    - Values live in `data/skillcraft/data_maps/item/gathering_tools.json`, and tool tooltips show them.
   - Nodes use their own sound events (`node.chop`, `node.pick`, `node.success_*`, `node.deplete_*`, `node.regrow`) defined in `assets/skillcraft/sounds.json`. They currently point at vanilla audio and can be swapped for custom `.ogg` files.
   - Nodes are unbreakable. The **Relocator** picks them up so you can move them.
   - Several players can share a node. Each rolls independently, and depletion ends everyone's session.

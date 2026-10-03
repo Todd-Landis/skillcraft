@@ -10,6 +10,7 @@ import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
 import com.toddlandis.skillcraft.node.NodeBlock;
 import com.toddlandis.skillcraft.node.NodeType;
+import com.toddlandis.skillcraft.skill.GatheringTool;
 import com.toddlandis.skillcraft.skill.XpTable;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
 import com.toddlandis.skillcraft.skill.Skill;
@@ -85,6 +86,13 @@ public class ClientEvents {
                 tooltip.add(Component.translatable("tooltip.skillcraft.requires", entry.getKey().displayName(), entry.getValue())
                         .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
             }
+        }
+
+        GatheringTool tool = event.getItemStack().typeHolder().getData(ModDataMaps.GATHERING_TOOLS);
+        if (tool != null) {
+            double swingSeconds = Math.max(8, 15 - tool.tier()) / 20.0;
+            tooltip.add(Component.translatable("tooltip.skillcraft.gathering_tool", XpTable.format(swingSeconds), XpTable.format(tool.power()))
+                    .withStyle(ChatFormatting.DARK_AQUA));
         }
 
         if (event.getItemStack().getItem() instanceof BlockItem blockItem) {
