@@ -1,18 +1,26 @@
 package com.toddlandis.skillcraft.altar;
 
+import java.util.UUID;
+
+import com.mojang.serialization.Codec;
 import com.toddlandis.skillcraft.node.NodeType;
 import com.toddlandis.skillcraft.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-// Remembers which node the altar is being attuned to and how much material has been loaded.
+// Remembers which node the altar is being attuned to, how much material has been loaded,
+// and who loaded it. Only the owner can add, withdraw, attune or break it while it is loaded.
 public class AttunementAltarBlockEntity extends BlockEntity {
     private NodeType target;
     private int stored;
+    private UUID owner;
+    private String ownerName = "";
 
     public AttunementAltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ATTUNEMENT_ALTAR.get(), pos, state);
@@ -22,10 +30,20 @@ public class AttunementAltarBlockEntity extends BlockEntity {
     public int stored() { return stored; }
     public boolean isEmpty() { return target == null; }
     public boolean isFull() { return target != null && stored >= target.inputCount(); }
+    public String ownerName() { return ownerName; }
+
+    // Anyone may use an empty altar; a loaded one belongs to whoever loaded it
+    public boolean isOwner(Player player) {
+        return owner == null || owner.equals(player.getUUID());
+    }
 
     // Adds up to `available` items; returns how many were used
-    public int deposit(NodeType type, int available) {
-        if (target == null) target = type;
+    public int deposit(Player player, NodeType type, int available) {
+        if (target == null) {
+            target = type;
+            owner = player.getUUID();
+            ownerName = player.getName().getString();
+        }
         int used = Math.min(available, target.inputCount() - stored);
         stored += used;
         setChanged();
@@ -42,6 +60,8 @@ public class AttunementAltarBlockEntity extends BlockEntity {
     public void clear() {
         target = null;
         stored = 0;
+        owner = null;
+        ownerName = "";
         setChanged();
     }
 
@@ -51,6 +71,8 @@ public class AttunementAltarBlockEntity extends BlockEntity {
         if (target != null) {
             output.putString("target", target.getSerializedName());
             output.putInt("stored", stored);
+            output.storeNullable("owner", UUIDUtil.CODEC, owner);
+            output.putString("owner_name", ownerName);
         }
     }
 
@@ -59,5 +81,7 @@ public class AttunementAltarBlockEntity extends BlockEntity {
         super.loadAdditional(input);
         target = input.read("target", NodeType.CODEC).orElse(null);
         stored = input.getIntOr("stored", 0);
+        owner = input.read("owner", UUIDUtil.CODEC).orElse(null);
+        ownerName = input.read("owner_name", Codec.STRING).orElse("");
     }
 }

@@ -83,6 +83,7 @@
   "message.skillcraft.node_relocated": "You pack up the node.",
 
   "message.skillcraft.altar_empty": "Load the altar with a resource to attune it into a node.",
+  "message.skillcraft.altar_owned": "This altar is in use by %s.",
   "message.skillcraft.altar_busy": "This altar is already attuning a %s.",
   "message.skillcraft.altar_progress": "%s: %s/%s %s",
   "message.skillcraft.altar_ready": "The altar hums with energy. Use an empty hand to begin attunement.",

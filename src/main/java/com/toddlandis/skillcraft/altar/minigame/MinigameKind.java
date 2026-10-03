@@ -1,7 +1,7 @@
-package com.toddlandis.skillcraft.node;
+package com.toddlandis.skillcraft.altar.minigame;
 
 // Which attunement minigame a node uses at the Attunement Altar. The client maps each kind
-// to an implementation in client/minigame/Minigames.java, so minigames can be swapped or added
+// to an implementation in Minigames.create(), so minigames can be swapped or added
 // without touching the altar or networking code.
 public enum MinigameKind {
     STRIKE_THE_GRAIN, // tap when a sweeping marker is inside the zone (woodcutting)

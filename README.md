@@ -41,7 +41,8 @@ src/main/java/com/toddlandis/skillcraft/
   network/                 server -> client packets
   registry/                attachments and data map registrations
   client/                  Skills screen, XP drop HUD, key binding, tooltips
-  client/minigame/         modular attunement minigames
+  altar/minigame/          attunement minigame rules (shared with the server for verification)
+  client/minigame/         minigame drawing
 src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
 src/main/resources/assets/skillcraft/
   lang/en_us.json          display names

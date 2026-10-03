@@ -89,7 +89,19 @@ Content is grouped into 15-level tiers: **I** = 1, **II** = 15, **III** = 30, **
 2. When it's full, right-click with an empty hand to start the minigame. Sneak + empty hand takes the materials back out.
 3. **Success:** the node pops out and you get 5× that node's XP. **Failure:** 25% of the materials are lost. Leaving after you've started counts as a failure.
 
-Minigames are modular. `client/minigame/Minigame` is the interface, `MinigameKind` names each one, `Minigames.create()` maps kind to implementation, and `NodeType.minigame()` picks one per node. Current minigames:
+Each loaded altar **belongs to the player who loaded it** until it's emptied. Only that player can add materials, withdraw, attune, or break it while it's loaded.
+
+Minigames are modular and **server-verified**:
+- **Rules** (`altar/minigame/`, shared by client and server): `MinigameLogic` is the interface, `MinigameKind` names each one, `Minigames.create()` maps kind to implementation, and `NodeType.minigame()` picks one per node. All randomness comes from a seed, and time only moves through `tick()`, so the game is deterministic.
+- **Drawing** (`client/minigame/MinigameRenderer`) is client-only.
+- **Verification:**
+  1. The server picks a random seed and sends it.
+  2. The client plays and sends back every press and release with its tick number.
+  3. The server replays the game with the same seed and inputs.
+  4. A win only counts if the replay wins *and* the game couldn't have taken longer than the real time that passed. That rejects instantly computed "perfect" inputs.
+- To add a minigame: write a `MinigameLogic`, add a `MinigameKind`, map it in `Minigames.create()`, and add a draw method to `MinigameRenderer`.
+
+Current minigames:
 - **Strike the Grain** (woodcutting): tap when the sweeping marker is in the zone. 5 hits needed, 2 misses allowed.
 - **Temper the Vein** (mining): hold to build heat and release in the gold band. Overheating cracks it. 4 hits needed, 2 misses allowed.
 
@@ -107,15 +119,16 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
 - **Data-driven content:** level requirements live in JSON data maps, so content can be tuned without code changes.
 
 ## Multiplayer notes / known gaps
-- The attunement minigame result is reported by the client. A modified client could claim success. Fix (planned): the server sends a random seed, the client sends back its press timings, and the server replays the minigame to verify them.
-- Altars have no owner, so anyone can withdraw materials someone else loaded. Planned: lock withdrawal to the player who loaded it.
-- Node gathering has no per-player ownership. On servers you may want claim or protection mods, or a later "owned node" option.
+- Done (3.5): attunement results are verified on the server by replaying the minigame from a seed, and altars are owned while loaded.
+- Placed nodes have no owner: anyone can gather from them or pick them up with a Relocator. On servers, use a claim or protection mod, or add an "owned node" option later. Gathering fatigue already limits how much any one player can take.
+- A bot that plays the minigame in real time can't be told apart from a skilled human, as in any game. Verification stops faked results, not automation.
+- Not yet tested on a real dedicated server with two clients. The headless test server confirms the mod loads without client-only code.
 
 ## Roadmap
 - [x] **Phase 1 – Foundation:** project setup, skill list, XP curve
 - [x] **Phase 2 – Skill framework:** saved XP on each player, sync to client, XP drops and level-up messages, Skills screen (K), `/skill` admin command, level-gated vanilla tools/weapons/ores/logs with XP
 - [x] **Phase 3 – Woodcutting & Mining:** skilling nodes (21 types, tiers I–VI), auto-gathering with success rolls, depletion and regrowth, Relocator, Attunement Altar with modular minigames, no XP from world blocks
-- [ ] **Phase 3.5 – Multiplayer hardening:** server-verified minigame results, altar ownership
+- [x] **Phase 3.5 – Multiplayer hardening:** server-verified minigame results (seeded replay + timing check), altar ownership, per-player gathering fatigue
 - [ ] **Phase 4 – Smithing & Crafting:** bars, forging, gear recipes with level requirements
 - [ ] **Phase 5 – Combat:** Melee, Ranged and Constitution; equipment requirements; attack styles
 - [ ] **Phase 6 – First boss:** arena, phases, telegraphed attacks, unique drops

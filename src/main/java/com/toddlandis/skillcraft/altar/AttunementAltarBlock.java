@@ -1,7 +1,6 @@
 package com.toddlandis.skillcraft.altar;
 
 import com.mojang.serialization.MapCodec;
-import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.node.NodeType;
 import com.toddlandis.skillcraft.skill.SkillManager;
 
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 // The Attunement Altar turns a pile of resources into a skilling node.
 //   1. Right-click with the resource (e.g. oak logs) to load it.
@@ -52,6 +50,10 @@ public class AttunementAltarBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
+        if (!altar.isOwner(player)) {
+            status(serverPlayer, Component.translatable("message.skillcraft.altar_owned", altar.ownerName()), ChatFormatting.RED);
+            return InteractionResult.SUCCESS;
+        }
         if (!altar.isEmpty() && altar.target() != type) {
             status(serverPlayer, Component.translatable("message.skillcraft.altar_busy", nodeName(altar.target())), ChatFormatting.RED);
             return InteractionResult.SUCCESS;
@@ -65,7 +67,7 @@ public class AttunementAltarBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        int used = altar.deposit(type, stack.getCount());
+        int used = altar.deposit(player, type, stack.getCount());
         if (!player.isCreative()) stack.shrink(used);
         level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.5f, 0.6f + 0.8f * altar.stored() / type.inputCount());
         sendProgress(serverPlayer, altar);
@@ -79,17 +81,28 @@ public class AttunementAltarBlock extends Block implements EntityBlock {
         }
         if (altar.isEmpty()) {
             status(serverPlayer, Component.translatable("message.skillcraft.altar_empty"), ChatFormatting.GRAY);
+        } else if (!altar.isOwner(player)) {
+            status(serverPlayer, Component.translatable("message.skillcraft.altar_owned", altar.ownerName()), ChatFormatting.RED);
         } else if (player.isShiftKeyDown()) {
             ItemStack refund = new ItemStack(altar.target().input(), altar.stored());
             altar.clear();
             if (!player.getInventory().add(refund)) player.drop(refund, false);
             status(serverPlayer, Component.translatable("message.skillcraft.altar_withdrawn"), ChatFormatting.GRAY);
         } else if (altar.isFull()) {
-            PacketDistributor.sendToPlayer(serverPlayer, new OpenAttunementPayload(pos, altar.target()));
+            AltarAttunement.open(serverPlayer, pos, altar.target());
         } else {
             sendProgress(serverPlayer, altar);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    // A loaded altar can only be broken by its owner (or in creative)
+    @Override
+    protected float getDestroyProgress(BlockState state, Player player, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+        if (!player.isCreative() && level.getBlockEntity(pos) instanceof AttunementAltarBlockEntity altar && !altar.isOwner(player)) {
+            return 0f;
+        }
+        return super.getDestroyProgress(state, player, level, pos);
     }
 
     // Material isn't kept inside the dropped altar item, so give it back when the altar is broken

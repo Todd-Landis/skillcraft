@@ -1,17 +1,12 @@
-package com.toddlandis.skillcraft.client.minigame;
+package com.toddlandis.skillcraft.altar.minigame;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 
 // Woodcutting: a marker sweeps back and forth along the grain. Strike while it is inside the
 // green zone. Higher tiers: faster marker, narrower zone.
-public class StrikeTheGrainMinigame implements Minigame {
-    private static final int BAR_Y = 14;
-    private static final int BAR_H = 16;
-
-    private final RandomSource random = RandomSource.create();
+public class StrikeTheGrainLogic implements MinigameLogic {
+    private final RandomSource random;
     private final ScoreTrack score = new ScoreTrack(5, 2);
     private final double speed;     // bar lengths per tick
     private final double zoneWidth; // fraction of the bar
@@ -20,7 +15,8 @@ public class StrikeTheGrainMinigame implements Minigame {
     private int direction = 1;
     private double zoneStart;
 
-    public StrikeTheGrainMinigame(int tier) {
+    public StrikeTheGrainLogic(int tier, long seed) {
+        this.random = RandomSource.create(seed);
         this.speed = (0.7 + 0.18 * tier) / 20.0;
         this.zoneWidth = Math.max(0.08, 0.22 - 0.022 * tier);
         moveZone();
@@ -56,30 +52,13 @@ public class StrikeTheGrainMinigame implements Minigame {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor graphics, Font font, int x, int y, float partialTick) {
-        int border = score.borderColor(0xFF8B5A2B);
-        graphics.fill(x - 1, y + BAR_Y - 1, x + WIDTH + 1, y + BAR_Y + BAR_H + 1, border);
-        graphics.fill(x, y + BAR_Y, x + WIDTH, y + BAR_Y + BAR_H, 0xFF3B2414);
-        // Wood grain stripes
-        for (int i = 0; i < WIDTH; i += 11) graphics.fill(x + i, y + BAR_Y + 3, x + i + 6, y + BAR_Y + 4, 0xFF4A2F1A);
-
-        int zx = x + (int) (zoneStart * WIDTH);
-        graphics.fill(zx, y + BAR_Y, zx + (int) (zoneWidth * WIDTH), y + BAR_Y + BAR_H, 0xC040C040);
-
-        double m = prevMarker + (marker - prevMarker) * partialTick;
-        int mx = x + (int) (m * (WIDTH - 2));
-        graphics.fill(mx, y + BAR_Y - 3, mx + 2, y + BAR_Y + BAR_H + 3, 0xFFFFFFFF);
-
-        score.render(graphics, x, y, WIDTH);
-    }
+    public ScoreTrack score() { return score; }
 
     @Override
-    public State state() {
-        return score.state();
-    }
+    public boolean started() { return score.any(); }
 
-    @Override
-    public boolean started() {
-        return score.any();
-    }
+    // For drawing
+    public double marker(float partialTick) { return prevMarker + (marker - prevMarker) * partialTick; }
+    public double zoneStart() { return zoneStart; }
+    public double zoneWidth() { return zoneWidth; }
 }

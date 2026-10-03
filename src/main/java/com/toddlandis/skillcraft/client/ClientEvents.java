@@ -61,7 +61,7 @@ public class ClientEvents {
             }
         });
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
-                Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload.pos(), payload.node())));
+                Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
     }
 
     @SubscribeEvent

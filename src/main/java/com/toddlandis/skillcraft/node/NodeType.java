@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import com.toddlandis.skillcraft.altar.minigame.MinigameKind;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.XpTable;
 
