@@ -1,6 +1,6 @@
 # Combat Abilities: Design Spec
 
-Status: **proposed** (Phase 6). Owner: Todd. This is the feature spec; `docs/HANDOFF_ABILITIES.md` is the build brief for the implementing session.
+Status: **built** (Phase 6, branch `phase-6-abilities`; see §8 for what was built and every decision made). Owner: Todd. This is the feature spec; `docs/HANDOFF_ABILITIES.md` is the build brief for the implementing session.
 
 ## 1. Pitch
 A small **ability bar** (4 slots) turns SkillCraft combat from "click until it dies" into a few meaningful decisions per fight:
@@ -186,3 +186,92 @@ Total: **26 abilities.** The first build should deliver **at least 14**: Lunge, 
 3. Momentum gain values, and whether hits *taken* should build it.
 4. Should Codex drops be bound to the player (not tradeable), or tradeable? *Default: tradeable* (good for the server economy).
 5. Default keys R / G / Z / X, or Alt + 1–4?
+
+## 8. As built (Phase 6): decisions and deviations
+This section records what the first build does wherever the spec left a choice or had to change. The code is in `ability/` (server), `client/ability/` (HUD, Ability Book, keys) and `gametest/AbilityTests`.
+
+### 8.1 Answers to §7
+1. **5th Weapon Art auto-slot:** **not built.**
+   - Weapon Arts sit in the normal 4 slots, and the HUD dims a slot when the held weapon doesn't fit.
+   - The bar size is one constant (`AbilityData.SLOTS`), so a 5th slot is a small change if playtesting asks for it.
+2. **Loadout swaps:** **blocked in any combat**, meaning you dealt or took entity damage in the last 5 s (`combatWindow` in the server config).
+   - What's blocked: switching bars, and editing the bar you're using.
+   - Editing one of your other bars is always allowed, so you can prepare.
+3. **Momentum values:** as proposed, and **hits taken do build Momentum**:
+   - +6 per melee hit, scaled by attack strength squared, so a half-charged swing gives 1.5
+   - +5 per projectile hit
+   - +2 per hit taken, at most twice a second, so a mob swarm can't fill the bar
+   - Decay: 5 per second after 10 s out of combat
+   - All of these are server-config values, so they can be tuned without code changes.
+4. **Codex drops:** **tradeable**. One `skillcraft:codex` item with a `skillcraft:codex_ability` component.
+5. **Default keys:** **R, Z, B, N.**
+   - The proposed R/G/Z/X clashes with 26.2's own defaults: G is Quick Actions and X is Load Toolbar. These were checked against the decompiled 26.2 `Options`.
+   - Alt+1–4 wasn't used because the number keys already select hotbar slots.
+   - **J** opens the Ability Book. "Next ability bar" has no default key.
+   - Everything is rebindable under "SkillCraft – Abilities".
+
+### 8.2 Data model
+- **Abilities load from JSON at the spec's path** (`data/<ns>/skillcraft/ability/<id>.json`), but through a reload listener (`AbilityManager`) rather than a NeoForge datapack registry.
+  - Datapack registries only reload when a world loads. A listener lets `/reload` retune abilities live, which was a non-negotiable.
+  - Definitions are sent to clients on login and after every `/reload`.
+- **Behaviours** are a dispatch codec (`AbilityBehaviors`).
+  - Types: `melee_strike`, `dash_strike`, `cleave`, `ground_slam`, `line_thrust`, `leap`, `next_shot`, `volley`, `buff`, `heal_over_time`, `parry`, `cleanse`, `toggle_effect`.
+  - New abilities are mostly JSON reusing these.
+- **Requirements** extend the spec's `weapon_tag`:
+  - `weapon`: an item tag for the main hand
+  - `weapon_style`: a damage type of the main-hand weapon, read from the existing `weapon_styles` data map, so "slash" means swords and axes without a second list to maintain
+  - `offhand`: an item tag, e.g. a shield for Shield Bash
+  - `codex`: whether a Codex must be read first
+- **Weapon classes** are item tags in `skillcraft:weapon_class/`:
+  - single weapon types: `sword`, `axe`, `spear`, `trident`, `warhammer`, `mace`, `maul`, `bow`, `crossbow`, `shield`
+  - broad groups: `melee`, `ranged`
+  - combinations: `hammer` (warhammer or mace), `heavy_blunt` (warhammer, mace or maul), `polearm` (spear or trident)
+- **Effect strength is data-driven two ways:**
+  - Attribute effects scale with the amplifier the JSON gives:
+    - Slowed: −10% speed per level
+    - Fleet: +10% speed per level
+    - Bulwark: +1 armour per level
+  - Event-based effects read `data_maps/mob_effect/effect_tuning.json`:
+    - Battle Trance: +25% dealt, +10% taken
+    - Brace: −40% taken
+    - Bulwark: 20% reflect
+    - Last Stand: hits capped at 20% of max health
+    - Deadeye: +30% damage, +1 pierce
+- **Player data:** `abilities` holds 3 bars of 4 slots, bar names, the active bar, learned codices and Momentum. It's saved and kept through death; Momentum and the combat timer are synced but never saved.
+- **Cooldowns:** a separate unsaved `ability_runtime` attachment holds cooldowns and windup and buff states. They reset on logout and on death, as the spec says.
+- **Spells and Prayers are ready without a rewrite:**
+  - `item_costs` lists items consumed per use (future runes).
+  - `toggle` with `drain_per_second` gives a sustained ability that switches off when the resource runs dry (future prayers). It drains Momentum today; Prayer will bring its own resource.
+  - The `toggle_effect` behaviour is the stub.
+  - The `ability_future` GameTest builds both kinds in code, round-trips them through the JSON codec and runs them.
+  - The Spells and Prayers tabs exist but are locked.
+
+### 8.3 Rules the spec left open
+- **Global cooldown:** 1 s (`abilityGlobalCooldown`). Off-GCD abilities (Brace, Riposte, Unshackle, Last Stand, Tumble, Vault, Sprint Burst) neither wait for it nor trigger it.
+- **Windups:**
+  - Sweeping Arc 0.2 s, Volley 0.3 s, Earthbreaker 0.4 s, Forgequake 0.6 s.
+  - Moving more than 0.35 blocks cancels a windup with nothing spent. The HUD shows a windup bar.
+- **"Needs a target":** damage abilities (strikes, Cleave, slams, thrusts) need at least one enemy in their area. Otherwise they do nothing and cost nothing, so a whiff never wastes a 90 s Ultimate. Movement, buffs and next-shot abilities always fire.
+- **"% of the weapon's normal hit"** means the attack-damage attribute: the weapon plus anything else that raises it. Enchantment bonuses (Sharpness) and critical hits aren't included.
+- **Ability hits don't leave hit-immunity frames behind**, so an ability never eats your next normal swing. Bleed ticks work the same way.
+- **Momentum costs:** the combat-level discount (−1% per 10 levels) applies to both the requirement and the cost. Ultimates still need a "full" bar after the discount (96 at level 40) and spend all of it.
+- **Creative players** have every ability unlocked, for testing. Weapon, cooldown and Momentum rules still apply.
+- **Quick Draw is bow-only.** 26.2's crossbow charge can't be skipped cleanly; Piercing Bolt is the crossbow's art.
+- **Piercing is done by hand.** `AbilityEvents` damages the target and lets the arrow fly on, because `setPierceLevel` is private in 26.2.
+- **Sounds:** each behaviour plays a fitting vanilla sound. An ability's JSON `sound` field can point at a custom sound event later, so no new sound events were added.
+- **Arm swings:** strikes swing the arm. There's no custom player animation library.
+
+### 8.4 Bosses (§2.6)
+- **Boss list:** bosses are the `skillcraft:bosses` entity tag; Slagheart is in it.
+- **Stuns become Daze:** `combat/BossCrowdControl.daze` delays the boss's next attack by 1 s, at most once every 20 s per boss.
+  - If the boss is mid-attack (in a windup or strike), the delay is added when the attack ends. Its windup is never cancelled.
+- **Roots and slows** become Slowed, capped at III (−30%), for half the time.
+- **Knockback and pulls** have no effect on bosses.
+- **Effects that stick on Slagheart:** Sundered, Slowed (up to III), Dazed and Bleeding. Real roots and stuns never do.
+- **Codex of the Forgequake:** Slagheart drops it at 1/60 per eligible kill (measured 1/60.8 over 20,000 rolls). The other loot rates are unchanged.
+
+### 8.5 The first build's catalogue
+- **25 of the 26 abilities** are built: everything in §3 except **Undertow**.
+  - Undertow is deferred to v2. It needs the thrown trident's return to drive a pull, and the trident's return logic is private.
+- **Bars and HUD:** 3 bars per player, the HUD bar and the Ability Book are built as specified.
+  - On narrow GUI scales the HUD bar becomes a 2×2 grid, or a row above the hunger and air bars.

@@ -181,8 +181,12 @@ public final class ArenaManager {
         if (boss == null) return;
         Vec3 spawn = arena.bossSpawn();
         boss.snapTo(spawn.x, spawn.y, spawn.z, 0f, 0f);
+        level.getChunkAt(BlockPos.containing(spawn)); // make sure the boss lands in a loaded chunk
         boss.setup(arena.id(), spawn, partySize);
-        level.addFreshEntity(boss);
+        if (!level.addFreshEntity(boss)) {
+            SkillCraft.LOGGER.warn("Arena {}: the boss could not be spawned", arena.name());
+            return;
+        }
         arena.setBoss(boss.getUUID());
         arena.setPartySize(partySize);
         arena.setEmptySince(-1);

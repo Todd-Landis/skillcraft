@@ -205,10 +205,10 @@ public final class AbilityTests {
         Arrow arrow = new Arrow(level, player, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
         zombie.hurtServer(level, level.damageSources().arrow(arrow, player), 2f);
         helper.assertTrue(Math.abs(momentum(player) - 11) < 0.01, "a projectile hit should give 5 Momentum, have " + momentum(player));
-        // (a never-ticked fake player keeps its spawn protection, so use a damage type that bypasses it)
-        player.setInvulnerable(false); // fake players are flagged invulnerable
+        // A fake player can never be hurt (its client never "loads"), so post the event a real hit fires
         float hpBefore = player.getHealth();
-        boolean took = player.hurtServer(level, level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL, zombie), 1f);
+        boolean took = !net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post(player,
+                new net.neoforged.neoforge.common.damagesource.DamageContainer(level.damageSources().mobAttack(zombie), 1f))).isCanceled();
         helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player)
                 + " (hurt=" + took + ", health " + hpBefore + " -> " + player.getHealth() + ", mode " + player.gameMode() + ", invulnerable " + player.isInvulnerable() + ")");
         // Ability damage builds no Momentum by itself
@@ -441,7 +441,6 @@ public final class AbilityTests {
                 dealt[i] += dummy.getMaxHealth() - dummy.getHealth();
                 dummy.setHealth(dummy.getMaxHealth());
                 if (player.distanceTo(dummy) < 1.5) player.snapTo(dummy.getX() - 2.0, player.getY(), dummy.getZ(), player.getYRot(), 0f); // Lunge closes in; step back to swing range
-                if (t % 20 == 0) SkillCraft.LOGGER.debug("[dps] t={} player {} momentum {}", t, i, momentum(player));
             }
         });
         helper.runAfterDelay(HARNESS_TICKS + 30, () -> {
