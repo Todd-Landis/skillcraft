@@ -44,13 +44,14 @@ public final class AbilityRuntime {
 
     // Attack strength of the swing that is about to land (set in AttackEntityEvent), -1 if unknown
     public float pendingStrength = -1;
-    public long lastHitTakenMomentum;
+    // "Long ago", so the first hit counts even in a brand-new world (game time starts at 0)
+    public long lastHitTakenMomentum = Long.MIN_VALUE / 2;
 
     // Set by a behaviour that fails for a specific reason (e.g. no ammo), shown instead of "no target"
     public String failKey;
 
     // Throttle for "can't use" feedback
-    public long lastDenyTick;
+    public long lastDenyTick = Long.MIN_VALUE / 2;
     public String lastDenyKey = "";
 
     public static AbilityRuntime of(Player player) {
