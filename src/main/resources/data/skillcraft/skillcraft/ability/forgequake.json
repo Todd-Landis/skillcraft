@@ -1,0 +1,25 @@
+{
+  "category": "weapon_art",
+  "class": "ultimate",
+  "requires": {
+    "skill": "melee",
+    "level": 35,
+    "weapon": "skillcraft:weapon_class/maul",
+    "codex": true
+  },
+  "cooldown": 1800,
+  "windup": 12,
+  "behavior": {
+    "type": "skillcraft:ground_slam",
+    "radius": 4,
+    "damage": 2,
+    "style": "crush",
+    "effects": [
+      {
+        "effect": "skillcraft:sundered",
+        "duration": 120
+      }
+    ]
+  },
+  "icon": "skillcraft:ability/forgequake"
+}

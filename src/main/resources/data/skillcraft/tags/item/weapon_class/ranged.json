@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#skillcraft:weapon_class/bow",
+    "#skillcraft:weapon_class/crossbow",
+    "#skillcraft:weapon_class/trident"
+  ]
+}

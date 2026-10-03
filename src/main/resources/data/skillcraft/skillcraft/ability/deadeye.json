@@ -1,0 +1,16 @@
+{
+  "category": "ranged",
+  "class": "ultimate",
+  "requires": {
+    "skill": "ranged",
+    "level": 40,
+    "weapon": "skillcraft:weapon_class/ranged"
+  },
+  "cooldown": 2000,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:deadeye",
+    "duration": 160
+  },
+  "icon": "skillcraft:ability/deadeye"
+}

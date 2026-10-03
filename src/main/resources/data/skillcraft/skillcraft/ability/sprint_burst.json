@@ -1,0 +1,17 @@
+{
+  "category": "utility",
+  "class": "basic",
+  "requires": {
+    "skill": "constitution",
+    "level": 10
+  },
+  "cooldown": 600,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:fleet",
+    "duration": 80,
+    "amplifier": 2
+  },
+  "icon": "skillcraft:ability/sprint_burst"
+}

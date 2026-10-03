@@ -79,8 +79,14 @@ public class ModDataMaps {
             .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "boss_tuning"), Registries.ENTITY_TYPE, BossTuning.CODEC)
             .build();
 
+    // status effect -> numbers for ability buffs and debuffs (see ability/EffectTuning)
+    public static final DataMapType<net.minecraft.world.effect.MobEffect, com.toddlandis.skillcraft.ability.EffectTuning> EFFECT_TUNING = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "effect_tuning"), Registries.MOB_EFFECT, com.toddlandis.skillcraft.ability.EffectTuning.CODEC)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(EFFECT_TUNING);
         event.register(WEAPON_STYLES);
         event.register(ARMOR_DEFENCES);
         event.register(COMBAT_PROFILES);

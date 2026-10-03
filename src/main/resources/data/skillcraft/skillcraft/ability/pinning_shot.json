@@ -1,0 +1,19 @@
+{
+  "category": "ranged",
+  "class": "basic",
+  "requires": {
+    "skill": "ranged",
+    "level": 10,
+    "weapon": "skillcraft:weapon_class/ranged"
+  },
+  "cooldown": 360,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:next_shot",
+    "window": 100,
+    "root": 40
+  },
+  "icon": "skillcraft:ability/pinning_shot"
+}

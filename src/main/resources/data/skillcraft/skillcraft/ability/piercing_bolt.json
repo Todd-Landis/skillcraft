@@ -1,0 +1,17 @@
+{
+  "category": "weapon_art",
+  "class": "surge",
+  "requires": {
+    "skill": "ranged",
+    "level": 20,
+    "weapon": "skillcraft:weapon_class/crossbow"
+  },
+  "cooldown": 360,
+  "behavior": {
+    "type": "skillcraft:next_shot",
+    "window": 100,
+    "damage": 1.2,
+    "pierce": 4
+  },
+  "icon": "skillcraft:ability/piercing_bolt"
+}

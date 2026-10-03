@@ -1,0 +1,16 @@
+{
+  "category": "defence",
+  "class": "surge",
+  "requires": {
+    "skill": "defence",
+    "level": 25
+  },
+  "cooldown": 800,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:bulwark",
+    "duration": 120,
+    "amplifier": 3
+  },
+  "icon": "skillcraft:ability/bulwark"
+}

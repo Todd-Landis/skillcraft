@@ -21,5 +21,12 @@ public class ModNetwork {
         registrar.playToServer(BankActionPayload.TYPE, BankActionPayload.STREAM_CODEC, BankActions::handle);
         registrar.playToClient(BankSyncPayload.TYPE, BankSyncPayload.STREAM_CODEC);
         registrar.playToServer(CycleAttackStylePayload.TYPE, CycleAttackStylePayload.STREAM_CODEC, CycleAttackStylePayload::handle);
+        // Abilities (see ability/AbilityService)
+        registrar.playToServer(UseAbilityPayload.TYPE, UseAbilityPayload.STREAM_CODEC, UseAbilityPayload::handle);
+        registrar.playToServer(SetLoadoutPayload.TYPE, SetLoadoutPayload.STREAM_CODEC, SetLoadoutPayload::handle);
+        registrar.playToClient(AbilityDefinitionsPayload.TYPE, AbilityDefinitionsPayload.STREAM_CODEC);
+        registrar.playToClient(AbilityCooldownPayload.TYPE, AbilityCooldownPayload.STREAM_CODEC);
+        registrar.playToClient(AbilityDeniedPayload.TYPE, AbilityDeniedPayload.STREAM_CODEC);
+        registrar.playToClient(AbilityUnlockedPayload.TYPE, AbilityUnlockedPayload.STREAM_CODEC);
     }
 }

@@ -1,0 +1,9 @@
+{
+  "values": {
+    "skillcraft:battle_trance": { "damage_dealt": 0.25, "damage_taken": 0.10 },
+    "skillcraft:braced": { "damage_taken": 0.40 },
+    "skillcraft:bulwark": { "reflect": 0.20 },
+    "skillcraft:last_stand": { "max_hit": 0.20 },
+    "skillcraft:deadeye": { "damage": 0.30, "pierce": 1 }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "category": "melee",
+  "class": "ultimate",
+  "requires": {
+    "skill": "melee",
+    "level": 35,
+    "weapon": "skillcraft:weapon_class/melee"
+  },
+  "cooldown": 1800,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:battle_trance",
+    "duration": 200
+  },
+  "icon": "skillcraft:ability/battle_trance"
+}

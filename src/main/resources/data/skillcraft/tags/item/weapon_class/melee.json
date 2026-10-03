@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#skillcraft:weapon_class/sword",
+    "#skillcraft:weapon_class/axe",
+    "#skillcraft:weapon_class/spear",
+    "#skillcraft:weapon_class/trident",
+    "#skillcraft:weapon_class/warhammer",
+    "#skillcraft:weapon_class/mace",
+    "#skillcraft:weapon_class/maul"
+  ]
+}

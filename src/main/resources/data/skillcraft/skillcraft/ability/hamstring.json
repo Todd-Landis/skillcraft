@@ -1,0 +1,25 @@
+{
+  "category": "melee",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 8,
+    "weapon": "skillcraft:weapon_class/melee"
+  },
+  "cooldown": 300,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 0.9,
+    "effects": [
+      {
+        "effect": "skillcraft:slowed",
+        "duration": 80,
+        "amplifier": 3
+      }
+    ]
+  },
+  "icon": "skillcraft:ability/hamstring"
+}

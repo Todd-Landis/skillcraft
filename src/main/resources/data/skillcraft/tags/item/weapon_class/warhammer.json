@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "skillcraft:copper_warhammer",
+    "skillcraft:iron_warhammer",
+    "skillcraft:golden_warhammer",
+    "skillcraft:diamond_warhammer",
+    "skillcraft:netherite_warhammer"
+  ]
+}

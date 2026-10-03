@@ -1,0 +1,21 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "defence",
+    "level": 10,
+    "offhand": "skillcraft:weapon_class/shield"
+  },
+  "cooldown": 300,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 0.7,
+    "style": "crush",
+    "stun": 20,
+    "knockback": 1
+  },
+  "icon": "skillcraft:ability/shield_bash"
+}

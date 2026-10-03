@@ -1,0 +1,19 @@
+{
+  "category": "ranged",
+  "class": "basic",
+  "requires": {
+    "skill": "ranged",
+    "level": 1,
+    "weapon": "skillcraft:weapon_class/bow"
+  },
+  "cooldown": 200,
+  "momentum": {
+    "generate": 6
+  },
+  "behavior": {
+    "type": "skillcraft:next_shot",
+    "window": 60,
+    "instant_charge": true
+  },
+  "icon": "skillcraft:ability/quick_draw"
+}

@@ -1,0 +1,25 @@
+{
+  "category": "weapon_art",
+  "class": "surge",
+  "requires": {
+    "skill": "melee",
+    "level": 25,
+    "weapon": "skillcraft:weapon_class/heavy_blunt"
+  },
+  "cooldown": 440,
+  "windup": 8,
+  "behavior": {
+    "type": "skillcraft:ground_slam",
+    "radius": 3,
+    "damage": 1.4,
+    "style": "crush",
+    "effects": [
+      {
+        "effect": "skillcraft:slowed",
+        "duration": 60,
+        "amplifier": 2
+      }
+    ]
+  },
+  "icon": "skillcraft:ability/earthbreaker"
+}

@@ -1,0 +1,17 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 12,
+    "weapon": "skillcraft:weapon_class/spear"
+  },
+  "cooldown": 280,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:leap",
+    "distance": 5,
+    "lift": 0.55
+  },
+  "icon": "skillcraft:ability/vault"
+}

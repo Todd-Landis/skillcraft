@@ -1,0 +1,15 @@
+{
+  "category": "defence",
+  "class": "basic",
+  "requires": {
+    "skill": "constitution",
+    "level": 20
+  },
+  "cooldown": 1200,
+  "behavior": {
+    "type": "skillcraft:heal_over_time",
+    "fraction": 0.3,
+    "duration": 100
+  },
+  "icon": "skillcraft:ability/second_wind"
+}

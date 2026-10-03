@@ -1,0 +1,18 @@
+{
+  "category": "defence",
+  "class": "basic",
+  "requires": {
+    "skill": "defence",
+    "level": 10
+  },
+  "cooldown": 240,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:parry",
+    "window": 12,
+    "counter_window": 40,
+    "counter_bonus": 1,
+    "momentum": 15
+  },
+  "icon": "skillcraft:ability/riposte"
+}

@@ -95,6 +95,10 @@ public class ModItems {
     // Consumed at a Summoning Brazier to open the way to Slagheart's arena
     public static final DeferredItem<Item> EMBER_SIGIL = ITEMS.registerSimpleItem("ember_sigil", p -> p.stacksTo(16).rarity(Rarity.UNCOMMON));
 
+    // Teaches one ability for good; which one is in its skillcraft:codex_ability component
+    public static final DeferredItem<com.toddlandis.skillcraft.ability.CodexItem> CODEX = ITEMS.registerItem("codex", com.toddlandis.skillcraft.ability.CodexItem::new,
+            p -> p.stacksTo(1).rarity(Rarity.RARE));
+
     // What Slag Spit projectiles look like (not obtainable)
     public static final DeferredItem<Item> SLAG_GLOB = ITEMS.registerSimpleItem("slag_glob");
 
