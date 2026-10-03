@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.bank.BankMenu;
 import com.toddlandis.skillcraft.bench.BenchMenu;
 import com.toddlandis.skillcraft.bench.Station;
 import com.toddlandis.skillcraft.smithing.SmelterMenu;
@@ -24,4 +25,7 @@ public class ModMenuTypes {
 
     public static final Supplier<MenuType<BenchMenu>> CRAFTING_BENCH = MENUS.register("crafting_bench",
             () -> new MenuType<>((id, inventory) -> new BenchMenu(Station.CRAFTING_BENCH, id, inventory), FeatureFlags.VANILLA_SET));
+
+    public static final Supplier<MenuType<BankMenu>> BANK = MENUS.register("bank",
+            () -> new MenuType<>(BankMenu::new, FeatureFlags.VANILLA_SET));
 }

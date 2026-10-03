@@ -2,6 +2,7 @@ package com.toddlandis.skillcraft.network;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AltarAttunement;
+import com.toddlandis.skillcraft.bank.BankActions;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,5 +18,7 @@ public class ModNetwork {
         registrar.playToClient(OpenAttunementPayload.TYPE, OpenAttunementPayload.STREAM_CODEC);
         registrar.playToServer(AttunementResultPayload.TYPE, AttunementResultPayload.STREAM_CODEC, AltarAttunement::handleResult);
         registrar.playToServer(BenchActionPayload.TYPE, BenchActionPayload.STREAM_CODEC, BenchActionPayload::handle);
+        registrar.playToServer(BankActionPayload.TYPE, BankActionPayload.STREAM_CODEC, BankActions::handle);
+        registrar.playToClient(BankSyncPayload.TYPE, BankSyncPayload.STREAM_CODEC);
     }
 }

@@ -137,6 +137,19 @@ Data: `data/skillcraft/data_maps/item/smelting.json`.
 - **Mobs** never drop station gear unless it carries a player's stamp, i.e. the mob picked up player-made gear.
 - **Villagers and wandering traders** never sell station gear or ingots. `scripts/gen_villager_trade_overrides.sh` rewrites the vanilla `villager_trade` tag pools without those trades (36 removed), so villagers still roll full trade lists from what's left. Trades that *buy* ingots stay.
 
+## Bank (OSRS-style)
+- **One bank per player**, stored on the player (attachment `bank`). Every **Bank Chest** opens your own bank, and other players see theirs.
+- **Each stackable item type uses one slot**, holding up to **2,147,483,647**. Unstackable items take a slot each. Items with different enchantments or damage are kept separate. **800 slots** by default (`bankSlots` in the config).
+- **Interface** (familiar to OSRS players):
+  - Brown and gold styling and an 8-column grid. Counts show top-left in yellow, then white "K" from 100K, then green "M" from 10M. Hover shows the exact amount.
+  - Tabs: **All** plus up to 9. Drag an item onto a tab to file it, or onto **+** to make a new tab.
+  - **Swap / Insert** rearrange modes. Drag items to reorder.
+  - **Quantity 1 / 5 / 10 / X / All** sets what a left-click withdraws or deposits. X accepts "10k", "1.5m", "2b" and is remembered.
+  - Right-click for **Withdraw-1 / 5 / 10 / X / All / All-but-1**, or **Deposit-1 / 5 / 10 / X / All** on inventory items.
+  - Clicking an inventory item deposits it, and deposits gather that item from your whole inventory. **Inv** deposits your whole inventory, and **Worn** deposits armor and offhand.
+  - **Find** filters by item name.
+- The server validates every action (`bank/BankActions`). The client only gets a synced copy while the bank is open.
+
 ## Level gates (vanilla content)
 Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
 - `item/skill_requirements.json`: tools and weapons. Pickaxes need Mining, axes need Woodcutting to chop *and* Melee to fight, swords need Melee, crossbows need Ranged. Tiers: copper 5, iron 10, gold 20, diamond 30, netherite 40 (vanilla gear caps around 50).
@@ -160,7 +173,7 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
 - [x] **Phase 3 – Woodcutting & Mining:** skilling nodes (21 types, tiers I–VI), auto-gathering with success rolls, depletion and regrowth, Relocator, Attunement Altar with modular minigames, no XP from world blocks
 - [x] **Phase 3.5 – Multiplayer hardening:** server-verified minigame results (seeded replay + timing check), altar ownership, per-player gathering fatigue
 - [x] **Phase 4 – Smithing & Crafting:** Smelter, Forging Anvil, Crafting Bench, queued processing, vanilla gear recipes disabled, gear only from players (no chest/mob gear)
-- [ ] **Phase 4.5 – Linked chests:** benches pull ingredients from nearby chests (Dragonwilds-style)
+- [x] **Phase 4.5 – Bank:** OSRS-style per-player bank (Bank Chest), 2.1B stacks, tabs, search, quantities, rearranging
 - [ ] **Phase 5 – Combat:** Melee, Ranged and Constitution; equipment requirements; attack styles
 - [ ] **Phase 6 – First boss:** arena, phases, telegraphed attacks, unique drops
 - [ ] **Phase 7 – World generation:** new ores, tree types, structures and regions tied to skills; rare natural skilling nodes

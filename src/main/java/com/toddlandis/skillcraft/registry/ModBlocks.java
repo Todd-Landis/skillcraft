@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.bank.BankChestBlock;
 import com.toddlandis.skillcraft.bench.BenchBlock;
 import com.toddlandis.skillcraft.bench.Station;
 import com.toddlandis.skillcraft.node.NodeBlock;
@@ -56,6 +57,14 @@ public class ModBlocks {
                     .strength(2.5f)
                     .mapColor(MapColor.WOOD)
                     .sound(SoundType.WOOD));
+
+    public static final DeferredBlock<BankChestBlock> BANK_CHEST = BLOCKS.registerBlock("bank_chest",
+            BankChestBlock::new, p -> p
+                    .strength(4.0f, 1200f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.METAL)
+                    .sound(SoundType.VAULT)
+                    .noOcclusion());
 
     public static final DeferredBlock<AttunementAltarBlock> ATTUNEMENT_ALTAR = BLOCKS.registerBlock("attunement_altar",
             AttunementAltarBlock::new, p -> p

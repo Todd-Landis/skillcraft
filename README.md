@@ -45,6 +45,7 @@ src/main/java/com/toddlandis/skillcraft/
   smithing/                Smelter (processing station)
   bench/                   Forging Anvil + Crafting Bench (recipe benches, queue)
   loot/                    keeps generated chests and mob drops free of crafted gear
+  bank/                    OSRS-style player bank (Bank Chest)
   client/minigame/         minigame drawing
 src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
 src/main/resources/assets/skillcraft/

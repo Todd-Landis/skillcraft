@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.bank.PlayerBank;
 import com.toddlandis.skillcraft.node.GatheringFatigue;
 import com.toddlandis.skillcraft.skill.PlayerSkills;
 
@@ -27,6 +28,13 @@ public class ModAttachments {
     public static final Supplier<AttachmentType<GatheringFatigue>> FATIGUE = ATTACHMENT_TYPES.register("gathering_fatigue",
             () -> AttachmentType.builder(GatheringFatigue::new)
                     .serialize(GatheringFatigue.CODEC)
+                    .copyOnDeath()
+                    .build());
+
+    // Each player's bank (see bank/PlayerBank). Kept through death; synced manually while open.
+    public static final Supplier<AttachmentType<PlayerBank>> BANK = ATTACHMENT_TYPES.register("bank",
+            () -> AttachmentType.builder(PlayerBank::new)
+                    .serialize(PlayerBank.CODEC)
                     .copyOnDeath()
                     .build());
 }

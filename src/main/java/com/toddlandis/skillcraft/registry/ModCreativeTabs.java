@@ -20,6 +20,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.SMELTER.get());
                 output.accept(ModItems.FORGING_ANVIL.get());
                 output.accept(ModItems.CRAFTING_BENCH.get());
+                output.accept(ModItems.BANK_CHEST.get());
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

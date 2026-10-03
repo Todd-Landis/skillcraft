@@ -10,5 +10,9 @@ public class Config {
             .comment("Multiplier applied to all skill XP gains. 1.0 = OSRS-like pacing.")
             .defineInRange("xpMultiplier", 1.0, 0.1, 100.0);
 
+    public static final ModConfigSpec.IntValue BANK_SLOTS = BUILDER
+            .comment("Number of slots in each player's bank. Stackable items use one slot per item type.")
+            .defineInRange("bankSlots", 800, 1, 100000);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

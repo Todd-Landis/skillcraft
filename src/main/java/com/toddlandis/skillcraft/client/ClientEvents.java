@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
 import com.toddlandis.skillcraft.bench.BenchRecipe;
+import com.toddlandis.skillcraft.network.BankSyncPayload;
 import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.network.XpGainPayload;
 import com.toddlandis.skillcraft.node.NodeBlock;
@@ -57,6 +58,7 @@ public class ClientEvents {
         event.register(ModMenuTypes.SMELTER.get(), SmelterScreen::new);
         event.register(ModMenuTypes.FORGING_ANVIL.get(), BenchScreen::new);
         event.register(ModMenuTypes.CRAFTING_BENCH.get(), BenchScreen::new);
+        event.register(ModMenuTypes.BANK.get(), BankScreen::new);
     }
 
     @SubscribeEvent
@@ -72,6 +74,7 @@ public class ClientEvents {
                 context.player().playSound(SoundEvents.PLAYER_LEVELUP, 0.6f, 1.0f);
             }
         });
+        event.register(BankSyncPayload.TYPE, (payload, context) -> ClientBank.apply(payload));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
                 Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
     }
