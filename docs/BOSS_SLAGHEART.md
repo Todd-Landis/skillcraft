@@ -109,7 +109,7 @@ In melee, Slagheart only uses Hammerfall and Tong Sweep. It never punches withou
   4. Slagheart rises over 3 seconds (an awaken animation). The fight starts after that.
 - **Ownership:** each instance belongs to the player who used the sigil. Only its party can be in it. There's no way to walk into someone else's plot (1,024 blocks apart and walled with barriers), and the arena dimension can't be reached any other way (no portals; only ops can `/tp` there).
 - **Exit rules:**
-  - **Victory:** the boss collapses (death animation), then a **Reward Chest** and the **Exit Portal** glow. Each eligible player right-clicks the chest for their own loot, then uses the portal. After 90s everyone left is sent home automatically, and **unclaimed loot goes into their inventory** (overflow drops at their feet back home).
+  - **Victory:** the boss collapses (death animation), then a **Reward Chest** and the **Exit Portal** glow. Each eligible player right-clicks the chest for their own loot, then right-clicks the portal to leave. After 90s everyone left is sent home automatically, and **unclaimed loot goes into their inventory** (overflow drops at their feet back home).
   - **Death:** you keep your items and **lose the attempt**, as in OSRS safe-death boss rooms. Death is cancelled: you're healed to full, cleared of fire and effects, and sent back to where you entered. Your share of the attempt ends (no loot).
   - **Leaving early** (Exit Portal mid-fight): forfeits the attempt.
   - **Logout or crash mid-fight:** you're taken out of the instance at once. The return point is saved on the player (attachment `arena_return`), so at your next login in the arena dimension you're moved back. If that point is gone, it falls back to your respawn point or world spawn. Nobody can get stuck.
@@ -134,7 +134,7 @@ A two-handed slag-iron maul with a real identity: **party-support burst crush**.
 | Pool | Rolls | Contents |
 |---|---|---|
 | Fuel | 1 (always) | 6–10 coal |
-| Main | 2 | raw iron 8–14 (w18), raw gold 5–9 (w14), raw copper 16–24 (w10), redstone 12–20 (w10), lapis 8–14 (w8), quartz 10–16 (w6), dark oak logs 12–20 (w8), cherry logs 12–20 (w5), pale oak logs 8–14 (w5), amethyst shards 6–10 (w5), diamond 1–3 (w6), emerald 1–2 (w3), ancient debris 1 (w1) |
+| Main | 2 | raw iron 4–8 (w18), raw gold 3–5 (w14), raw copper 9–13 (w10), redstone 6–12 (w10), lapis 4–8 (w8), quartz 5–9 (w6), dark oak logs 6–12 (w8), cherry logs 6–12 (w5), pale oak logs 4–8 (w5), amethyst shards 3–6 (w5), diamond 1–2 (w6), emerald 1 (w3), ancient debris 1 (w1) |
 | Seeds | 1 at 50% | wheat / beetroot / pumpkin / melon seeds 4–8, torchflower seeds 1–2, pitcher pod 1 |
 | Sigil refund | 1 at 1/20 | Ember Sigil (your next attempt is free) |
 | Unique | 1 at 1/120 | Emberfall Maul |
@@ -142,11 +142,13 @@ A two-handed slag-iron maul with a real identity: **party-support burst crush**.
 There are **no ingots and no vanilla gear**: raw ores only, so Smithing is still needed. The table also goes through the global loot modifier rules.
 
 ### Balance against gathering (one "gathering-minute" = what a player at the resource's required level gathers in a minute at the fatigue-limited rate in DESIGN.md)
-Measured with the loot-rate GameTest (`gametest/LootRateTests`, 20,000 rolls). See **Verified numbers** below.
+Measured with the loot-rate GameTest (`gametest/LootRateTests`, 20,000 rolls), which fails if a kill drifts outside 6.5–9 gathering-minutes. See **Verified numbers** below.
 
-- One kill pays about **7–8 gathering-minutes** of mixed mid-tier resources. At ~11 kills an hour that's about 1.4× the resource rate of gathering one resource at its required level.
+> **Decision (rebalance):** the first draft of the main pool (about 1.8× these stack sizes) measured **12.74 gathering-minutes** per kill, about 1.7× the target, and would have made bossing the best way to get every resource on the table. The main-pool stacks were cut to about 0.55× and the weights left alone, so variety per kill is unchanged.
+
+- One kill pays about **7–8 gathering-minutes** (measured: see below) of mixed mid-tier resources. At ~11 kills an hour that's about 1.4× the resource rate of gathering one resource at its required level.
 - The sigil (~3 gathering-minutes of ore + coal + smelting) has to come out of that, which brings the net to about **1.0–1.2×**. The kill's combat XP (~2,700) and the unique chance sit on top.
-- So bossing is a **good** way to stock up on a *variety* of resources but **not a dominant** way to get any *single* one. For example, diamonds come at ~3 per hour from bossing versus 40 per hour mining at level 30.
+- So bossing is a **good** way to stock up on a *variety* of resources but **not a dominant** way to get any *single* one. For example, diamonds come at ~2 per hour from bossing versus 40 per hour mining at level 30.
 
 ### Combat XP
 There's no separate kill bonus. Damage XP through the normal system works out to about **2,000 Melee/Ranged/Defence + 667 Constitution per solo kill**. That's roughly one level per kill around level 35, which is comparable to an OSRS mid-boss.

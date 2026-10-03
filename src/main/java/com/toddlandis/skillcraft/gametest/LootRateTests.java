@@ -69,6 +69,8 @@ public final class LootRateTests {
         // 20000 rolls at 1/120 -> expect ~167 (sd ~13); allow a wide band
         helper.assertTrue(uniques >= 110 && uniques <= 230, "unique rate off target: " + uniques + " in " + ROLLS);
         helper.assertTrue(sigils >= 800 && sigils <= 1200, "sigil refund rate off target: " + sigils + " in " + ROLLS);
+        // Design target is 7-8 gathering-minutes per kill (docs/BOSS_SLAGHEART.md); fail if the table drifts
+        helper.assertTrue(gatherMinutes >= 6.5 && gatherMinutes <= 9.0, "kill value off target: " + String.format("%.2f", gatherMinutes) + " gathering-minutes");
         helper.succeed();
     }
 }

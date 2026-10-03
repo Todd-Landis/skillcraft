@@ -32,8 +32,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 8,
-                "max": 14
+                "min": 4,
+                "max": 8
               }
             }
           ]
@@ -47,8 +47,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 5,
-                "max": 9
+                "min": 3,
+                "max": 5
               }
             }
           ]
@@ -62,8 +62,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 16,
-                "max": 24
+                "min": 9,
+                "max": 13
               }
             }
           ]
@@ -77,8 +77,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 12,
-                "max": 20
+                "min": 6,
+                "max": 12
               }
             }
           ]
@@ -92,8 +92,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 8,
-                "max": 14
+                "min": 4,
+                "max": 8
               }
             }
           ]
@@ -107,8 +107,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 10,
-                "max": 16
+                "min": 5,
+                "max": 9
               }
             }
           ]
@@ -122,8 +122,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 12,
-                "max": 20
+                "min": 6,
+                "max": 12
               }
             }
           ]
@@ -137,8 +137,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 12,
-                "max": 20
+                "min": 6,
+                "max": 12
               }
             }
           ]
@@ -152,8 +152,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 8,
-                "max": 14
+                "min": 4,
+                "max": 8
               }
             }
           ]
@@ -167,8 +167,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 6,
-                "max": 10
+                "min": 3,
+                "max": 6
               }
             }
           ]
@@ -183,7 +183,7 @@
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
-                "max": 3
+                "max": 2
               }
             }
           ]
@@ -191,17 +191,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
-          "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 1,
-                "max": 2
-              }
-            }
-          ]
+          "weight": 3
         },
         {
           "type": "minecraft:item",
