@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.registry.ModSounds;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.SkillManager;
 
@@ -15,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -27,14 +29,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-// OSRS-style auto-gathering: right-click a node once and the player keeps making attempts
-// every ATTEMPT_TICKS while they stay close and hold a suitable tool.
+// OSRS-style auto-gathering: right-click a node once and the player keeps swinging at it
+// while they stay close and hold a suitable tool. Every SWINGS_PER_ATTEMPT-th swing is a real
+// attempt (success roll); the swings in between are just for feel.
 @EventBusSubscriber(modid = SkillCraft.MODID)
 public final class GatheringSessions {
-    private static final int ATTEMPT_TICKS = 30; // 1.5 seconds
+    private static final int SWING_TICKS = 15; // a swing every 0.75s
+    private static final int SWINGS_PER_ATTEMPT = 2; // so one attempt every 1.5s
     private static final double MAX_DISTANCE_SQ = 4.5 * 4.5;
 
-    private record Session(BlockPos pos, NodeBlock node, long nextAttempt) {}
+    private record Session(BlockPos pos, NodeBlock node, long nextSwing, int swings) {}
 
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
 
@@ -56,10 +60,10 @@ public final class GatheringSessions {
             player.sendOverlayMessage(Component.translatable(problem, type.skill().displayName(), type.level()).withStyle(ChatFormatting.RED));
             return;
         }
-        SESSIONS.put(player.getUUID(), new Session(pos, node, player.level().getGameTime() + ATTEMPT_TICKS));
+        SESSIONS.put(player.getUUID(), new Session(pos, node, player.level().getGameTime() + SWING_TICKS, 1));
         player.sendOverlayMessage(Component.translatable(type.skill() == Skill.WOODCUTTING
                 ? "message.skillcraft.gather_start_wood" : "message.skillcraft.gather_start_ore"));
-        player.swing(InteractionHand.MAIN_HAND, true);
+        swing(player, player.level(), pos, state, type);
     }
 
     @SubscribeEvent
@@ -83,29 +87,44 @@ public final class GatheringSessions {
             stop(player, "message.skillcraft.gather_stop");
             return;
         }
-        if (level.getGameTime() < session.nextAttempt()) return;
+        if (level.getGameTime() < session.nextSwing()) return;
 
-        SESSIONS.put(player.getUUID(), new Session(session.pos(), session.node(), level.getGameTime() + ATTEMPT_TICKS));
-        attempt(player, level, session.pos(), state, session.node());
+        int swings = session.swings() + 1;
+        SESSIONS.put(player.getUUID(), new Session(session.pos(), session.node(), level.getGameTime() + SWING_TICKS, swings));
+        swing(player, level, session.pos(), state, type);
+        if (swings % SWINGS_PER_ATTEMPT == 0) attempt(player, level, session.pos(), state, session.node());
+    }
+
+    // Cosmetic swing: arm animation, node hit sound and a few chips
+    private static void swing(ServerPlayer player, ServerLevel level, BlockPos pos, BlockState state, NodeType type) {
+        player.swing(InteractionHand.MAIN_HAND, true);
+        SoundEvent sound = (type.skill() == Skill.WOODCUTTING ? ModSounds.NODE_CHOP : ModSounds.NODE_PICK).get();
+        level.playSound(null, pos, sound, SoundSource.PLAYERS, 1.0f, 0.85f + level.getRandom().nextFloat() * 0.3f);
+        chips(level, pos, state, 3, 0.05);
     }
 
     private static void attempt(ServerPlayer player, ServerLevel level, BlockPos pos, BlockState state, NodeBlock node) {
         NodeType type = node.type();
-        player.swing(InteractionHand.MAIN_HAND, true);
-        level.playSound(null, pos, state.getSoundType(level, pos, player).getHitSound(), SoundSource.BLOCKS, 0.8f, 0.9f + level.getRandom().nextFloat() * 0.2f);
-
+        boolean wood = type.skill() == Skill.WOODCUTTING;
         double chance = type.successChance(SkillManager.level(player, type.skill()), toolPower(player.getMainHandItem(), type));
         if (level.getRandom().nextDouble() >= chance) return; // missed this attempt
 
         ItemStack drop = new ItemStack(type.drop(), type.dropCount());
         if (!player.getInventory().add(drop)) player.drop(drop, false);
         SkillManager.awardXp(player, type.skill(), type.xp());
-        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5, pos.getY() + 0.8, pos.getZ() + 0.5, 8, 0.25, 0.2, 0.25, 0.05);
+        level.playSound(null, pos, (wood ? ModSounds.NODE_SUCCESS_WOOD : ModSounds.NODE_SUCCESS_ORE).get(), SoundSource.BLOCKS, 0.9f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+        chips(level, pos, state, 10, 0.1);
 
-        if (level.getRandom().nextDouble() < type.depleteChance()) {
+        if (level.getRandom().nextDouble() < type.depleteChance(SkillManager.level(player, type.skill()))) {
+            level.playSound(null, pos, (wood ? ModSounds.NODE_DEPLETE_WOOD : ModSounds.NODE_DEPLETE_ORE).get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            chips(level, pos, state, 30, 0.2);
             node.deplete(level, pos, state);
-            stop(player, type.skill() == Skill.WOODCUTTING ? "message.skillcraft.depleted_wood" : "message.skillcraft.depleted_ore");
+            stop(player, wood ? "message.skillcraft.depleted_wood" : "message.skillcraft.depleted_ore");
         }
+    }
+
+    private static void chips(ServerLevel level, BlockPos pos, BlockState state, int count, double speed) {
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5, pos.getY() + 0.75, pos.getZ() + 0.5, count, 0.25, 0.2, 0.25, speed);
     }
 
     // Returns a translation key describing why the player can't gather, or null if they can

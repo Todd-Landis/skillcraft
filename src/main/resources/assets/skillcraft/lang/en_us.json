@@ -90,9 +90,17 @@
   "tooltip.skillcraft.requires": "Requires %s %s",
   "tooltip.skillcraft.resource": "%s %s · Tier %s",
   "tooltip.skillcraft.node_xp": "%s XP per %s",
+  "tooltip.skillcraft.node_deplete": "Depletion chance: %s%% per success",
   "tooltip.skillcraft.node_use_axe": "Place it, then right-click with an axe",
   "tooltip.skillcraft.node_use_pickaxe": "Place it, then right-click with a pickaxe",
   "tooltip.skillcraft.attunable": "%s can be attuned into a %s",
+
+  "subtitles.skillcraft.node.chop": "Axe chops",
+  "subtitles.skillcraft.node.pick": "Pickaxe strikes",
+  "subtitles.skillcraft.node.success": "Resource gathered",
+  "subtitles.skillcraft.node.deplete_wood": "Tree falls",
+  "subtitles.skillcraft.node.deplete_ore": "Vein crumbles",
+  "subtitles.skillcraft.node.regrow": "Node regrows",
 
   "commands.skillcraft.unknown_skill": "Unknown skill: %s",
   "commands.skillcraft.get.header": "%s — total level %s",

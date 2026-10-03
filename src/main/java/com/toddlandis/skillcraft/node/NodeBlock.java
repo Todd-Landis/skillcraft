@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.toddlandis.skillcraft.registry.ModBlocks;
 import com.toddlandis.skillcraft.registry.ModItems;
+import com.toddlandis.skillcraft.registry.ModSounds;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -109,7 +110,7 @@ public class NodeBlock extends Block {
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(DEPLETED)) {
             level.setBlock(pos, state.setValue(DEPLETED, false), Block.UPDATE_ALL);
-            level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6f, 1.2f);
+            level.playSound(null, pos, ModSounds.NODE_REGROW.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
         }
     }
 }

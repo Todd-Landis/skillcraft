@@ -8,6 +8,7 @@ import com.toddlandis.skillcraft.registry.ModBlockEntities;
 import com.toddlandis.skillcraft.registry.ModBlocks;
 import com.toddlandis.skillcraft.registry.ModCreativeTabs;
 import com.toddlandis.skillcraft.registry.ModItems;
+import com.toddlandis.skillcraft.registry.ModSounds;
 import com.toddlandis.skillcraft.skill.Skill;
 import com.toddlandis.skillcraft.skill.XpTable;
 
@@ -33,6 +34,7 @@ public class SkillCraft {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
         ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
+        ModSounds.SOUNDS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

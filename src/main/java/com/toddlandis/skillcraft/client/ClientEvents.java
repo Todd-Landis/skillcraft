@@ -114,6 +114,10 @@ public class ClientEvents {
                 .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
         tooltip.add(Component.translatable("tooltip.skillcraft.node_xp", XpTable.format(type.xp()), type.drop().getDefaultInstance().getHoverName())
                 .withStyle(ChatFormatting.GRAY));
+        if (met) {
+            int deplete = (int) Math.round(100 * type.depleteChance(SkillManager.level(player, type.skill())));
+            tooltip.add(Component.translatable("tooltip.skillcraft.node_deplete", deplete).withStyle(ChatFormatting.GRAY));
+        }
         tooltip.add(Component.translatable(type.skill() == Skill.WOODCUTTING ? "tooltip.skillcraft.node_use_axe" : "tooltip.skillcraft.node_use_pickaxe")
                 .withStyle(ChatFormatting.DARK_GRAY));
     }
