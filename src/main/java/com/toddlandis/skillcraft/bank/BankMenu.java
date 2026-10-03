@@ -13,8 +13,10 @@ import net.minecraft.world.item.ItemStack;
 // vanilla slots (they hold far more than 99 items) and are drawn from the synced copy in
 // ClientBank. All bank actions go through BankActionPayload -> BankActions.
 public class BankMenu extends AbstractContainerMenu {
-    public static final int INVENTORY_X = 11;
-    public static final int INVENTORY_Y = 190;
+    // Inventory slot positions inside the inventory panel; the screen places that panel and
+    // the bank panel independently so the layout can adapt to the window size
+    public static final int INVENTORY_X = 8;
+    public static final int INVENTORY_Y = 18;
 
     private final ContainerLevelAccess access;
 
@@ -29,7 +31,7 @@ public class BankMenu extends AbstractContainerMenu {
         addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
     }
 
-    // Clicking inventory items deposits them (handled by the screen), so no shift-moving
+    // Shift-clicking deposits into the bank (handled by the screen), so no vanilla shift-moving
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         return ItemStack.EMPTY;

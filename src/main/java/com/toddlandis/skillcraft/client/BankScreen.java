@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.IntConsumer;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.bank.BankActions;
@@ -25,13 +26,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-// OSRS-style bank interface.
-//   - 8-column item grid with OSRS count colors (yellow / white "K" / green "M"), scrolling
-//   - Tabs: "All" + up to 9 tabs; drag an item onto a tab to file it, onto "+" for a new tab
-//   - Rearrange mode Swap/Insert: drag items to reorder
-//   - Quantity 1/5/10/X/All for left-clicks; right-click for Withdraw-/Deposit- options
-//   - Click inventory items to deposit; Deposit inventory / Deposit worn items buttons
-//   - Search filters by item name
+// OSRS-style bank interface with a responsive layout:
+//   - Wide windows: bank panel on the left, inventory panel on the right (like OSRS).
+//   - Narrow windows: bank above inventory.
+//   - The item grid gets as many rows as fit (3-12).
+// Controls:
+//   - Left-click a bank item: withdraw the selected quantity. Right-click: Withdraw- options.
+//   - Drag a bank item onto another (Swap/Insert), onto a tab, onto "+" (new tab), or onto
+//     your inventory (withdraw).
+//   - Inventory works normally. Shift-click deposits (Shift+right-click: Deposit- options).
+//     Clicking a held item onto the bank grid deposits it (right-click: just one).
+//   - Quantity 1/5/10/X/All, Find (search), Inv (deposit inventory), Worn (deposit armor).
 public class BankScreen extends AbstractContainerScreen<BankMenu> {
     // OSRS palette
     private static final int FRAME_DARK = 0xFF1E1913;
@@ -45,21 +50,25 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     private static final int WHITE = 0xFFFFFFFF;
     private static final int GREEN = 0xFF00FF80;
 
-    private static final int GRID_X = 8, GRID_Y = 38, COLS = 8, ROWS = 5, CELL = 20;
-    private static final int TAB_X = 4, TAB_Y = 16, TAB_W = 16, TAB_H = 19;
-    private static final int ROW1_Y = 144, ROW2_Y = 160;
-    private static final int SCROLL_X = 170;
+    // Panel sizes
+    private static final int BANK_W = 184, INV_W = 176, INV_H = 100, GAP = 6, MARGIN = 4;
+    private static final int COLS = 8, CELL = 20, MIN_ROWS = 3, MAX_ROWS = 12;
+    private static final int TAB_W = 16, TAB_H = 19;
+    // Bank panel height without the grid rows: title, tabs, grid frame, two control rows
+    private static final int BANK_CHROME = 38 + 6 + 34 + 4;
 
     static final int[] QUANTITIES = {1, 5, 10, 0, BankActions.ALL}; // 0 = X
     private static final String[] QUANTITY_LABELS = {"1", "5", "10", "X", "All"};
 
-    // Simple OSRS-looking buttons drawn by hand
-    private record Button(int x, int y, int w, int h, String key, Runnable action) {
+    private record Button(int x, int y, int w, int h, String label, Runnable action) {
         boolean hit(double mx, double my) { return mx >= x && my >= y && mx < x + w && my < y + h; }
     }
 
-    // Right-click "Choose Option" menu
     private record MenuOption(Component label, Runnable action) {}
+
+    // Layout (absolute screen coordinates), recomputed on every resize in init()
+    private int bankX, bankY, bankH, rows;
+    private int gridX, gridY, tabY, row1Y, row2Y, scrollX;
 
     private final List<Button> buttons = new ArrayList<>();
     private List<MenuOption> contextMenu;
@@ -69,52 +78,83 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     private EditBox search;
     private boolean searching;
     private EditBox amountBox;
-    private java.util.function.IntConsumer pendingX;
+    private IntConsumer pendingX;
 
     private int scrollRow;
     private int pressIndex = -1;
     private double pressX, pressY;
 
     public BankScreen(BankMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 184, BankMenu.INVENTORY_Y + 82);
-        this.inventoryLabelX = BankMenu.INVENTORY_X;
-        this.inventoryLabelY = BankMenu.INVENTORY_Y - 11;
+        super(menu, inventory, title, INV_W, INV_H);
+        this.inventoryLabelX = 8;
+        this.inventoryLabelY = 6;
     }
 
     @Override
     protected void init() {
         super.init();
+        layout();
+        int x = bankX, y = bankY;
+
         buttons.clear();
-        int x = leftPos, y = topPos;
-        buttons.add(new Button(x + 8, y + ROW1_Y, 32, 13, "screen.skillcraft.bank_swap", () -> ClientBank.insertMode = false));
-        buttons.add(new Button(x + 42, y + ROW1_Y, 34, 13, "screen.skillcraft.bank_insert", () -> ClientBank.insertMode = true));
-        buttons.add(new Button(x + 104, y + ROW1_Y, 22, 13, "screen.skillcraft.bank_search", this::toggleSearch));
-        buttons.add(new Button(x + 128, y + ROW1_Y, 24, 13, "screen.skillcraft.bank_deposit_inv", () -> send(BankActions.Action.DEPOSIT_INVENTORY, 0, 0, depositTab())));
-        buttons.add(new Button(x + 154, y + ROW1_Y, 22, 13, "screen.skillcraft.bank_deposit_worn", () -> send(BankActions.Action.DEPOSIT_WORN, 0, 0, depositTab())));
+        buttons.add(new Button(x + 8, row1Y, 32, 13, "screen.skillcraft.bank_swap", () -> ClientBank.insertMode = false));
+        buttons.add(new Button(x + 42, row1Y, 34, 13, "screen.skillcraft.bank_insert", () -> ClientBank.insertMode = true));
+        buttons.add(new Button(x + 104, row1Y, 22, 13, "screen.skillcraft.bank_search", this::toggleSearch));
+        buttons.add(new Button(x + 128, row1Y, 24, 13, "screen.skillcraft.bank_deposit_inv", () -> send(BankActions.Action.DEPOSIT_INVENTORY, 0, 0, ClientBank.currentTab)));
+        buttons.add(new Button(x + 154, row1Y, 22, 13, "screen.skillcraft.bank_deposit_worn", () -> send(BankActions.Action.DEPOSIT_WORN, 0, 0, ClientBank.currentTab)));
         for (int i = 0; i < QUANTITIES.length; i++) {
             int mode = i;
-            buttons.add(new Button(x + 50 + i * 25, y + ROW2_Y, 24, 13, null, () -> {
+            buttons.add(new Button(x + 50 + i * 25, row2Y, 24, 13, null, () -> {
                 ClientBank.quantityMode = mode;
                 if (QUANTITIES[mode] == 0) askAmount(amount -> {}); // set X now, like OSRS
             }));
         }
 
+        String previousSearch = search == null ? "" : search.getValue();
         search = new EditBox(font, x + 34, y + 3, 116, 11, Component.translatable("screen.skillcraft.bank_search"));
         search.setMaxLength(40);
+        search.setValue(previousSearch);
         search.setVisible(searching);
         search.setResponder(text -> scrollRow = 0);
         addRenderableWidget(search);
 
-        amountBox = new EditBox(font, x + imageWidth / 2 - 40, y + 82, 80, 12, Component.translatable("screen.skillcraft.bank_enter_amount"));
+        amountBox = new EditBox(font, x + BANK_W / 2 - 40, y + 82, 80, 12, Component.translatable("screen.skillcraft.bank_enter_amount"));
         amountBox.setMaxLength(12);
         amountBox.setVisible(false); // drawn and fed input by hand so it sits above everything
     }
 
-    // --- Helpers ---
-
-    private int depositTab() {
-        return ClientBank.currentTab;
+    // Places the bank and inventory panels to fit the window
+    private void layout() {
+        boolean sideBySide = width >= BANK_W + GAP + INV_W + MARGIN * 2;
+        if (sideBySide) {
+            rows = clampRows((height - MARGIN * 2 - BANK_CHROME) / CELL);
+            bankH = BANK_CHROME + rows * CELL;
+            bankX = (width - (BANK_W + GAP + INV_W)) / 2;
+            bankY = Math.max(MARGIN, (height - bankH) / 2);
+            leftPos = bankX + BANK_W + GAP;
+            topPos = bankY + bankH - INV_H; // inventory lines up with the bottom, like OSRS
+        } else {
+            rows = clampRows((height - MARGIN * 2 - GAP - INV_H - BANK_CHROME) / CELL);
+            bankH = BANK_CHROME + rows * CELL;
+            int total = bankH + GAP + INV_H;
+            bankX = (width - BANK_W) / 2;
+            bankY = Math.max(MARGIN, (height - total) / 2);
+            leftPos = (width - INV_W) / 2;
+            topPos = bankY + bankH + GAP;
+        }
+        tabY = bankY + 16;
+        gridX = bankX + 8;
+        gridY = bankY + 38;
+        scrollX = bankX + 170;
+        row1Y = gridY + rows * CELL + 6;
+        row2Y = row1Y + 16;
     }
+
+    private static int clampRows(int rows) {
+        return Math.clamp(rows, MIN_ROWS, MAX_ROWS);
+    }
+
+    // --- Helpers ---
 
     private void send(BankActions.Action action, int index, int amount, int target) {
         ClientPacketDistributor.sendToServer(new BankActionPayload(menu.containerId, action.ordinal(), index, amount, target));
@@ -134,21 +174,32 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     }
 
     private int maxScroll() {
-        return Math.max(0, (visible().size() + COLS - 1) / COLS - ROWS);
+        return Math.max(0, (visible().size() + COLS - 1) / COLS - rows);
+    }
+
+    private boolean inGrid(double mx, double my) {
+        return mx >= gridX && my >= gridY && mx < gridX + COLS * CELL && my < gridY + rows * CELL;
+    }
+
+    private boolean inBankPanel(double mx, double my) {
+        return mx >= bankX && my >= bankY && mx < bankX + BANK_W && my < bankY + bankH;
+    }
+
+    private boolean inInventoryPanel(double mx, double my) {
+        return mx >= leftPos && my >= topPos && mx < leftPos + INV_W && my < topPos + INV_H;
     }
 
     // Grid cell under the mouse -> bank entry index, or -1
     private int entryAt(double mx, double my) {
-        int gx = (int) mx - leftPos - GRID_X, gy = (int) my - topPos - GRID_Y;
-        if (gx < 0 || gy < 0 || gx >= COLS * CELL || gy >= ROWS * CELL) return -1;
-        int slot = (scrollRow + gy / CELL) * COLS + gx / CELL;
+        if (!inGrid(mx, my)) return -1;
+        int slot = (scrollRow + ((int) my - gridY) / CELL) * COLS + ((int) mx - gridX) / CELL;
         List<Integer> shown = visible();
         return slot < shown.size() ? shown.get(slot) : -1;
     }
 
     // Tab under the mouse: 0 = All, 1-9 = tabs, 10 = "+" (new tab), -1 = none
     private int tabAt(double mx, double my) {
-        int tx = (int) mx - leftPos - TAB_X, ty = (int) my - topPos - TAB_Y;
+        int tx = (int) mx - bankX - 4, ty = (int) my - tabY;
         if (tx < 0 || ty < 0 || ty >= TAB_H) return -1;
         int tab = tx / TAB_W;
         int shownTabs = highestTab() + 1; // "All" plus every tab in use
@@ -172,11 +223,10 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         scrollRow = 0;
     }
 
-    private void askAmount(java.util.function.IntConsumer then) {
+    private void askAmount(IntConsumer then) {
         pendingX = then;
         amountBox.setValue("");
         amountBox.setVisible(true);
-        setFocused(amountBox);
         amountBox.setFocused(true);
     }
 
@@ -234,57 +284,68 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     @Override
     public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(g, mouseX, mouseY, partialTick);
-        int x = leftPos, y = topPos;
-        bevel(g, x, y, imageWidth, imageHeight, PANEL);
+
+        // Panels
+        bevel(g, bankX, bankY, BANK_W, bankH, PANEL);
+        bevel(g, leftPos, topPos, INV_W, INV_H, PANEL);
+
+        // Title row
+        if (!searching) g.centeredText(font, title, bankX + BANK_W / 2, bankY + 5, ORANGE);
+        g.text(font, String.valueOf(ClientBank.entries.size()), bankX + 6, bankY + 5, YELLOW, true);
 
         // Tabs
         int shownTabs = highestTab() + 1;
         for (int t = 0; t <= Math.min(shownTabs, PlayerBank.MAX_TABS); t++) {
-            int tx = x + TAB_X + t * TAB_W;
+            int tx = bankX + 4 + t * TAB_W;
             boolean plus = t == shownTabs;
-            boolean active = !plus && t == ClientBank.currentTab;
-            bevel(g, tx, y + TAB_Y, TAB_W, TAB_H, active ? BUTTON_ON : BUTTON);
+            bevel(g, tx, tabY, TAB_W, TAB_H, !plus && t == ClientBank.currentTab ? BUTTON_ON : BUTTON);
             if (plus) {
-                g.centeredText(font, "+", tx + TAB_W / 2, y + TAB_Y + 6, ORANGE);
+                g.centeredText(font, "+", tx + TAB_W / 2, tabY + 6, ORANGE);
             } else if (t == 0) {
-                g.item(new ItemStack(Items.CHEST), tx, y + TAB_Y + 2);
+                g.item(new ItemStack(Items.CHEST), tx, tabY + 2);
             } else {
                 for (PlayerBank.Entry entry : ClientBank.entries) {
-                    if (entry.tab() == t) { g.item(entry.item(), tx, y + TAB_Y + 2); break; }
+                    if (entry.tab() == t) { g.item(entry.item(), tx, tabY + 2); break; }
                 }
             }
         }
 
         // Grid
-        bevel(g, x + GRID_X - 2, y + GRID_Y - 2, COLS * CELL + 4, ROWS * CELL + 4, PANEL_INNER);
+        bevel(g, gridX - 2, gridY - 2, COLS * CELL + 4, rows * CELL + 4, PANEL_INNER);
         List<Integer> shown = visible();
-        for (int i = 0; i < COLS * ROWS; i++) {
+        int hovered = entryAt(mouseX, mouseY);
+        for (int i = 0; i < COLS * rows; i++) {
             int slot = scrollRow * COLS + i;
             if (slot >= shown.size()) break;
-            PlayerBank.Entry entry = ClientBank.entries.get(shown.get(slot));
-            int cx = x + GRID_X + (i % COLS) * CELL, cy = y + GRID_Y + (i / COLS) * CELL;
-            boolean dragged = pressIndex == shown.get(slot) && isDragging(mouseX, mouseY);
-            if (!dragged) drawEntry(g, entry, cx + 2, cy + 3);
+            int index = shown.get(slot);
+            if (index == pressIndex && isDragging(mouseX, mouseY)) continue;
+            int cx = gridX + (i % COLS) * CELL, cy = gridY + (i / COLS) * CELL;
+            if (index == hovered) g.fill(cx, cy, cx + CELL, cy + CELL, 0x30FFFFFF);
+            drawEntry(g, ClientBank.entries.get(index), cx + 2, cy + 3);
         }
 
         // Scrollbar
         int max = maxScroll();
-        g.fill(x + SCROLL_X, y + GRID_Y, x + SCROLL_X + 6, y + GRID_Y + ROWS * CELL, FRAME_DARK);
-        int thumbH = Math.max(10, ROWS * CELL * ROWS / Math.max(ROWS, ROWS + max));
-        int thumbY = max == 0 ? 0 : (ROWS * CELL - thumbH) * scrollRow / max;
-        g.fill(x + SCROLL_X + 1, y + GRID_Y + thumbY, x + SCROLL_X + 5, y + GRID_Y + thumbY + thumbH, FRAME_LIGHT);
+        int trackH = rows * CELL;
+        g.fill(scrollX, gridY, scrollX + 6, gridY + trackH, FRAME_DARK);
+        int thumbH = Math.max(10, trackH * rows / (rows + max));
+        int thumbY = max == 0 ? 0 : (trackH - thumbH) * scrollRow / max;
+        g.fill(scrollX + 1, gridY + thumbY, scrollX + 5, gridY + thumbY + thumbH, FRAME_LIGHT);
 
-        // Buttons
+        // Control rows
+        g.text(font, Component.translatable("screen.skillcraft.bank_quantity"), bankX + 8, row2Y + 3, ORANGE, true);
         for (int i = 0; i < buttons.size(); i++) {
             Button b = buttons.get(i);
             boolean on = (i == 0 && !ClientBank.insertMode) || (i == 1 && ClientBank.insertMode) || (i == 2 && searching)
                     || (i >= 5 && i - 5 == ClientBank.quantityMode);
             bevel(g, b.x, b.y, b.w, b.h, on ? BUTTON_ON : BUTTON);
+            String label = b.label != null ? Component.translatable(b.label).getString() : QUANTITY_LABELS[i - 5];
+            g.centeredText(font, label, b.x + b.w / 2, b.y + 3, ORANGE);
         }
 
         // Inventory slot backgrounds
         for (Slot slot : menu.slots) {
-            g.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, PANEL_INNER);
+            g.fill(leftPos + slot.x - 1, topPos + slot.y - 1, leftPos + slot.x + 17, topPos + slot.y + 17, PANEL_INNER);
         }
     }
 
@@ -302,16 +363,7 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
 
     @Override
     protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
-        if (!searching) g.centeredText(font, title, imageWidth / 2, 5, ORANGE);
-        g.text(font, ClientBank.entries.size() + "", 6, 5, YELLOW, true);
-        g.text(font, Component.translatable("screen.skillcraft.bank_quantity"), 8, ROW2_Y + 3, ORANGE, true);
         g.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, ORANGE, true);
-        for (int i = 0; i < buttons.size(); i++) {
-            Button b = buttons.get(i);
-            String label = b.key != null ? Component.translatable(b.key).getString() : QUANTITY_LABELS[i - 5];
-            if (i >= 5 && QUANTITIES[i - 5] == 0) label = "X";
-            g.centeredText(font, label, b.x - leftPos + b.w / 2, b.y - topPos + 3, ORANGE);
-        }
     }
 
     private boolean isDragging(double mx, double my) {
@@ -322,7 +374,7 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(g, mouseX, mouseY, partialTick);
 
-        // Dragged item follows the mouse
+        // Dragged bank item follows the mouse
         if (isDragging(mouseX, mouseY) && pressIndex < ClientBank.entries.size()) {
             g.nextStratum();
             drawEntry(g, ClientBank.entries.get(pressIndex), mouseX - 8, mouseY - 8);
@@ -331,17 +383,16 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         // "Enter amount" prompt
         if (amountBox.isVisible()) {
             g.nextStratum();
-            int bx = leftPos + imageWidth / 2 - 50;
-            bevel(g, bx, topPos + 64, 100, 38, PANEL);
-            g.centeredText(font, Component.translatable("screen.skillcraft.bank_enter_amount"), leftPos + imageWidth / 2, topPos + 70, ORANGE);
+            int bx = bankX + BANK_W / 2 - 50;
+            bevel(g, bx, bankY + 64, 100, 38, PANEL);
+            g.centeredText(font, Component.translatable("screen.skillcraft.bank_enter_amount"), bankX + BANK_W / 2, bankY + 70, ORANGE);
             amountBox.extractRenderState(g, mouseX, mouseY, partialTick);
         }
 
-        // Right-click menu
+        // Right-click "Choose Option" menu
         if (contextMenu != null) {
             g.nextStratum();
-            int w = font.width(contextTitle) + 8;
-            for (MenuOption option : contextMenu) w = Math.max(w, font.width(option.label()) + 8);
+            int w = contextWidth();
             int h = 12 + contextMenu.size() * 12;
             g.fill(contextX, contextY, contextX + w, contextY + h, 0xFF000000);
             g.fill(contextX + 1, contextY + 1, contextX + w - 1, contextY + h - 1, 0xFF5D5447);
@@ -359,7 +410,7 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     protected void extractTooltip(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         if (contextMenu != null || amountBox.isVisible() || pressIndex >= 0) return;
         int index = entryAt(mouseX, mouseY);
-        if (index >= 0) {
+        if (index >= 0 && menu.getCarried().isEmpty()) {
             PlayerBank.Entry entry = ClientBank.entries.get(index);
             List<Component> lines = new ArrayList<>(getTooltipFromContainerItem(entry.item()));
             lines.add(Component.translatable("screen.skillcraft.bank_amount", new DecimalFormat("#,###").format(entry.count()))
@@ -370,10 +421,16 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         super.extractTooltip(g, mouseX, mouseY);
     }
 
-    // --- Input ---
+    // --- Context menus ---
 
     private Component nameOf(ItemStack stack) {
         return stack.getHoverName().copy().withStyle(ChatFormatting.GOLD);
+    }
+
+    private int contextWidth() {
+        int w = font.width(contextTitle) + 8;
+        for (MenuOption option : contextMenu) w = Math.max(w, font.width(option.label()) + 8);
+        return w;
     }
 
     private void openWithdrawMenu(int index, double mx, double my) {
@@ -392,18 +449,27 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
     private void openDepositMenu(int slotIndex, ItemStack stack, double mx, double my) {
         List<MenuOption> options = new ArrayList<>();
         for (int amount : new int[]{1, 5, 10}) {
-            options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_n", amount), () -> send(BankActions.Action.DEPOSIT, slotIndex, amount, depositTab())));
+            options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_n", amount), () -> send(BankActions.Action.DEPOSIT, slotIndex, amount, ClientBank.currentTab)));
         }
-        options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_x"), () -> askAmount(amount -> send(BankActions.Action.DEPOSIT, slotIndex, amount, depositTab()))));
-        options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_all"), () -> send(BankActions.Action.DEPOSIT, slotIndex, BankActions.ALL, depositTab())));
+        options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_x"), () -> askAmount(amount -> send(BankActions.Action.DEPOSIT, slotIndex, amount, ClientBank.currentTab))));
+        options.add(new MenuOption(Component.translatable("screen.skillcraft.bank_deposit_all"), () -> send(BankActions.Action.DEPOSIT, slotIndex, BankActions.ALL, ClientBank.currentTab)));
         openMenu(options, nameOf(stack), mx, my);
     }
 
     private void openMenu(List<MenuOption> options, Component title, double mx, double my) {
         contextMenu = options;
         contextTitle = title;
-        contextX = (int) mx - 10;
-        contextY = (int) my - 4;
+        int w = contextWidth(), h = 12 + options.size() * 12;
+        // Keep the menu on screen
+        contextX = Math.clamp((int) mx - 10, 2, Math.max(2, width - w - 2));
+        contextY = Math.clamp((int) my - 4, 2, Math.max(2, height - h - 2));
+    }
+
+    // --- Input ---
+
+    @Override
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+        return super.hasClickedOutside(mx, my, xo, yo) && !inBankPanel(mx, my);
     }
 
     @Override
@@ -412,8 +478,7 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         boolean right = event.input() == InputConstants.MOUSE_BUTTON_RIGHT;
 
         if (contextMenu != null) {
-            int w = font.width(contextTitle) + 8;
-            for (MenuOption option : contextMenu) w = Math.max(w, font.width(option.label()) + 8);
+            int w = contextWidth();
             for (int i = 0; i < contextMenu.size(); i++) {
                 int oy = contextY + 13 + i * 12;
                 if (mx >= contextX && mx < contextX + w && my >= oy - 1 && my < oy + 11) {
@@ -427,49 +492,53 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
             return true;
         }
         if (amountBox.isVisible()) {
-            return amountBox.mouseClicked(event, doubleClick) || true;
+            amountBox.mouseClicked(event, doubleClick);
+            return true;
         }
         if (searching && search.mouseClicked(event, doubleClick)) return true;
 
-        for (Button b : buttons) {
-            if (b.hit(mx, my)) {
-                b.action.run();
-                return true;
-            }
-        }
-
-        int tab = tabAt(mx, my);
-        if (tab >= 0 && tab <= PlayerBank.MAX_TABS) {
-            ClientBank.currentTab = tab;
-            scrollRow = 0;
-            return true;
-        }
-
-        int index = entryAt(mx, my);
-        if (index >= 0) {
-            if (right) {
-                openWithdrawMenu(index, mx, my);
-            } else {
-                pressIndex = index;
-                pressX = mx;
-                pressY = my;
-            }
-            return true;
-        }
-
-        Slot slot = getHoveredSlot();
-        if (slot != null) {
-            if (slot.hasItem()) {
-                if (right) {
-                    openDepositMenu(slot.index, slot.getItem(), mx, my);
-                } else if (QUANTITIES[ClientBank.quantityMode] == 0) {
-                    send(BankActions.Action.DEPOSIT, slot.index, ClientBank.lastX, depositTab());
-                } else {
-                    send(BankActions.Action.DEPOSIT, slot.index, currentQuantity(), depositTab());
+        if (inBankPanel(mx, my)) {
+            for (Button b : buttons) {
+                if (b.hit(mx, my)) {
+                    b.action.run();
+                    return true;
                 }
             }
-            return true; // never pick up items in the bank screen
+            int tab = tabAt(mx, my);
+            if (tab >= 0 && tab <= PlayerBank.MAX_TABS) {
+                ClientBank.currentTab = tab;
+                scrollRow = 0;
+                return true;
+            }
+            // Holding an item: drop it into the bank (right-click: just one)
+            if (!menu.getCarried().isEmpty()) {
+                if (inGrid(mx, my)) send(BankActions.Action.DEPOSIT_CARRIED, 0, right ? 1 : BankActions.ALL, ClientBank.currentTab);
+                return true;
+            }
+            int index = entryAt(mx, my);
+            if (index >= 0) {
+                if (right) {
+                    openWithdrawMenu(index, mx, my);
+                } else {
+                    pressIndex = index;
+                    pressX = mx;
+                    pressY = my;
+                }
+            }
+            return true;
         }
+
+        // Shift-click an inventory item to deposit it
+        Slot slot = getHoveredSlot();
+        if (slot != null && slot.hasItem() && event.hasShiftDown() && menu.getCarried().isEmpty()) {
+            if (right) {
+                openDepositMenu(slot.index, slot.getItem(), mx, my);
+            } else {
+                send(BankActions.Action.DEPOSIT, slot.index, currentQuantity(), ClientBank.currentTab);
+            }
+            return true;
+        }
+        // Everything else in the inventory works like a normal inventory
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -480,7 +549,7 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         int from = pressIndex;
         boolean dragged = isDragging(mx, my);
         pressIndex = -1;
-        if (!dragged) {
+        if (!dragged || inInventoryPanel(mx, my)) {
             send(BankActions.Action.WITHDRAW, from, currentQuantity(), 0);
             return true;
         }
@@ -500,8 +569,11 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
 
     @Override
     public boolean mouseScrolled(double mx, double my, double scrollX, double scrollY) {
-        scrollRow = Math.clamp(scrollRow - (int) Math.signum(scrollY), 0, maxScroll());
-        return true;
+        if (inBankPanel(mx, my)) {
+            scrollRow = Math.clamp(scrollRow - (int) Math.signum(scrollY), 0, maxScroll());
+            return true;
+        }
+        return super.mouseScrolled(mx, my, scrollX, scrollY);
     }
 
     @Override
@@ -509,14 +581,12 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
         if (amountBox.isVisible()) {
             if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
                 confirmAmount();
-                return true;
-            }
-            if (event.isEscape()) {
+            } else if (event.isEscape()) {
                 amountBox.setVisible(false);
                 pendingX = null;
-                return true;
+            } else {
+                amountBox.keyPressed(event);
             }
-            amountBox.keyPressed(event);
             return true;
         }
         if (contextMenu != null && event.isEscape()) {
@@ -524,11 +594,8 @@ public class BankScreen extends AbstractContainerScreen<BankMenu> {
             return true;
         }
         if (searching && search.isFocused()) {
-            if (event.isEscape()) {
-                toggleSearch();
-                return true;
-            }
-            search.keyPressed(event);
+            if (event.isEscape()) toggleSearch();
+            else search.keyPressed(event);
             return true;
         }
         return super.keyPressed(event);

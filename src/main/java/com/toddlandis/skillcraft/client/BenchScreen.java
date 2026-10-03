@@ -24,15 +24,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-// Recipe bench screen (Forging Anvil / Crafting Bench), OSRS-style:
-//   left: grid of recipes (locked ones dimmed, with the level needed)
-//   right: selected recipe's level, XP, time and ingredients (have/need), plus Make buttons
-//   middle: the queue with a progress bar and Cancel
-//   bottom: 9 output slots and the player's inventory
+// Recipe bench screen (Forging Anvil / Crafting Bench) with a responsive layout:
+//   - Recipe panel: grid of recipes (locked ones dimmed), the selected recipe's level, XP,
+//     time and ingredients (have/need), Make buttons, and the queue with Cancel.
+//   - Inventory panel: the bench's 9 output slots above the player's inventory.
+//   Wide windows put the two panels side by side; narrow windows stack them, and the
+//   recipe grid gets as many rows as fit.
 public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
-    private static final int GRID_X = 8, GRID_Y = 18, COLS = 6, ROWS = 5, CELL = 18;
-    private static final int PANEL_X = 122, PANEL_W = 102;
-    private static final int QUEUE_Y = 110;
+    private static final int MAIN_W = 232, INV_W = 176, INV_H = 132, GAP = 6, MARGIN = 4;
+    private static final int COLS = 6, CELL = 18, MIN_ROWS = 3, MAX_ROWS = 8;
+    private static final int PANEL_W = 102;
+    private static final int DETAILS_MIN_H = 84;
+    // Main panel height without the recipe area: title row, queue row, padding
+    private static final int MAIN_CHROME = 16 + 6 + 16 + 4;
     private static final int[] AMOUNTS = {1, 5, 10, 64};
 
     private final List<Item> recipes;
@@ -41,27 +45,55 @@ public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
     private int scrollRow;
     private int selected;
 
+    // Layout (absolute screen coordinates), recomputed on resize in init()
+    private int mainX, mainY, mainH, rows, areaH;
+    private int gridX, gridY, panelX, queueY;
+
     public BenchScreen(BenchMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 232, BenchMenu.INVENTORY_Y + 82);
+        super(menu, inventory, title, INV_W, INV_H);
         this.recipes = BenchRecipe.forStation(menu.station());
-        this.inventoryLabelX = 35;
-        this.inventoryLabelY = BenchMenu.INVENTORY_Y - 11;
+        this.inventoryLabelX = 8;
+        this.inventoryLabelY = BenchMenu.INVENTORY_Y - 10;
     }
 
     @Override
     protected void init() {
         super.init();
+        layout();
         makeButtons.clear();
         for (int i = 0; i < AMOUNTS.length; i++) {
             int amount = AMOUNTS[i];
             Component label = amount == 64 ? Component.translatable("screen.skillcraft.bench_all") : Component.literal("×" + amount);
-            Button button = Button.builder(label, b -> queue(amount))
-                    .bounds(leftPos + PANEL_X + i * 25, topPos + 92, 24, 14).build();
-            makeButtons.add(addRenderableWidget(button));
+            makeButtons.add(addRenderableWidget(Button.builder(label, b -> queue(amount))
+                    .bounds(panelX + i * 25, gridY + areaH - 14, 24, 14).build()));
         }
         cancelButton = addRenderableWidget(Button.builder(Component.translatable("screen.skillcraft.bench_cancel"),
                 b -> ClientPacketDistributor.sendToServer(BenchActionPayload.cancel(menu.containerId)))
-                .bounds(leftPos + PANEL_X + 50, topPos + QUEUE_Y - 1, 52, 12).build());
+                .bounds(panelX + 50, queueY - 1, 52, 12).build());
+    }
+
+    // Places the recipe and inventory panels to fit the window
+    private void layout() {
+        boolean sideBySide = width >= MAIN_W + GAP + INV_W + MARGIN * 2;
+        int available = sideBySide ? height - MARGIN * 2 : height - MARGIN * 2 - GAP - INV_H;
+        rows = Math.clamp((available - MAIN_CHROME) / CELL, MIN_ROWS, MAX_ROWS);
+        areaH = Math.max(rows * CELL, DETAILS_MIN_H);
+        mainH = MAIN_CHROME + areaH;
+        if (sideBySide) {
+            mainX = (width - (MAIN_W + GAP + INV_W)) / 2;
+            mainY = Math.max(MARGIN, (height - Math.max(mainH, INV_H)) / 2);
+            leftPos = mainX + MAIN_W + GAP;
+            topPos = mainY;
+        } else {
+            mainX = (width - MAIN_W) / 2;
+            mainY = Math.max(MARGIN, (height - (mainH + GAP + INV_H)) / 2);
+            leftPos = (width - INV_W) / 2;
+            topPos = mainY + mainH + GAP;
+        }
+        gridX = mainX + 8;
+        gridY = mainY + 16;
+        panelX = mainX + 122;
+        queueY = gridY + areaH + 8;
     }
 
     private Item selectedItem() {
@@ -91,76 +123,80 @@ public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
 
     // --- Drawing ---
 
+    private static void frame(GuiGraphicsExtractor g, int x, int y, int w, int h) {
+        g.fill(x, y, x + w, y + h, 0xFF2B2B33);
+        g.fill(x + 1, y + 1, x + w - 1, y + h - 1, 0xFFC6C6C6);
+    }
+
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
-        int x = leftPos, y = topPos;
-        graphics.fill(x, y, x + imageWidth, y + imageHeight, 0xFF2B2B33);
-        graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + imageHeight - 1, 0xFFC6C6C6);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(g, mouseX, mouseY, partialTick);
+        frame(g, mainX, mainY, MAIN_W, mainH);
+        frame(g, leftPos, topPos, INV_W, INV_H);
+        g.text(font, title, mainX + 8, mainY + 5, 0xFF404040, false);
 
         // Recipe grid
-        graphics.fill(x + GRID_X - 1, y + GRID_Y - 1, x + GRID_X + COLS * CELL + 1, y + GRID_Y + ROWS * CELL + 1, 0xFF373737);
+        g.fill(gridX - 1, gridY - 1, gridX + COLS * CELL + 1, gridY + rows * CELL + 1, 0xFF373737);
         int level = level();
-        for (int i = 0; i < COLS * ROWS; i++) {
+        for (int i = 0; i < COLS * rows; i++) {
             int index = scrollRow * COLS + i;
-            int cx = x + GRID_X + (i % COLS) * CELL, cy = y + GRID_Y + (i / COLS) * CELL;
-            graphics.fill(cx, cy, cx + CELL - 1, cy + CELL - 1, index == selected ? 0xFF6E8B3D : 0xFF8B8B8B);
+            int cx = gridX + (i % COLS) * CELL, cy = gridY + (i / COLS) * CELL;
+            g.fill(cx, cy, cx + CELL - 1, cy + CELL - 1, index == selected ? 0xFF6E8B3D : 0xFF8B8B8B);
             if (index >= recipes.size()) continue;
             Item item = recipes.get(index);
-            graphics.item(new ItemStack(item), cx + 1, cy + 1);
+            g.item(new ItemStack(item), cx + 1, cy + 1);
             BenchRecipe recipe = BenchRecipe.get(item);
-            if (recipe != null && recipe.level() > level) {
-                graphics.fill(cx, cy, cx + CELL - 1, cy + CELL - 1, 0xA0000000);
-            }
+            if (recipe != null && recipe.level() > level) g.fill(cx, cy, cx + CELL - 1, cy + CELL - 1, 0xA0000000);
         }
 
         // Details panel
-        graphics.fill(x + PANEL_X - 1, y + GRID_Y - 1, x + PANEL_X + PANEL_W + 1, y + 108, 0xFF8B8B8B);
+        g.fill(panelX - 1, gridY - 1, panelX + PANEL_W + 1, gridY + areaH + 1, 0xFF8B8B8B);
+        drawDetails(g);
 
-        // Queue bar
-        int barX = x + 26, barY = y + QUEUE_Y + 3, barW = PANEL_X - 32;
-        graphics.fill(barX, barY, barX + barW, barY + 5, 0xFF373737);
-        graphics.fill(barX, barY, barX + (int) (barW * menu.progress()), barY + 5, 0xFF55C855);
+        // Queue
+        int barX = mainX + 26, barY = queueY + 3, barW = panelX - mainX - 32;
+        g.fill(barX, barY, barX + barW, barY + 5, 0xFF373737);
+        g.fill(barX, barY, barX + (int) (barW * menu.progress()), barY + 5, 0xFF55C855);
         Item current = menu.currentItem();
-        if (current != null) graphics.item(new ItemStack(current), x + 8, y + QUEUE_Y - 4);
+        if (current != null) g.item(new ItemStack(current), mainX + 6, queueY - 2);
+        Component queueText = menu.totalQueued() > 0 && current != null
+                ? Component.translatable("screen.skillcraft.bench_queue", menu.totalQueued())
+                : Component.translatable("screen.skillcraft.bench_idle");
+        g.text(font, queueText, barX, queueY - 7, 0xFF404040, false);
 
         // Slot backgrounds
         for (Slot slot : menu.slots) {
-            graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, 0xFF8B8B8B);
+            g.fill(leftPos + slot.x - 1, topPos + slot.y - 1, leftPos + slot.x + 17, topPos + slot.y + 17, 0xFF8B8B8B);
+        }
+    }
+
+    private void drawDetails(GuiGraphicsExtractor g) {
+        Item item = selectedItem();
+        BenchRecipe recipe = item == null ? null : BenchRecipe.get(item);
+        if (recipe == null) return;
+        int px = panelX + 2, py = gridY + 2;
+        g.text(font, font.substrByWidth(item.getDefaultInstance().getHoverName(), PANEL_W - 4).getString(), px, py, 0xFF202020, false);
+        boolean met = level() >= recipe.level();
+        g.text(font, Component.translatable("screen.skillcraft.bench_level", menu.station().skill().displayName(), recipe.level()),
+                px, py + 11, met ? 0xFF205020 : 0xFFA02020, false);
+        g.text(font, Component.translatable("screen.skillcraft.bench_xp_time", XpTable.format(recipe.xp()), XpTable.format(recipe.time() / 20.0)),
+                px, py + 21, 0xFF404040, false);
+
+        List<ItemStack> inventory = minecraft.player.getInventory().getNonEquipmentItems();
+        for (int i = 0; i < recipe.ingredients().size() && i < 4; i++) {
+            BenchRecipe.Part part = recipe.ingredients().get(i);
+            int ix = px + (i % 2) * 50, iy = py + 32 + (i / 2) * 18;
+            exampleItem(part).ifPresent(stack -> g.item(stack, ix, iy));
+            int have = 0;
+            for (ItemStack stack : inventory) if (!stack.isEmpty() && part.ingredient().test(stack)) have += stack.getCount();
+            g.text(font, have + "/" + part.count(), ix + 18, iy + 5, have >= part.count() ? 0xFF205020 : 0xFFA02020, false);
         }
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
-        Item item = selectedItem();
-        BenchRecipe recipe = item == null ? null : BenchRecipe.get(item);
-        if (recipe != null) {
-            int px = PANEL_X + 2, py = GRID_Y + 2;
-            graphics.text(font, font.substrByWidth(item.getDefaultInstance().getHoverName(), PANEL_W - 4).getString(), px, py, 0xFF202020, false);
-            boolean met = level() >= recipe.level();
-            graphics.text(font, Component.translatable("screen.skillcraft.bench_level", menu.station().skill().displayName(), recipe.level()),
-                    px, py + 11, met ? 0xFF205020 : 0xFFA02020, false);
-            graphics.text(font, Component.translatable("screen.skillcraft.bench_xp_time", XpTable.format(recipe.xp()), XpTable.format(recipe.time() / 20.0)),
-                    px, py + 21, 0xFF404040, false);
-
-            List<ItemStack> inventory = minecraft.player.getInventory().getNonEquipmentItems();
-            for (int i = 0; i < recipe.ingredients().size() && i < 4; i++) {
-                BenchRecipe.Part part = recipe.ingredients().get(i);
-                int ix = px + (i % 2) * 50, iy = py + 32 + (i / 2) * 18;
-                exampleItem(part).ifPresent(stack -> graphics.item(stack, ix, iy));
-                int have = 0;
-                for (ItemStack stack : inventory) if (!stack.isEmpty() && part.ingredient().test(stack)) have += stack.getCount();
-                graphics.text(font, have + "/" + part.count(), ix + 18, iy + 5, have >= part.count() ? 0xFF205020 : 0xFFA02020, false);
-            }
-        }
-
-        // Queue text
-        if (menu.totalQueued() > 0 && menu.currentItem() != null) {
-            graphics.text(font, Component.translatable("screen.skillcraft.bench_queue", menu.totalQueued()), 26, QUEUE_Y - 7, 0xFF404040, false);
-        } else {
-            graphics.text(font, Component.translatable("screen.skillcraft.bench_idle"), 26, QUEUE_Y - 7, 0xFF707070, false);
-        }
+    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        g.text(font, Component.translatable("screen.skillcraft.bench_output"), 8, 6, 0xFF404040, false);
+        g.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFF404040, false);
     }
 
     private static Optional<ItemStack> exampleItem(BenchRecipe.Part part) {
@@ -168,8 +204,8 @@ public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
     }
 
     @Override
-    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractTooltip(graphics, mouseX, mouseY);
+    protected void extractTooltip(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        super.extractTooltip(g, mouseX, mouseY);
         int index = gridIndexAt(mouseX, mouseY);
         if (index >= 0) {
             Item item = recipes.get(index);
@@ -181,17 +217,26 @@ public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
                 lines.add(Component.translatable("screen.skillcraft.bench_level", menu.station().skill().displayName(), recipe.level())
                         .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
             }
-            graphics.setTooltipForNextFrame(font, lines, Optional.empty(), ItemStack.EMPTY, mouseX, mouseY);
+            g.setTooltipForNextFrame(font, lines, Optional.empty(), ItemStack.EMPTY, mouseX, mouseY);
         }
     }
 
     // --- Input ---
 
-    private int gridIndexAt(double mouseX, double mouseY) {
-        int gx = (int) mouseX - leftPos - GRID_X, gy = (int) mouseY - topPos - GRID_Y;
-        if (gx < 0 || gy < 0 || gx >= COLS * CELL || gy >= ROWS * CELL) return -1;
+    private boolean inMainPanel(double mx, double my) {
+        return mx >= mainX && my >= mainY && mx < mainX + MAIN_W && my < mainY + mainH;
+    }
+
+    private int gridIndexAt(double mx, double my) {
+        int gx = (int) mx - gridX, gy = (int) my - gridY;
+        if (gx < 0 || gy < 0 || gx >= COLS * CELL || gy >= rows * CELL) return -1;
         int index = (scrollRow + gy / CELL) * COLS + gx / CELL;
         return index < recipes.size() ? index : -1;
+    }
+
+    @Override
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+        return super.hasClickedOutside(mx, my, xo, yo) && !inMainPanel(mx, my);
     }
 
     @Override
@@ -205,13 +250,12 @@ public class BenchScreen extends AbstractContainerScreen<BenchMenu> {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        int totalRows = (recipes.size() + COLS - 1) / COLS;
-        int maxScroll = Math.max(0, totalRows - ROWS);
-        if (gridIndexAt(mouseX, mouseY) >= 0 || (mouseX - leftPos < PANEL_X && mouseY - topPos < QUEUE_Y - 8)) {
+    public boolean mouseScrolled(double mx, double my, double scrollX, double scrollY) {
+        if (inMainPanel(mx, my)) {
+            int maxScroll = Math.max(0, (recipes.size() + COLS - 1) / COLS - rows);
             scrollRow = Math.clamp(scrollRow - (int) Math.signum(scrollY), 0, maxScroll);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mx, my, scrollX, scrollY);
     }
 }

@@ -80,6 +80,7 @@
   "screen.skillcraft.bank_deposit_x": "Deposit-X",
   "screen.skillcraft.bank_deposit_all": "Deposit-All",
   "screen.skillcraft.bench_cancel": "Cancel",
+  "screen.skillcraft.bench_output": "Output",
   "screen.skillcraft.bench_level": "%s %s",
   "screen.skillcraft.bench_xp_time": "%s XP · %ss",
   "screen.skillcraft.bench_queue": "Queued: %s",

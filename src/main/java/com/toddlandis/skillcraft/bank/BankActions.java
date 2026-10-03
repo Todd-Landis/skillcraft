@@ -22,7 +22,7 @@ public final class BankActions {
     public static final int ALL = -1;
     public static final int ALL_BUT_ONE = -2;
 
-    public enum Action { WITHDRAW, DEPOSIT, DEPOSIT_INVENTORY, DEPOSIT_WORN, SWAP, INSERT, SET_TAB }
+    public enum Action { WITHDRAW, DEPOSIT, DEPOSIT_INVENTORY, DEPOSIT_WORN, SWAP, INSERT, SET_TAB, DEPOSIT_CARRIED }
 
     private BankActions() {}
 
@@ -55,7 +55,9 @@ public final class BankActions {
             case SWAP -> bank.swap(payload.index(), payload.target());
             case INSERT -> bank.insert(payload.index(), payload.target());
             case SET_TAB -> bank.setTab(payload.index(), payload.target());
+            case DEPOSIT_CARRIED -> depositCarried(player, menu, bank, payload.amount(), payload.target());
         }
+        menu.broadcastChanges();
         player.getInventory().setChanged();
         sync(player);
     }
@@ -102,6 +104,17 @@ public final class BankActions {
             remaining -= moved;
         }
         bank.add(type, room - remaining, tab);
+    }
+
+    // The item stack held on the mouse cursor, dropped onto the bank grid
+    private static void depositCarried(ServerPlayer player, BankMenu menu, PlayerBank bank, int amount, int tab) {
+        ItemStack carried = menu.getCarried();
+        if (carried.isEmpty()) return;
+        int wanted = resolve(amount, carried.getCount());
+        int room = bank.room(carried, wanted, Config.BANK_SLOTS.get());
+        if (room < wanted) warn(player, "message.skillcraft.bank_full");
+        bank.add(carried, room, tab);
+        carried.shrink(room);
     }
 
     private static void depositAll(ServerPlayer player, PlayerBank bank, int tab) {

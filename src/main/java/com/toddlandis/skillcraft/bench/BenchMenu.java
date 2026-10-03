@@ -17,8 +17,10 @@ import net.minecraft.world.item.ItemStack;
 // Bench screen: a row of 9 output slots (take-only) above the player's inventory.
 // The recipe list and queue are drawn by BenchScreen; queue/cancel go over the network.
 public class BenchMenu extends AbstractContainerMenu {
-    public static final int OUTPUT_Y = 124;
-    public static final int INVENTORY_Y = 154;
+    // Slot positions inside the screen's inventory panel (output row on top, then the inventory).
+    // The recipe panel is placed separately so the layout can adapt to the window size.
+    public static final int OUTPUT_Y = 18;
+    public static final int INVENTORY_Y = 50;
 
     private final Station station;
     private final Container container;
@@ -39,14 +41,14 @@ public class BenchMenu extends AbstractContainerMenu {
         checkContainerSize(container, BenchBlockEntity.OUTPUT_SLOTS);
 
         for (int i = 0; i < BenchBlockEntity.OUTPUT_SLOTS; i++) {
-            addSlot(new Slot(container, i, 35 + i * 18, OUTPUT_Y) {
+            addSlot(new Slot(container, i, 8 + i * 18, OUTPUT_Y) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
                     return false;
                 }
             });
         }
-        addStandardInventorySlots(inventory, 35, INVENTORY_Y);
+        addStandardInventorySlots(inventory, 8, INVENTORY_Y);
         addDataSlots(data);
     }
 
