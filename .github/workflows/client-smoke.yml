@@ -3,7 +3,9 @@ name: Client smoke
 # Starts the real game client (virtual display, software OpenGL), loads a flat world, poses the
 # Slagheart boss through every animation, saves screenshots and quits. Catches client-only crashes
 # and missing models/textures/animations that the server-side Build job can't see.
-on: [push, workflow_dispatch]
+# Manual only (Actions tab -> Client smoke -> Run workflow): software rendering is slow, and the
+# showcase is quicker to run locally with ./gradlew runClient -Pshowcase -Pworld=showcase.
+on: [workflow_dispatch]
 
 concurrency:
   group: client-smoke-${{ github.ref }}

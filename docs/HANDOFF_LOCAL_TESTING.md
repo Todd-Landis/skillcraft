@@ -37,7 +37,7 @@ It then plays every boss animation, saves screenshots and quits the game.
    - **Log:** it should contain `[showcase] done: N screenshots`.
    - **Problems:** search the log for `ERROR` or `WARN` lines that mention `skillcraft`, `Missing`, `Unable to load model` or `animation`.
 
-CI runs the same steps in the **Client smoke** workflow, using Xvfb and software rendering. Its screenshots are in the run's `client-smoke` artifact.
+The **Client smoke** workflow can run the same steps in CI (manual trigger only; Xvfb and software rendering). Its first run did not finish within 11 minutes and was cancelled, so running it locally is the reliable route for now.
 
 ## 3. In-game test plan (Todd)
 Use a creative superflat world with cheats on. Commands:
@@ -126,7 +126,7 @@ These matter most:
   - **Textures:** edit `scripts/textures/GenSlagheartTexture.java` or `GenCombatTextures.java`, run it with `java <file>.java`, then press **F3+T**. You can also paint over the PNGs directly. If you do, stop re-running the generator for that file.
   - **Model shape:** edit `client/boss/SlagheartModel.createBodyLayer()`, which needs a game restart.
     - If you move or resize cubes, update the matching entry in the texture generator's cube table so the UVs still line up.
-- **Before pushing:** run `./gradlew build` and `./gradlew runGameTestServer`, and keep CI green. Both workflows run on every push.
+- **Before pushing:** run `./gradlew build` and `./gradlew runGameTestServer`, and keep CI green. The Build workflow runs on every push.
 
 ## 5. Known gaps and ideas
 - **Not yet checked in-game on a real GPU:** everything in section 3C.
