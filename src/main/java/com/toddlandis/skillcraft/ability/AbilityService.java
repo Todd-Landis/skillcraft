@@ -82,7 +82,7 @@ public final class AbilityService {
             runtime.windupId = id;
             runtime.windupEnd = now + def.windup();
             runtime.windupPos = player.position();
-            PacketDistributor.sendToPlayer(player, new AbilityCooldownPayload(id, 0, 0, def.windup(), false));
+            com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, 0, 0, def.windup(), false));
             return null;
         }
         denied = execute(player, id, def);
@@ -140,7 +140,7 @@ public final class AbilityService {
         }
         if (!def.offGcd()) runtime.gcdUntil = now + Config.GLOBAL_COOLDOWN.get();
         def.sound().ifPresent(sound -> player.level().playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, 1f, 1f));
-        PacketDistributor.sendToPlayer(player, new AbilityCooldownPayload(id, def.isToggle() ? 0 : def.cooldown(),
+        com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, def.isToggle() ? 0 : def.cooldown(),
                 def.offGcd() ? 0 : Config.GLOBAL_COOLDOWN.get(), 0, def.isToggle()));
         return null;
     }
@@ -152,7 +152,7 @@ public final class AbilityService {
             def.behavior().endToggle(new AbilityContext(player, player.level(), id, def));
             runtime.readyAt.put(id, player.level().getGameTime() + def.cooldown());
         }
-        PacketDistributor.sendToPlayer(player, new AbilityCooldownPayload(id, def == null ? 0 : def.cooldown(), 0, 0, false));
+        com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, def == null ? 0 : def.cooldown(), 0, 0, false));
     }
 
     public static int skillLevel(Player player, AbilityDefinition def) {
@@ -171,14 +171,14 @@ public final class AbilityService {
             AbilityDefinition def = AbilityManager.get(id);
             if (def == null || !player.isAlive() || player.position().subtract(runtime.windupPos).horizontalDistance() > WINDUP_MOVE_TOLERANCE) {
                 runtime.windupId = null;
-                PacketDistributor.sendToPlayer(player, new AbilityCooldownPayload(id, 0, 0, 0, false));
+                com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, 0, 0, 0, false));
                 player.sendOverlayMessage(Component.translatable("message.skillcraft.ability_windup_cancelled", AbilityDefinition.name(id)).withStyle(ChatFormatting.GRAY));
             } else if (now >= runtime.windupEnd) {
                 runtime.windupId = null;
                 Denied denied = check(player, id, def);
                 if (denied == null) denied = execute(player, id, def);
                 if (denied != null) {
-                    PacketDistributor.sendToPlayer(player, new AbilityCooldownPayload(id, 0, 0, 0, false));
+                    com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, 0, 0, 0, false));
                     deny(player, id, def, denied);
                 }
             }
@@ -278,12 +278,12 @@ public final class AbilityService {
             AbilityDefinition.Requirement req = def.requires();
             if (req.skill() != skill || req.level() <= oldLevel || req.level() > newLevel || def.category().comingLater()) continue;
             if (req.codex() && !data(player).hasLearned(entry.getKey())) continue;
-            PacketDistributor.sendToPlayer(player, new AbilityUnlockedPayload(entry.getKey()));
+            com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityUnlockedPayload(entry.getKey()));
         }
     }
 
     public static void announceUnlock(ServerPlayer player, Identifier id) {
-        PacketDistributor.sendToPlayer(player, new AbilityUnlockedPayload(id));
+        com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityUnlockedPayload(id));
     }
 
     // --- Feedback ---
@@ -314,7 +314,7 @@ public final class AbilityService {
             default -> Component.translatable("message.skillcraft.ability_unknown");
         };
         if (message != null) player.sendOverlayMessage(message.copy().withStyle(ChatFormatting.RED));
-        PacketDistributor.sendToPlayer(player, new AbilityDeniedPayload());
+        com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityDeniedPayload());
     }
 
     public static Component weaponName(AbilityDefinition def) {

@@ -57,7 +57,7 @@ public final class AbilityEvents {
     private static final String SHOT_TAG = "skillcraft.ability_shot";
     private static final String ABILITY_PROJECTILE = "skillcraft.ability_projectile";
 
-    private record Bleed(UUID source, float perSecond, long until) {}
+    private record Bleed(ServerPlayer source, float perSecond, long until) {}
     private static final Map<LivingEntity, Bleed> BLEEDS = new WeakHashMap<>();
     private static final Map<UUID, Set<Integer>> PIERCED = new HashMap<>();
 
@@ -84,8 +84,8 @@ public final class AbilityEvents {
                 continue;
             }
             if ((level.getGameTime() - bleed.until()) % 20 != 0) continue;
-            ServerPlayer source = event.getServer().getPlayerList().getPlayer(bleed.source());
-            if (source == null) {
+            ServerPlayer source = bleed.source();
+            if (source.isRemoved()) {
                 it.remove();
                 continue;
             }
@@ -98,7 +98,7 @@ public final class AbilityEvents {
     public static void bleed(LivingEntity target, ServerPlayer source, float total, int duration) {
         if (!(target.level() instanceof ServerLevel level) || total <= 0) return;
         int seconds = Math.max(1, duration / 20);
-        BLEEDS.put(target, new Bleed(source.getUUID(), total / seconds, level.getGameTime() + seconds * 20L));
+        BLEEDS.put(target, new Bleed(source, total / seconds, level.getGameTime() + seconds * 20L));
         target.addEffect(new MobEffectInstance(ModEffects.BLEEDING, seconds * 20, 0), source);
     }
 

@@ -77,6 +77,6 @@ public final class AbilityManager extends SimpleJsonResourceReloadListener<Abili
     @SubscribeEvent
     static void sync(OnDatapackSyncEvent event) {
         AbilityDefinitionsPayload payload = new AbilityDefinitionsPayload(definitions);
-        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
+        event.getRelevantPlayers().forEach(player -> com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, payload));
     }
 }

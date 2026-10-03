@@ -15,6 +15,7 @@ import com.toddlandis.skillcraft.combat.DamageStyle;
 import com.toddlandis.skillcraft.combat.PlayerDamageTracker;
 import com.toddlandis.skillcraft.combat.StyleVulnerable;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
+import com.toddlandis.skillcraft.registry.ModEffects;
 import com.toddlandis.skillcraft.registry.ModSounds;
 
 import net.minecraft.ChatFormatting;
@@ -268,8 +269,11 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
 
     @Override
     public boolean addEffect(MobEffectInstance effect, Entity source) {
-        // Immune to crowd control; only Sundered (a damage debuff) sticks
-        return effect.is(com.toddlandis.skillcraft.registry.ModEffects.SUNDERED) && super.addEffect(effect, source);
+        // Immune to real crowd control. What sticks: Sundered, and the softened versions abilities
+        // give bosses (spec 2.6): Slowed up to III (-30%), Dazed, and Bleeding
+        boolean allowed = effect.is(ModEffects.SUNDERED) || effect.is(ModEffects.DAZED) || effect.is(ModEffects.BLEEDING)
+                || (effect.is(ModEffects.SLOWED) && effect.getAmplifier() < com.toddlandis.skillcraft.ability.CrowdControl.BOSS_SLOW_LEVELS);
+        return allowed && super.addEffect(effect, source);
     }
 
     // --- main loop ---
