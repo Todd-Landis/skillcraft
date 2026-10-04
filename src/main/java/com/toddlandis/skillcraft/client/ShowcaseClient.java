@@ -1,0 +1,139 @@
+package com.toddlandis.skillcraft.client;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.boss.SlagheartAction;
+import com.toddlandis.skillcraft.boss.SlagheartEntity;
+import com.toddlandis.skillcraft.dev.Showcase;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.entity.animation.json.AnimationLoader;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+
+// Client half of the dev showcase (see dev/Showcase): once in a world, builds the scene on the
+// integrated server, plays each boss animation, saves screenshots to run/screenshots/showcase_*.png
+// and quits. Logs "[showcase] done" at the end so CI can tell a full run from a crash.
+@EventBusSubscriber(modid = SkillCraft.MODID, value = Dist.CLIENT)
+public final class ShowcaseClient {
+    private record Step(int tick, Runnable action) {}
+
+    private static final List<Step> STEPS = new ArrayList<>();
+    private static int ticks = -1;
+    private static int next;
+    private static SlagheartEntity boss;
+    private static int shots;
+
+    private ShowcaseClient() {}
+
+    @SubscribeEvent
+    static void onClientTick(ClientTickEvent.Post event) {
+        if (!Showcase.ENABLED) return;
+        Minecraft mc = Minecraft.getInstance();
+        mc.options.pauseOnLostFocus = false;
+        IntegratedServer server = mc.getSingleplayerServer();
+        if (mc.player == null || mc.level == null || server == null) return;
+        if (ticks < 0) {
+            if (mc.gui.screen() != null) return; // still loading
+            plan(mc, server);
+        }
+        ticks++;
+        while (next < STEPS.size() && STEPS.get(next).tick() <= ticks) {
+            STEPS.get(next++).action().run();
+        }
+    }
+
+    private static void plan(Minecraft mc, IntegratedServer server) {
+        ticks = 0;
+        if ("builds".equals(System.getProperty("skillcraft.showcase.scene"))) {
+            planBuilds(mc, server);
+            return;
+        }
+        int t = 20;
+        at(t, () -> server.execute(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+            Showcase.command(server, "time set noon");
+            Showcase.command(server, "weather clear");
+            boss = Showcase.buildScene(player);
+        }));
+        // Give chunks time to mesh (software rendering in CI is slow)
+        t += 200;
+        at(t, () -> shot(mc, "idle"));
+        for (SlagheartAction action : SlagheartAction.values()) {
+            if (action == SlagheartAction.NONE) continue;
+            int length = animationTicks(action);
+            at(t += 10, () -> server.execute(() -> boss.showcasePose(action)));
+            int start = t;
+            at(start + Math.max(2, length * 35 / 100), () -> shot(mc, action.animation() + "_a"));
+            at(start + Math.max(4, length * 70 / 100), () -> shot(mc, action.animation() + "_b"));
+            t = start + length + 5;
+        }
+        at(t += 10, () -> server.execute(() -> boss.showcasePose(SlagheartAction.NONE)));
+        at(t += 20, () -> shot(mc, "hud"));
+        // Night: the glow layer should stand out
+        at(t += 10, () -> server.execute(() -> {
+            Showcase.command(server, "time set midnight");
+            boss.showcasePose(SlagheartAction.VENT);
+        }));
+        at(t += 30, () -> shot(mc, "night_vent"));
+        at(t += 40, () -> {
+            SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
+            mc.stop();
+        });
+    }
+
+    // -Pshowcase=builds: station blocks up close, then the arena (floor view, dome from below)
+    private static void planBuilds(Minecraft mc, IntegratedServer server) {
+        net.minecraft.core.BlockPos[] arena = new net.minecraft.core.BlockPos[1];
+        int t = 20;
+        at(t, () -> server.execute(() -> {
+            Showcase.command(server, "time set noon");
+            Showcase.command(server, "weather clear");
+            Showcase.buildStations(server.getPlayerList().getPlayers().getFirst());
+        }));
+        at(t += 120, () -> shot(mc, "stations"));
+        at(t += 10, () -> server.execute(() -> arena[0] = Showcase.buildArena(server.getPlayerList().getPlayers().getFirst())));
+        // {name, dx, dz, yaw, pitch} relative to the arena center; yaw 180 = facing north
+        Object[][] views = {
+                {"arena_floor", 0, 13, 180f, -14f},     // from the gate: forge, columns, dome
+                {"arena_forge", 0, -6, 180f, -8f},      // the Great Forge up close
+                {"arena_column", 1, 1, -45f, -35f},     // a grand column
+                {"arena_dome", 0, 4, 180f, -70f},       // looking up at the dome
+                {"lobby_gate", 0, 34, 180f, 0f},        // lobby, looking toward the corridor
+                {"lobby_back", 0, 26, 0f, 5f},          // lobby, looking at the exit portal and bank
+        };
+        for (Object[] view : views) {
+            at(t += 10, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(),
+                    net.minecraft.world.phys.Vec3.atBottomCenterOf(arena[0].offset((int) view[1], 0, (int) view[2])), (float) view[3], (float) view[4])));
+            at(t += view == views[0] ? 200 : 60, () -> shot(mc, (String) view[0]));
+        }
+        at(t += 40, () -> {
+            SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
+            mc.stop();
+        });
+    }
+
+    private static void at(int tick, Runnable action) {
+        STEPS.add(new Step(tick, action));
+    }
+
+    private static int animationTicks(SlagheartAction action) {
+        AnimationDefinition definition = AnimationLoader.INSTANCE.getAnimation(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "slagheart/" + action.animation()));
+        return definition == null ? 40 : Math.max(10, Math.round(definition.lengthInSeconds() * 20));
+    }
+
+    private static void shot(Minecraft mc, String name) {
+        shots++;
+        Screenshot.grab(mc.gameDirectory, "showcase_" + name + ".png", mc.gameRenderer.mainRenderTarget(), 1,
+                message -> SkillCraft.LOGGER.info("[showcase] {}: {}", name, message.getString()));
+    }
+}

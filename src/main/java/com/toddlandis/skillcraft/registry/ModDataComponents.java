@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.loot.EarnedBy;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -18,4 +19,8 @@ public class ModDataComponents {
     // is never found in world chests or dropped by mobs (see loot/CraftedGear).
     public static final Supplier<DataComponentType<String>> CRAFTED_BY = COMPONENTS.registerComponentType("crafted_by",
             builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
+    // Boss and player for gear won from a boss, e.g. the Emberfall Maul (see loot/EarnedBy)
+    public static final Supplier<DataComponentType<EarnedBy>> EARNED_BY = COMPONENTS.registerComponentType("earned_by",
+            builder -> builder.persistent(EarnedBy.CODEC).networkSynchronized(EarnedBy.STREAM_CODEC));
 }

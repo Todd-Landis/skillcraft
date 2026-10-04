@@ -5,6 +5,9 @@ import java.util.Map;
 
 import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.arena.ExitPortalBlock;
+import com.toddlandis.skillcraft.arena.RewardChestBlock;
+import com.toddlandis.skillcraft.arena.SummoningBrazierBlock;
 import com.toddlandis.skillcraft.bank.BankChestBlock;
 import com.toddlandis.skillcraft.bench.BenchBlock;
 import com.toddlandis.skillcraft.bench.Station;
@@ -15,6 +18,7 @@ import com.toddlandis.skillcraft.smithing.SmelterBlock;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -73,4 +77,35 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .sound(SoundType.TUFF_BRICKS)
                     .lightLevel(state -> 7));
+
+    // Boss arena entrance (overworld), reward chest and exit (arena only; unbreakable)
+    public static final DeferredBlock<SummoningBrazierBlock> SUMMONING_BRAZIER = BLOCKS.registerBlock("summoning_brazier",
+            SummoningBrazierBlock::new, p -> p
+                    .strength(4.0f, 1200f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .sound(SoundType.NETHER_BRICKS)
+                    .noOcclusion()
+                    .lightLevel(state -> 13));
+
+    public static final DeferredBlock<RewardChestBlock> REWARD_CHEST = BLOCKS.registerBlock("reward_chest",
+            RewardChestBlock::new, p -> p
+                    .strength(-1f, 3600000f)
+                    .noLootTable()
+                    .mapColor(MapColor.GOLD)
+                    .sound(SoundType.VAULT)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)
+                    .lightLevel(state -> 10));
+
+    public static final DeferredBlock<ExitPortalBlock> EXIT_PORTAL = BLOCKS.registerBlock("exit_portal",
+            ExitPortalBlock::new, p -> p
+                    .strength(-1f, 3600000f)
+                    .noLootTable()
+                    .noCollision()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .sound(SoundType.GLASS)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)
+                    .lightLevel(state -> 11));
 }

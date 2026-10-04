@@ -16,6 +16,7 @@ public enum Skill implements StringRepresentable {
     // Combat
     MELEE(Category.COMBAT),
     RANGED(Category.COMBAT),
+    DEFENCE(Category.COMBAT),
     CONSTITUTION(Category.COMBAT),
 
     // Gathering

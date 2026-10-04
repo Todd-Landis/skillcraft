@@ -3,7 +3,9 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.arena.ArenaReturn;
 import com.toddlandis.skillcraft.bank.PlayerBank;
+import com.toddlandis.skillcraft.combat.AttackStyle;
 import com.toddlandis.skillcraft.node.GatheringFatigue;
 import com.toddlandis.skillcraft.skill.PlayerSkills;
 
@@ -35,6 +37,22 @@ public class ModAttachments {
     public static final Supplier<AttachmentType<PlayerBank>> BANK = ATTACHMENT_TYPES.register("bank",
             () -> AttachmentType.builder(PlayerBank::new)
                     .serialize(PlayerBank.CODEC)
+                    .copyOnDeath()
+                    .build());
+
+    // Chosen attack style (where combat XP goes). Kept through death; synced to its owner for the UI.
+    public static final Supplier<AttachmentType<AttackStyle>> ATTACK_STYLE = ATTACHMENT_TYPES.register("attack_style",
+            () -> AttachmentType.builder(() -> AttackStyle.AGGRESSIVE)
+                    .serialize(AttackStyle.CODEC.fieldOf("style"))
+                    .copyOnDeath()
+                    .sync((holder, to) -> holder == to, AttackStyle.STREAM_CODEC)
+                    .build());
+
+    // Where to send a player back to when they leave a boss arena (see arena/ArenaReturn).
+    // Saved with the player so a logout or crash mid-fight never strands anyone.
+    public static final Supplier<AttachmentType<ArenaReturn>> ARENA_RETURN = ATTACHMENT_TYPES.register("arena_return",
+            () -> AttachmentType.builder(() -> ArenaReturn.NONE)
+                    .serialize(ArenaReturn.CODEC)
                     .copyOnDeath()
                     .build());
 }

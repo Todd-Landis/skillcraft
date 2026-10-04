@@ -3,3 +3,9 @@
 # are changed when only line endings change.
 src/generated/**/.cache/* text eol=lf
 src/generated/**/*.json text eol=lf
+
+# Binary assets: never convert line endings (Windows autocrlf would corrupt them)
+*.png binary
+*.nbt binary
+*.ogg binary
+*.jar binary

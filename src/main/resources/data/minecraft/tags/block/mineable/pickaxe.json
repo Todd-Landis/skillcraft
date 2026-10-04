@@ -1,3 +1,9 @@
 {
-  "values": ["skillcraft:attunement_altar", "skillcraft:smelter", "skillcraft:forging_anvil", "skillcraft:bank_chest"]
+  "values": [
+    "skillcraft:attunement_altar",
+    "skillcraft:smelter",
+    "skillcraft:forging_anvil",
+    "skillcraft:bank_chest",
+    "skillcraft:summoning_brazier"
+  ]
 }

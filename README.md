@@ -23,8 +23,8 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ```
    ./gradlew runClient
    ```
-5. In game: press **K** for the Skills screen. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
-6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
+5. In game: press **K** for the Skills screen and **V** to change attack style. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
+. Run the automated tests with `./gradlew runGameTestServer`. For a full local test plan (screenshot showcase, in-game checklist), see [docs/HANDOFF_LOCAL_TESTING.md](docs/HANDOFF_LOCAL_TESTING.md).
 
 ## Project layout
 ```
@@ -36,7 +36,10 @@ src/main/java/com/toddlandis/skillcraft/
   gathering/               level gates for breaking world blocks
   node/                    skilling nodes, NodeType stats, auto-gathering sessions
   altar/                   Attunement Altar (turns resources into nodes)
-  combat/                  weapon level gates
+  combat/                  damage types, matchups, typed armour, combat XP, attack styles,
+                           Constitution health, equipment level gates, light/heavy arrows
+  arena/                   instanced boss arena dimension: plots, protection, entry/exit
+  boss/                    Slagheart boss (attack state machine, projectile, rewards)
   command/                 /skill admin command
   network/                 server -> client packets
   registry/                attachments and data map registrations
@@ -47,12 +50,23 @@ src/main/java/com/toddlandis/skillcraft/
   loot/                    keeps generated chests and mob drops free of crafted gear
   bank/                    OSRS-style player bank (Bank Chest)
   client/minigame/         minigame drawing
-src/main/resources/data/skillcraft/data_maps/   level requirements and XP values (JSON)
+  client/boss/             Slagheart model, renderer and glow layer
+  gametest/                GameTests (./gradlew runGameTestServer, also run in CI)
+  dev/                     dev-only screenshot showcase (-Pshowcase; does nothing otherwise)
+src/main/resources/data/skillcraft/data_maps/   level requirements, XP values, combat data and boss tuning (JSON)
+src/main/resources/data/skillcraft/dimension*/  the boss arena dimension
+src/main/resources/assets/skillcraft/neoforge/animations/   boss keyframe animations (JSON)
 src/main/resources/assets/skillcraft/
   lang/en_us.json          display names
   textures/                block, item and GUI textures (to come)
 src/main/templates/META-INF/neoforge.mods.toml   mod metadata
 docs/DESIGN.md             design and roadmap
+docs/COMBAT.md             combat system rules and numbers
+docs/BOSS_SLAGHEART.md     the first boss
+docs/HANDOFF_LOCAL_TESTING.md   how to build, test and iterate locally
+CLAUDE.md                  notes for Claude Code (commands, conventions, 26.2 API notes)
+scripts/ci/                client smoke test (CI) and screenshot preview tool
+scripts/textures/          procedural texture generators (run with java <file>.java)
 ```
 
 ## Resources

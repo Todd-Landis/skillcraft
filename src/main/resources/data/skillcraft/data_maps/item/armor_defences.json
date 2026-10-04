@@ -1,0 +1,202 @@
+{
+  "values": {
+    "minecraft:leather_helmet": {
+      "stab": -0.8,
+      "slash": 0.0,
+      "crush": 1.6,
+      "ranged": 1.2
+    },
+    "minecraft:leather_chestplate": {
+      "stab": -1.4,
+      "slash": 0.0,
+      "crush": 2.8,
+      "ranged": 2.1
+    },
+    "minecraft:leather_leggings": {
+      "stab": -1.2,
+      "slash": 0.0,
+      "crush": 2.4,
+      "ranged": 1.8
+    },
+    "minecraft:leather_boots": {
+      "stab": -0.6,
+      "slash": 0.0,
+      "crush": 1.2,
+      "ranged": 0.9
+    },
+    "skillcraft:padded_helmet": {
+      "stab": 0.8,
+      "slash": 0.8,
+      "crush": 3.6,
+      "ranged": 2.4
+    },
+    "skillcraft:padded_chestplate": {
+      "stab": 1.4,
+      "slash": 1.4,
+      "crush": 6.3,
+      "ranged": 4.2
+    },
+    "skillcraft:padded_leggings": {
+      "stab": 1.2,
+      "slash": 1.2,
+      "crush": 5.4,
+      "ranged": 3.6
+    },
+    "skillcraft:padded_boots": {
+      "stab": 0.6,
+      "slash": 0.6,
+      "crush": 2.7,
+      "ranged": 1.8
+    },
+    "minecraft:chainmail_helmet": {
+      "stab": -0.8,
+      "slash": 3.2,
+      "crush": -1.2,
+      "ranged": 0.4
+    },
+    "minecraft:chainmail_chestplate": {
+      "stab": -1.4,
+      "slash": 5.6,
+      "crush": -2.1,
+      "ranged": 0.7
+    },
+    "minecraft:chainmail_leggings": {
+      "stab": -1.2,
+      "slash": 4.8,
+      "crush": -1.8,
+      "ranged": 0.6
+    },
+    "minecraft:chainmail_boots": {
+      "stab": -0.6,
+      "slash": 2.4,
+      "crush": -0.9,
+      "ranged": 0.3
+    },
+    "minecraft:copper_helmet": {
+      "stab": 0.8,
+      "slash": 1.2,
+      "crush": -0.4,
+      "ranged": 0.8
+    },
+    "minecraft:copper_chestplate": {
+      "stab": 1.4,
+      "slash": 2.1,
+      "crush": -0.7,
+      "ranged": 1.4
+    },
+    "minecraft:copper_leggings": {
+      "stab": 1.2,
+      "slash": 1.8,
+      "crush": -0.6,
+      "ranged": 1.2
+    },
+    "minecraft:copper_boots": {
+      "stab": 0.6,
+      "slash": 0.9,
+      "crush": -0.3,
+      "ranged": 0.6
+    },
+    "minecraft:iron_helmet": {
+      "stab": 1.2,
+      "slash": 1.6,
+      "crush": -0.8,
+      "ranged": 1.2
+    },
+    "minecraft:iron_chestplate": {
+      "stab": 2.1,
+      "slash": 2.8,
+      "crush": -1.4,
+      "ranged": 2.1
+    },
+    "minecraft:iron_leggings": {
+      "stab": 1.8,
+      "slash": 2.4,
+      "crush": -1.2,
+      "ranged": 1.8
+    },
+    "minecraft:iron_boots": {
+      "stab": 0.9,
+      "slash": 1.2,
+      "crush": -0.6,
+      "ranged": 0.9
+    },
+    "minecraft:golden_helmet": {
+      "stab": 0.4,
+      "slash": 0.8,
+      "crush": -1.2,
+      "ranged": 0.4
+    },
+    "minecraft:golden_chestplate": {
+      "stab": 0.7,
+      "slash": 1.4,
+      "crush": -2.1,
+      "ranged": 0.7
+    },
+    "minecraft:golden_leggings": {
+      "stab": 0.6,
+      "slash": 1.2,
+      "crush": -1.8,
+      "ranged": 0.6
+    },
+    "minecraft:golden_boots": {
+      "stab": 0.3,
+      "slash": 0.6,
+      "crush": -0.9,
+      "ranged": 0.3
+    },
+    "minecraft:diamond_helmet": {
+      "stab": 1.6,
+      "slash": 2.0,
+      "crush": 0.0,
+      "ranged": 1.6
+    },
+    "minecraft:diamond_chestplate": {
+      "stab": 2.8,
+      "slash": 3.5,
+      "crush": 0.0,
+      "ranged": 2.8
+    },
+    "minecraft:diamond_leggings": {
+      "stab": 2.4,
+      "slash": 3.0,
+      "crush": 0.0,
+      "ranged": 2.4
+    },
+    "minecraft:diamond_boots": {
+      "stab": 1.2,
+      "slash": 1.5,
+      "crush": 0.0,
+      "ranged": 1.2
+    },
+    "minecraft:netherite_helmet": {
+      "stab": 2.0,
+      "slash": 2.4,
+      "crush": 0.8,
+      "ranged": 2.0
+    },
+    "minecraft:netherite_chestplate": {
+      "stab": 3.5,
+      "slash": 4.2,
+      "crush": 1.4,
+      "ranged": 3.5
+    },
+    "minecraft:netherite_leggings": {
+      "stab": 3.0,
+      "slash": 3.6,
+      "crush": 1.2,
+      "ranged": 3.0
+    },
+    "minecraft:netherite_boots": {
+      "stab": 1.5,
+      "slash": 1.8,
+      "crush": 0.6,
+      "ranged": 1.5
+    },
+    "minecraft:turtle_helmet": {
+      "stab": 2.0,
+      "slash": 0.0,
+      "crush": 0.0,
+      "ranged": 4.0
+    }
+  }
+}

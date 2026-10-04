@@ -53,6 +53,14 @@ neoForge {
             if (project.hasProperty('world')) {
                 programArguments.addAll '--quickPlaySingleplayer', project.property('world').toString()
             }
+            // -Pshowcase: dev screenshot showcase (dev/Showcase, client/ShowcaseClient); used by CI
+            if (project.hasProperty('showcase')) {
+                systemProperty 'skillcraft.showcase', 'true'
+                programArguments.addAll '--width', '1280', '--height', '720'
+                // -Pshowcase=builds: photograph the stations and the arena instead of the boss
+                def scene = project.property('showcase').toString()
+                if (scene) systemProperty 'skillcraft.showcase.scene', scene
+            }
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -60,6 +68,8 @@ neoForge {
         server {
             server()
             programArgument '--nogui'
+            // -Pshowcase: create the world, then stop (see dev/Showcase)
+            if (project.hasProperty('showcase')) systemProperty 'skillcraft.showcase', 'true'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 

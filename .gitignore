@@ -38,3 +38,8 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+### Logs from scripts/ci/client_smoke.sh and the GameTest CI step ###
+client.log
+server.log
+gametest.log

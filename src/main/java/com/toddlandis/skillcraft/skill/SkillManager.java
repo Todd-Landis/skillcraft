@@ -1,6 +1,7 @@
 package com.toddlandis.skillcraft.skill;
 
 import com.toddlandis.skillcraft.Config;
+import com.toddlandis.skillcraft.combat.Constitution;
 import com.toddlandis.skillcraft.network.XpGainPayload;
 import com.toddlandis.skillcraft.registry.ModAttachments;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
@@ -41,6 +42,7 @@ public final class SkillManager {
 
         boolean leveledUp = newLevel > oldLevel;
         PacketDistributor.sendToPlayer(player, new XpGainPayload(skill, (float) amount, leveledUp ? newLevel : 0));
+        if (leveledUp && skill == Skill.CONSTITUTION) Constitution.apply(player);
         if (leveledUp) {
             player.sendSystemMessage(Component.translatable("message.skillcraft.level_up", skill.displayName(), newLevel)
                     .withStyle(ChatFormatting.GOLD));
@@ -51,6 +53,7 @@ public final class SkillManager {
         PlayerSkills skills = get(player);
         skills.setXp(skill, xp);
         player.setData(ModAttachments.SKILLS, skills);
+        if (skill == Skill.CONSTITUTION) Constitution.apply(player);
     }
 
     // Returns the requirements for an item, or null if it has none

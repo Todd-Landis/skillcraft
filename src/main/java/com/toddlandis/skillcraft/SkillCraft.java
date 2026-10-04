@@ -3,12 +3,15 @@ package com.toddlandis.skillcraft;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.toddlandis.skillcraft.gametest.ModGameTests;
 import com.toddlandis.skillcraft.registry.ModAttachments;
 import com.toddlandis.skillcraft.registry.ModBlockEntities;
 import com.toddlandis.skillcraft.registry.ModBlocks;
 import com.toddlandis.skillcraft.registry.ModCreativeTabs;
 import com.toddlandis.skillcraft.registry.ModItems;
 import com.toddlandis.skillcraft.registry.ModDataComponents;
+import com.toddlandis.skillcraft.registry.ModEffects;
+import com.toddlandis.skillcraft.registry.ModEntities;
 import com.toddlandis.skillcraft.registry.ModLootModifiers;
 import com.toddlandis.skillcraft.registry.ModMenuTypes;
 import com.toddlandis.skillcraft.registry.ModPoiTypes;
@@ -43,6 +46,9 @@ public class SkillCraft {
         ModMenuTypes.MENUS.register(modEventBus);
         ModDataComponents.COMPONENTS.register(modEventBus);
         ModLootModifiers.LOOT_MODIFIERS.register(modEventBus);
+        ModEntities.ENTITIES.register(modEventBus);
+        ModEffects.EFFECTS.register(modEventBus);
+        ModGameTests.TEST_FUNCTIONS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

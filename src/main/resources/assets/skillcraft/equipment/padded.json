@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "skillcraft:padded"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "skillcraft:padded"
+      }
+    ]
+  }
+}

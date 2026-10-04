@@ -14,9 +14,10 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 ## Starter skills
 | Skill | Category | Minecraft hook | Depth ideas |
 |---|---|---|---|
-| Melee | Combat | Swords, axes | Attack styles (accurate/aggressive/defensive), weapon speed tiers, special attacks |
-| Ranged | Combat | Bows, crossbows | Ammo tiers, range and draw-speed tradeoffs, positioning |
-| Constitution | Combat | Health | Max HP scales with level; XP comes from taking and dealing damage |
+| Melee | Combat | Swords, spears, axes, warhammers | Stab/slash/crush damage types vs. monster weaknesses, attack styles, weapon speed tiers, special attacks |
+| Ranged | Combat | Bows, crossbows | Light/medium/heavy ammo, range and draw-speed tradeoffs, positioning |
+| Defence | Combat | Armour | Gates armour; typed armour defends against stab/slash/crush/ranged |
+| Constitution | Combat | Health | Max HP scales with level; XP comes from dealing damage |
 | Mining | Gathering | Ores | Level-gated ores, ore veins that deplete and respawn, pickaxe tiers, rare gems |
 | Woodcutting | Gathering | Trees | Level-gated tree types (oak → willow → maple → yew → magic-style equivalents), stumps that regrow, success chance per swing |
 | Fishing | Gathering | Fishing rod | Fishing spots that move, method/bait per fish, level-gated catches |
@@ -137,6 +138,26 @@ Data: `data/skillcraft/data_maps/item/smelting.json`.
 - **Mobs** never drop station gear unless it carries a player's stamp, i.e. the mob picked up player-made gear.
 - **Villagers and wandering traders** never sell station gear or ingots. `scripts/gen_villager_trade_overrides.sh` rewrites the vanilla `villager_trade` tag pools without those trades (36 removed), so villagers still roll full trade lists from what's left. Trades that *buy* ingots stay.
 
+## Combat (Phase 5)
+Full rules and numbers: **[docs/COMBAT.md](COMBAT.md)**. In short:
+- **Damage types:** stab, slash, crush (melee) and light, medium, heavy ammo (ranged).
+  - Monsters take more or less damage from each (`combat_profiles` data map). Hits show "Effective" or "Resisted".
+  - Sneak and right-click a monster with an empty hand to examine its weaknesses.
+- **Typed armour:** each armour piece defends differently against stab, slash, crush and ranged (`armor_defences`).
+  - Mail is good against slashes, plate against points and edges, and padded armour against blows and arrows.
+  - Armour is gated by the new **Defence** skill.
+- **Combat XP:** 4 XP per point of health actually removed from a mob, plus 1.33 Constitution XP.
+  - **Attack styles** (key **V**) split the 4 XP: Aggressive = all Melee/Ranged (+5% damage), Controlled = half Melee/Ranged and half Defence, Defensive = all Defence (−5% damage taken).
+  - There's no XP for damaging players, armour stands, babies or tamed animals, or for creative players. Spawner mobs give half.
+- **Constitution:** +1 heart per 10 levels, and one more at 99 (20 → 40 HP).
+- **Level bonuses:** Melee/Ranged add +0.25% damage per level, and Defence −0.15% damage taken per level.
+- **New gear:**
+  - warhammers (crush; copper → netherite)
+  - light and heavy arrows
+  - padded armour
+  - spears and chainmail are now made at the stations too
+- **Bosses:** [docs/BOSS_SLAGHEART.md](BOSS_SLAGHEART.md). The first boss, **Slagheart, the Forge Warden**, is fought in an instanced, indestructible arena dimension. See the doc for stances, phases, rewards and balance.
+
 ## Bank (OSRS-style)
 - **One bank per player**, stored on the player (attachment `bank`). Every **Bank Chest** opens your own bank, and other players see theirs.
 - **Each stackable item type uses one slot**, holding up to **2,147,483,647**. Unstackable items take a slot each. Items with different enchantments or damage are kept separate. **800 slots** by default (`bankSlots` in the config).
@@ -152,7 +173,10 @@ Data: `data/skillcraft/data_maps/item/smelting.json`.
 
 ## Level gates (vanilla content)
 Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
-- `item/skill_requirements.json`: tools and weapons. Pickaxes need Mining, axes need Woodcutting to chop *and* Melee to fight, swords need Melee, crossbows need Ranged. Tiers: copper 5, iron 10, gold 20, diamond 30, netherite 40 (vanilla gear caps around 50).
+- `item/skill_requirements.json`: tools, weapons, ammo and armour.
+  - Pickaxes need Mining. Axes need Woodcutting to chop *and* Melee to fight.
+  - Swords, spears and warhammers need Melee. Crossbows and heavy arrows need Ranged. Armour needs Defence.
+  - Tiers: copper 5, iron 10 (chainmail 10), gold 20, diamond 30, netherite 40 (vanilla gear caps around 50).
 - `block/skill_resources.json`: the level needed to break each world log and ore.
 
 ## Technical architecture
@@ -174,8 +198,13 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
 - [x] **Phase 3.5 – Multiplayer hardening:** server-verified minigame results (seeded replay + timing check), altar ownership, per-player gathering fatigue
 - [x] **Phase 4 – Smithing & Crafting:** Smelter, Forging Anvil, Crafting Bench, queued processing, vanilla gear recipes disabled, gear only from players (no chest/mob gear)
 - [x] **Phase 4.5 – Bank:** OSRS-style per-player bank (Bank Chest), 2.1B stacks, tabs, search, quantities, rearranging
-- [ ] **Phase 5 – Combat:** Melee, Ranged and Constitution; equipment requirements; attack styles
-- [ ] **Phase 6 – First boss:** arena, phases, telegraphed attacks, unique drops
+- [x] **Phase 5 – Combat + first boss:**
+  - Melee, Ranged, Defence and Constitution
+  - combat XP and attack styles
+  - stab/slash/crush and ammo weights with monster weaknesses
+  - typed armour, warhammers, light/heavy arrows, padded armour
+  - Slagheart in an instanced arena dimension with phases, telegraphs, a unique drop and a resource table
+- [ ] **Phase 6 – More combat content:** higher-tier weapon/ammo/armour families, special attacks, more mid-tier bosses with niche uniques
 - [ ] **Phase 7 – World generation:** new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
 - [ ] **Phase 8+:** Fishing, Farming, Firemaking, Construction, Agility, Sailing, more bosses
 
