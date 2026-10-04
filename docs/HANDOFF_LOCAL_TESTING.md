@@ -154,6 +154,52 @@ Details are in `docs/ABILITIES_SPEC.md` §8.
   - Spending Surges and Ultimates during **Vent** feels rewarding.
   - Kills should feel roughly 15–20% faster than without abilities.
 
+### E. Agility, Magic and Prayer (Phase 7)
+Details are in `docs/AGILITY_MAGIC_PRAYER.md`.
+
+**Setup:** `/skill set @s magic 40`, `/skill set @s prayer 45` and `/skill set @s agility 40`, then switch to **survival**.
+- Get foci and motes from the creative tab, or craft them at a Crafting Bench (needs Crafting levels).
+- Place a **Votive Shrine** (crafting table: candles, gold ingot, chiseled stone bricks, stone bricks).
+
+- [ ] **Bolts:**
+  - Right-click with the Apprentice Wand fires arcane bolts and uses Arcane Motes.
+  - The Ember Staff fires fire bolts without any Ember Motes.
+  - The hotbar shows the focus's cooldown.
+  - Bolts hit where you aim, and Magic XP drops appear.
+- [ ] **Elements:**
+  - Fire bolts barely hurt blazes and magma cubes ("Resisted"); frost wrecks them ("Effective").
+  - Sneak + right-click a mob with an empty hand to examine its new elemental weaknesses.
+- [ ] **Spells (Book J → Spells tab):** check that each one looks and sounds right.
+  - Fireball's burst sets mobs alight.
+  - Rime Snare roots its target.
+  - Blink stops at walls.
+  - Chain Lightning arcs between mobs.
+  - Arcane Ward gives yellow hearts.
+  - Frost Nova slows everything around you.
+  - Starfall's ring warns, then the star lands. It needs a staff.
+  - Hearthward takes you home after 5 s if you stand still. It's refused in combat and in the arena.
+- [ ] **Blessings (Book J → Prayers tab):**
+  - Right-click a blessing to turn it on: it shows a green "On" badge, and the HUD shows a cream Faith bar and its icon.
+  - Turning on a second ward turns the first off.
+  - The Faith bar drains, and the blessings switch off when Faith runs out.
+  - Empty-hand right-click on the shrine refills Faith.
+  - Right-click the shrine holding bones offers the stack for 15 XP each; sneak + right-click a bone anywhere buries it for 5 XP.
+  - Saving Grace: let a mob nearly kill you and you should survive at a quarter health.
+- [ ] **Agility:**
+  - Sprint-jump across a 3-block gap: you should get Agility XP once, then none from the same jump for a minute.
+  - Climb a ladder 5+ blocks for XP.
+  - Falls up to 7 blocks are harmless at Agility 40.
+- [ ] **Movement abilities (Agility tab):**
+  - Sidestep goes the way you're moving.
+  - Featherfall makes you drift down.
+  - Updraft works mid-air.
+  - Grapple Line pulls you to the block you're looking at and onto a ledge if one is in reach. It never pulls you through walls.
+  - Shadowstep puts you behind a mob, and the next hit sparkles.
+- [ ] **Slagheart:**
+  - Frost spells are effective, especially while it's vented.
+  - Fire does almost nothing.
+  - Ward of Steel makes its hammer slams hurt much less.
+
 ### C. Things only a person can judge
 These matter most:
 - **Slagheart model and animations:** proportions, whether every attack reads clearly, and whether windups are long enough to react to.

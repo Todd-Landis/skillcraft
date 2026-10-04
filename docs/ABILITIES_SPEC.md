@@ -142,6 +142,7 @@ Damage is given as **% of the held weapon's normal hit** (RS3-style), so abiliti
 Total: **26 abilities.** The first build should deliver **at least 14**: Lunge, Hamstring, Rending Cut, Sweeping Arc, Battle Trance, Quick Draw, Pinning Shot, Tumble, Volley, Brace, Riposte, Unshackle, Second Wind, plus at least 3 Weapon Arts including **Concussive Blow**, **Vault** and **Forgequake**. The rest can follow in v2. The spec stays the source of truth for later ones.
 
 ### Future (framework must allow it; don't build it now)
+> **Update:** Spells and Prayers are now built. See [AGILITY_MAGIC_PRAYER.md](AGILITY_MAGIC_PRAYER.md): 8 spells, 13 blessings that drain Faith, and 6 Agility movement abilities. Sprint Burst moved to Agility 1.
 - **Spells (Magic skill):** an ability type that consumes *items* (runes) instead of or as well as Momentum, e.g. *Ember Bolt*, *Bind*, *Teleport home*. Magic is already reserved in `DamageStyle`.
 - **Prayers (Prayer skill):** **toggle** abilities with a **drain** resource (prayer points), e.g. protect-from-melee/ranged (−40% from that group), and +5% damage buffs. They occupy bar slots *or* a separate prayer panel; decide when Prayer is designed.
 - **Custom-tier abilities (51–99)** arriving with custom weapon tiers.

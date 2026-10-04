@@ -84,7 +84,7 @@ public class ModBlocks {
                     .strength(3.0f, 6.0f)
                     .requiresCorrectToolForDrops()
                     .mapColor(MapColor.STONE)
-                    .sound(SoundType.STONE_BRICKS)
+                    .sound(SoundType.STONE)
                     .noOcclusion()
                     .lightLevel(state -> 9));
 

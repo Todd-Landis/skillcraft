@@ -161,6 +161,28 @@ public final class ShowcaseClient {
             at(t += 2, () -> mc.gui.setScreen(null));
             at(t += 10, () -> shot(mc, "abilities_hud_scale" + scale));
         }
+        // Phase 7: a staff, a spell bar, two blessings on (Faith bar and icons), a bolt in flight, the new tabs
+        at(t += 10, () -> {
+            mc.options.guiScale().set(2);
+            mc.resizeGui();
+            server.execute(() -> Showcase.magicScene(server.getPlayerList().getPlayers().getFirst()));
+        });
+        at(t += 30, () -> shot(mc, "magic_hud"));
+        at(t += 2, () -> server.execute(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+            com.toddlandis.skillcraft.magic.MagicCasting.castBolt(player, player.getMainHandItem());
+        }));
+        at(t += 3, () -> shot(mc, "magic_bolt"));
+        com.toddlandis.skillcraft.ability.AbilityCategory[] tabs = {com.toddlandis.skillcraft.ability.AbilityCategory.SPELL,
+                com.toddlandis.skillcraft.ability.AbilityCategory.PRAYER, com.toddlandis.skillcraft.ability.AbilityCategory.AGILITY};
+        at(t += 10, () -> mc.gui.setScreen(new com.toddlandis.skillcraft.client.ability.AbilityBookScreen()));
+        for (com.toddlandis.skillcraft.ability.AbilityCategory tab : tabs) {
+            at(t += 5, () -> {
+                if (mc.gui.screen() instanceof com.toddlandis.skillcraft.client.ability.AbilityBookScreen book) book.showTab(tab);
+            });
+            at(t += 15, () -> shot(mc, "ability_book_" + tab.getSerializedName()));
+        }
+        at(t += 2, () -> mc.gui.setScreen(null));
         at(t += 10, () -> {
             mc.options.guiScale().set(0);
             mc.resizeGui();

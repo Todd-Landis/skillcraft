@@ -121,7 +121,8 @@ Spells generate Momentum like melee Basics (+8 for most Basics).
 
 ### 3.2 Training: bones
 - **Bury:** sneak + right-click while holding an offering (anywhere) to bury one for its base XP.
-- **Offer:** right-click a Votive Shrine holding an offering for **×3** the XP. Sneak-click offers the whole stack.
+- **Offer:** right-click a Votive Shrine while holding offerings to offer the **whole stack** for **×3** the XP.
+  - Why the whole stack: sneaking skips a block's right-click in vanilla, so "sneak to offer all" can't work. Sneak + use buries one instead.
 - **Offerings** (`data_maps/item/prayer_offerings.json`): bone 5 XP, skeleton skull 30, wither skeleton skull 100.
   - Bone meal and bone blocks aren't offerings, so converting between them gains nothing.
 - **Votive Shrine:** crafted on a crafting table from chiseled stone bricks, candles and gold.

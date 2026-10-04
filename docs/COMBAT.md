@@ -17,7 +17,14 @@ Phase 5 adds combat XP, a combat triangle built on damage types, typed armour, a
 | Medium | Ranged | Vanilla arrows (normal, tipped, spectral) |
 | Heavy | Ranged | Heavy arrows, thrown tridents: slow, arcing, high damage, extra knockback |
 
-Magic is reserved for later (`DamageStyle` has room for it).
+| Fire | Magic | Ember Staff, Fireball |
+| Frost | Magic | Rime Staff, Rime Snare, Frost Nova |
+| Storm | Magic | Tempest Staff, Chain Lightning |
+| Arcane | Magic | wands, Starseer Staff, Starfall |
+
+The four magic types (elements) arrived with the Magic skill. They're covered in [AGILITY_MAGIC_PRAYER.md](AGILITY_MAGIC_PRAYER.md).
+
+Each damage type belongs to a **discipline**: melee (stab, slash, crush), ranged (the ammo weights) or magic (the elements). The discipline decides which skill a hit trains, and which skill's level bonus it gets: Melee, Ranged or **Magic**. Prayer blessings that boost or ward a discipline use it too.
 
 ### Where the data lives (`data/skillcraft/data_maps/`)
 - `item/weapon_styles.json`: item → `{"style": "crush"}`. Items that aren't listed hit as **crush**.
@@ -31,7 +38,7 @@ Magic is reserved for later (`DamageStyle` has room for it).
 damage × matchup × (1 + 0.0025 × (skillLevel − 1)) × styleBonus × (Sundered ? 1.15 : 1)
 ```
 - `matchup` is the monster's modifier for the damage type, clamped to 0.25–2.0.
-- `skillLevel` is Melee for melee hits and Ranged for projectiles: +0% at level 1 up to +24.5% at 99.
+- `skillLevel` is the hit's discipline skill: Melee, Ranged or Magic. It's +0% at level 1, up to +24.5% at 99.
 - `styleBonus` is ×1.05 on Aggressive.
 - A matchup of ≥1.15 shows **Effective** (enchanted-hit sparks and a chime); ≤0.85 shows **Resisted** (a grey puff and a dull clank). The overlay message shows at most once a second.
 
