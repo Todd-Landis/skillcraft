@@ -1,3 +1,11 @@
 {
-  "values": ["skillcraft:ember_sigil", "skillcraft:light_arrow", "skillcraft:heavy_arrow"]
+  "values": [
+    "skillcraft:ember_sigil",
+    "skillcraft:light_arrow",
+    "skillcraft:heavy_arrow",
+    "skillcraft:arcane_mote",
+    "skillcraft:ember_mote",
+    "skillcraft:frost_mote",
+    "skillcraft:storm_mote"
+  ]
 }

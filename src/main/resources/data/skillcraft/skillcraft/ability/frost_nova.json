@@ -1,0 +1,35 @@
+{
+  "category": "spell",
+  "class": "surge",
+  "requires": {
+    "skill": "magic",
+    "level": 28,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 280,
+  "windup": 6,
+  "item_costs": [
+    {
+      "item": "skillcraft:frost_mote",
+      "count": 3
+    },
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 1
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:ground_slam",
+    "radius": 4,
+    "damage": 1.2,
+    "style": "frost",
+    "effects": [
+      {
+        "effect": "skillcraft:slowed",
+        "duration": 60,
+        "amplifier": 2
+      }
+    ]
+  },
+  "icon": "skillcraft:ability/frost_nova"
+}

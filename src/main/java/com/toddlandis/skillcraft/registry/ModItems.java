@@ -111,6 +111,32 @@ public class ModItems {
             .rarity(Rarity.EPIC)
             .fireResistant());
 
+    // --- Magic (docs/AGILITY_MAGIC_PRAYER.md) ---
+
+    // Motes: spell reagents, one per element (crafted at the Crafting Bench)
+    public static final DeferredItem<Item> ARCANE_MOTE = ITEMS.registerSimpleItem("arcane_mote");
+    public static final DeferredItem<Item> EMBER_MOTE = ITEMS.registerSimpleItem("ember_mote");
+    public static final DeferredItem<Item> FROST_MOTE = ITEMS.registerSimpleItem("frost_mote");
+    public static final DeferredItem<Item> STORM_MOTE = ITEMS.registerSimpleItem("storm_mote");
+
+    // Wands and staves; their power, element and cast speed are in data_maps/item/magic_focus.json
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> APPRENTICE_WAND = focus("apprentice_wand", Rarity.COMMON);
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> EMBER_STAFF = focus("ember_staff", Rarity.COMMON);
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> RIME_STAFF = focus("rime_staff", Rarity.COMMON);
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> TEMPEST_STAFF = focus("tempest_staff", Rarity.COMMON);
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> ARCANIST_WAND = focus("arcanist_wand", Rarity.UNCOMMON);
+    public static final DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> STARSEER_STAFF = focus("starseer_staff", Rarity.RARE);
+
+    private static DeferredItem<com.toddlandis.skillcraft.magic.FocusItem> focus(String name, Rarity rarity) {
+        return ITEMS.registerItem(name, com.toddlandis.skillcraft.magic.FocusItem::new, p -> p.stacksTo(1).rarity(rarity));
+    }
+
+    // What a spell bolt looks like is its element's mote (see magic/SpellBolt)
+
+    // --- Prayer ---
+
+    public static final DeferredItem<BlockItem> VOTIVE_SHRINE = ITEMS.registerSimpleBlockItem("votive_shrine", ModBlocks.VOTIVE_SHRINE);
+
     // Main-hand attributes for heavy weapons: damage, speed, extra knockback, and a movement penalty
     private static ItemAttributeModifiers weaponAttributes(float damage, float speed, double knockback, double moveSpeed) {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder()

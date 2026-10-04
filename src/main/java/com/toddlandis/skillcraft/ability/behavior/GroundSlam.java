@@ -45,6 +45,14 @@ public record GroundSlam(float radius, float damage, Optional<DamageStyle> style
             AbilityDamage.strike(player, target, damage, style.orElse(null));
             for (EffectSpec effect : effects) effect.apply(target, player);
         }
+        net.minecraft.core.particles.ParticleOptions magic = Fx.element(style.orElse(null));
+        if (magic != null) {
+            // A spell (Frost Nova): rings of the element's particles and a glassy burst
+            for (float r = 1; r <= radius; r += 0.5f) Fx.ring(context.level(), player.position().add(0, 0.4, 0), r, magic);
+            Fx.sound(context.level(), player, SoundEvents.GLASS_BREAK, 1f, 0.7f);
+            Fx.sound(context.level(), player, SoundEvents.EVOKER_CAST_SPELL, 0.8f, 1.4f);
+            return true;
+        }
         for (float r = 1; r <= radius; r += 1) Fx.ring(context.level(), player.position(), r, ParticleTypes.LAVA);
         Fx.ring(context.level(), player.position(), radius, ParticleTypes.POOF);
         Fx.sound(context.level(), player, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1f, 0.8f);

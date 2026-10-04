@@ -37,6 +37,9 @@ src/main/java/com/toddlandis/skillcraft/
   gathering/               level gates for breaking world blocks
   node/                    skilling nodes, NodeType stats, auto-gathering sessions
   altar/                   Attunement Altar (turns resources into nodes)
+  magic/                   wands and staves (MagicFocus), motes, bolts (SpellBolt), casting
+  prayer/                  Faith, blessings in combat, Votive Shrine, bone offerings
+  agility/                 parkour XP, safe falls and sprint perks, recent movement for Sidestep
   ability/                 combat abilities: definitions (JSON), behaviours, the ability bar,
                            Momentum, cooldowns, crowd control, Codex
   combat/                  damage types, matchups, typed armour, combat XP, attack styles,
@@ -69,6 +72,7 @@ docs/DESIGN.md             design and roadmap
 docs/COMBAT.md             combat system rules and numbers
 docs/BOSS_SLAGHEART.md     the first boss
 docs/ABILITIES_SPEC.md     combat abilities: spec and as-built decisions
+docs/AGILITY_MAGIC_PRAYER.md   Agility, Magic and Prayer: design, numbers and decisions
 docs/HANDOFF_LOCAL_TESTING.md   how to build, test and iterate locally
 CLAUDE.md                  notes for Claude Code (commands, conventions, 26.2 API notes)
 scripts/ci/                client smoke test (CI) and screenshot preview tool

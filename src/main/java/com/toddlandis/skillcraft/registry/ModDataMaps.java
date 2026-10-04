@@ -84,8 +84,22 @@ public class ModDataMaps {
             .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "effect_tuning"), Registries.MOB_EFFECT, com.toddlandis.skillcraft.ability.EffectTuning.CODEC)
             .build();
 
+    // wand/staff -> kind, bolt power, element and cast cooldown (docs/AGILITY_MAGIC_PRAYER.md)
+    public static final DataMapType<Item, com.toddlandis.skillcraft.magic.MagicFocus> MAGIC_FOCI = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "magic_focus"), Registries.ITEM, com.toddlandis.skillcraft.magic.MagicFocus.CODEC)
+            .synced(com.toddlandis.skillcraft.magic.MagicFocus.CODEC, false)
+            .build();
+
+    // bone, skull... -> Prayer XP for burying it (offering it at a Votive Shrine multiplies it)
+    public static final DataMapType<Item, com.toddlandis.skillcraft.prayer.PrayerOffering> PRAYER_OFFERINGS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "prayer_offerings"), Registries.ITEM, com.toddlandis.skillcraft.prayer.PrayerOffering.CODEC)
+            .synced(com.toddlandis.skillcraft.prayer.PrayerOffering.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(MAGIC_FOCI);
+        event.register(PRAYER_OFFERINGS);
         event.register(EFFECT_TUNING);
         event.register(WEAPON_STYLES);
         event.register(ARMOR_DEFENCES);

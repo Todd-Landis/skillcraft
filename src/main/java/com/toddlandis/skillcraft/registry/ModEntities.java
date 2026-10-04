@@ -31,6 +31,10 @@ public class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<SkillArrow>> HEAVY_ARROW = ENTITIES.registerEntityType("heavy_arrow",
             SkillArrow::new, MobCategory.MISC, builder -> builder.sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20).noLootTable());
 
+    // Magic bolts from wands, staves and spells (docs/AGILITY_MAGIC_PRAYER.md)
+    public static final DeferredHolder<EntityType<?>, EntityType<com.toddlandis.skillcraft.magic.SpellBolt>> SPELL_BOLT = ENTITIES.registerEntityType("spell_bolt",
+            com.toddlandis.skillcraft.magic.SpellBolt::new, MobCategory.MISC, builder -> builder.sized(0.3f, 0.3f).clientTrackingRange(6).updateInterval(2).noLootTable());
+
     @SubscribeEvent
     static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SLAGHEART.get(), SlagheartEntity.createAttributes().build());

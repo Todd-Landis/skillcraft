@@ -86,10 +86,16 @@ public final class CrowdControl {
 
     // Horizontal shove away from the caster (none on bosses; halved on players)
     public static void knockback(LivingEntity target, Entity from, double strength) {
+        knockback(target, from.position(), from.getLookAngle(), strength);
+    }
+
+    // The same, away from a point (e.g. where a spell landed); `fallback` is used if the target is on it
+    public static void knockback(LivingEntity target, Vec3 origin, Vec3 fallback, double strength) {
         if (strength <= 0 || isBoss(target)) return;
         if (target instanceof Player) strength /= 2;
-        Vec3 away = target.position().subtract(from.position()).multiply(1, 0, 1);
-        if (away.lengthSqr() < 1.0E-4) away = from.getLookAngle().multiply(1, 0, 1);
+        Vec3 away = target.position().subtract(origin).multiply(1, 0, 1);
+        if (away.lengthSqr() < 1.0E-4) away = fallback.multiply(1, 0, 1);
+        if (away.lengthSqr() < 1.0E-4) away = new Vec3(1, 0, 0);
         away = away.normalize().scale(strength * Math.max(0, 1 - target.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE)));
         target.push(away.x, 0.15 * strength, away.z);
         target.hurtMarked = true;

@@ -109,6 +109,18 @@ done
 recipe skillcraft:light_arrow crafting_bench 1 4 30 "$(part minecraft:stick 1), $(part minecraft:feather 2)" - 6
 recipe skillcraft:heavy_arrow crafting_bench 15 12 50 "$(part minecraft:stick 1), $(part minecraft:feather 1), $(part minecraft:iron_nugget 3)" - 4
 
+# Magic (docs/AGILITY_MAGIC_PRAYER.md): motes, 16 per craft, then wands and staves
+recipe skillcraft:arcane_mote crafting_bench 1 6 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:lapis_lazuli 1)" - 16
+recipe skillcraft:ember_mote crafting_bench 5 8 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:coal 2)" - 16
+recipe skillcraft:frost_mote crafting_bench 5 8 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:snowball 4)" - 16
+recipe skillcraft:storm_mote crafting_bench 8 10 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:redstone 2)" - 16
+recipe skillcraft:apprentice_wand crafting_bench 5 20 60 "$(part minecraft:stick 1), $(part minecraft:amethyst_shard 2)"
+recipe skillcraft:ember_staff crafting_bench 12 45 100 "$(part minecraft:stick 2), $(part minecraft:amethyst_shard 2), $(part minecraft:coal 6)"
+recipe skillcraft:rime_staff crafting_bench 16 55 100 "$(part minecraft:stick 2), $(part minecraft:amethyst_shard 2), $(part minecraft:snow_block 4)"
+recipe skillcraft:tempest_staff crafting_bench 22 70 120 "$(part minecraft:stick 2), $(part minecraft:amethyst_shard 3), $(part minecraft:lightning_rod 1)"
+recipe skillcraft:arcanist_wand crafting_bench 30 110 140 "$(part minecraft:blaze_rod 1), $(part minecraft:amethyst_shard 4), $(part minecraft:lapis_lazuli 6), $(part minecraft:gold_ingot 2)"
+recipe skillcraft:starseer_staff crafting_bench 40 180 200 "$(part minecraft:blaze_rod 2), $(part minecraft:amethyst_shard 6), $(part minecraft:diamond 2), $(part minecraft:ender_eye 1)"
+
 recipe fishing_rod crafting_bench 5 15 60 "$(part minecraft:stick 3), $(part minecraft:string 2)"
 recipe bow crafting_bench 10 25 60 "$(part minecraft:stick 3), $(part minecraft:string 3)"
 recipe shield crafting_bench 15 40 80 "$(part '#minecraft:planks' 6), $(part minecraft:iron_ingot 1)"

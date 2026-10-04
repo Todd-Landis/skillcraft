@@ -1,0 +1,24 @@
+{
+  "category": "spell",
+  "class": "basic",
+  "requires": {
+    "skill": "magic",
+    "level": 25,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 500,
+  "off_gcd": true,
+  "item_costs": [
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 2
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "minecraft:absorption",
+    "duration": 200,
+    "amplifier": 1
+  },
+  "icon": "skillcraft:ability/arcane_ward"
+}

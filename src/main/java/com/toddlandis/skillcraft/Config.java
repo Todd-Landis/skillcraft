@@ -53,5 +53,31 @@ public class Config {
             .comment("Whether using an Ember Sigil at the Summoning Brazier uses it up. Off: the sigil is a reusable key.")
             .define("consumeEmberSigil", false);
 
+    // Prayer (docs/AGILITY_MAGIC_PRAYER.md section 3; per-blessing numbers live in the ability JSON)
+    public static final ModConfigSpec.IntValue FAITH_BASE = BUILDER
+            .comment("Maximum Faith = this + Prayer level.")
+            .defineInRange("faithBase", 9, 0, 1000);
+
+    public static final ModConfigSpec.IntValue FAITH_REGEN_TICKS = BUILDER
+            .comment("Ticks per point of Faith regained while no blessing is on (0 = no natural regeneration).")
+            .defineInRange("faithRegenTicks", 600, 0, 72000);
+
+    public static final ModConfigSpec.DoubleValue SHRINE_XP_MULTIPLIER = BUILDER
+            .comment("Prayer XP multiplier for offering at a Votive Shrine instead of burying.")
+            .defineInRange("shrineXpMultiplier", 3.0, 1.0, 100.0);
+
+    // Agility (section 4)
+    public static final ModConfigSpec.DoubleValue SAFE_FALL_PER_LEVEL = BUILDER
+            .comment("Blocks of fall that stop hurting per Agility level (0.1 = one block per 10 levels).")
+            .defineInRange("agilitySafeFallPerLevel", 0.1, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue SPRINT_SPEED_PER_LEVEL = BUILDER
+            .comment("Sprint speed bonus per Agility level above 1 (0.0005 = +0.05% per level).")
+            .defineInRange("agilitySprintSpeedPerLevel", 0.0005, 0.0, 0.01);
+
+    public static final ModConfigSpec.IntValue PARKOUR_NOVELTY_TICKS = BUILDER
+            .comment("Ticks before the same spot (a 4x4x4 cell) pays parkour XP again.")
+            .defineInRange("parkourNoveltyTicks", 1200, 0, 72000);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

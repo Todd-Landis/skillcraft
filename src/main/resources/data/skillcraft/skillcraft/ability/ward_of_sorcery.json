@@ -1,0 +1,22 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 36
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.25,
+    "resource": "faith",
+    "group": "ward"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "protect": {
+      "magic": 0.4
+    }
+  },
+  "icon": "skillcraft:ability/ward_of_sorcery"
+}

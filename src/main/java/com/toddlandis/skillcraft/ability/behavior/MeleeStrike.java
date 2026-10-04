@@ -73,8 +73,8 @@ public record MeleeStrike(float damage, Optional<DamageStyle> style, List<Effect
     // The hit and its extras (shared with the other melee behaviours)
     void hit(AbilityContext context, LivingEntity target) {
         ServerPlayer player = context.player();
-        double hit = offHand ? AbilityDamage.offhandHit(player) : AbilityDamage.weaponHit(player);
-        DamageStyle type = style.orElse(offHand ? DamageStyles.weapon(player.getOffhandItem()) : null);
+        DamageStyle type = style.orElse(offHand ? DamageStyles.weapon(player.getOffhandItem()) : AbilityDamage.defaultStyle(player));
+        double hit = offHand ? AbilityDamage.offhandHit(player) : AbilityDamage.basePower(player, type);
         boolean landed = AbilityDamage.hurt(player, target, (float) (hit * damage), type);
         if (landed && ignite > 0 && !target.fireImmune()) target.igniteForTicks(ignite);
         for (EffectSpec effect : effects) effect.apply(target, player);

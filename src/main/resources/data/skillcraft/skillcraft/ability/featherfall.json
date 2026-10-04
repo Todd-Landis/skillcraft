@@ -1,0 +1,16 @@
+{
+  "category": "agility",
+  "class": "basic",
+  "requires": {
+    "skill": "agility",
+    "level": 10
+  },
+  "cooldown": 400,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "minecraft:slow_falling",
+    "duration": 120
+  },
+  "icon": "skillcraft:ability/featherfall"
+}

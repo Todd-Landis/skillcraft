@@ -1,0 +1,16 @@
+{
+  "category": "agility",
+  "class": "basic",
+  "requires": {
+    "skill": "agility",
+    "level": 28
+  },
+  "cooldown": 240,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:dash",
+    "mode": "block",
+    "distance": 18
+  },
+  "icon": "skillcraft:ability/grapple_line"
+}

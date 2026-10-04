@@ -1,0 +1,19 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 45
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.15,
+    "resource": "faith"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "saving_grace": 0.25
+  },
+  "icon": "skillcraft:ability/saving_grace"
+}

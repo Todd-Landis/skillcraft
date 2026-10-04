@@ -1,0 +1,27 @@
+{
+  "category": "spell",
+  "class": "ultimate",
+  "requires": {
+    "skill": "magic",
+    "level": 40,
+    "weapon": "skillcraft:weapon_class/staff"
+  },
+  "cooldown": 900,
+  "windup": 10,
+  "item_costs": [
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 4
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:ground_target",
+    "range": 24,
+    "radius": 4,
+    "delay": 20,
+    "damage": 3,
+    "style": "arcane",
+    "knockback": 1
+  },
+  "icon": "skillcraft:ability/starfall"
+}

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.toddlandis.skillcraft.Config;
+import com.toddlandis.skillcraft.magic.MagicFocus;
 import com.toddlandis.skillcraft.network.AbilityCooldownPayload;
 import com.toddlandis.skillcraft.network.AbilityDeniedPayload;
 import com.toddlandis.skillcraft.network.AbilityUnlockedPayload;
@@ -29,7 +30,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 //   cooldown (unless off-GCD) -> Momentum -> item costs -> the behaviour itself (e.g. a target in reach)
 // A check that fails costs nothing. Cooldowns and Momentum are never saved.
 public final class AbilityService {
-    public enum Denied { UNKNOWN, EMPTY, DEAD, COMING_LATER, LOCKED, CODEX, WEAPON, BUSY, COOLDOWN, GCD, MOMENTUM, ITEMS, NO_TARGET, IN_COMBAT, INVALID }
+    public enum Denied { UNKNOWN, EMPTY, DEAD, COMING_LATER, LOCKED, CODEX, WEAPON, BUSY, COOLDOWN, GCD, MOMENTUM, ITEMS, NO_TARGET, IN_COMBAT, INVALID, FAITH }
 
     private static final double WINDUP_MOVE_TOLERANCE = 0.35;
 
@@ -69,6 +70,14 @@ public final class AbilityService {
         return use(player, id);
     }
 
+    // Blessings can be toggled straight from the Ability Book's Prayers tab, without a bar slot.
+    // Only Prayer toggles: everything else must be on the bar.
+    public static Denied useFromBook(ServerPlayer player, Identifier id) {
+        AbilityDefinition def = AbilityManager.get(id);
+        if (def == null || def.category() != AbilityCategory.PRAYER || !def.isToggle()) return Denied.INVALID;
+        return use(player, id);
+    }
+
     public static Denied use(ServerPlayer player, Identifier id) {
         AbilityDefinition def = AbilityManager.get(id);
         Denied denied = check(player, id, def);
@@ -104,9 +113,10 @@ public final class AbilityService {
         if (now < runtime.readyAt(id)) return Denied.COOLDOWN;
         if (!def.offGcd() && now < runtime.gcdUntil) return Denied.GCD;
         if (data(player).momentum() + 1.0E-4f < def.momentumRequired(skillLevel(player, def))) return Denied.MOMENTUM;
+        if (def.drainsFaith() && com.toddlandis.skillcraft.prayer.PrayerService.points(player) <= 0) return Denied.FAITH;
         if (!player.isCreative()) {
             for (AbilityDefinition.ItemCost cost : def.itemCosts()) {
-                if (countItem(player, cost.item()) < cost.count()) return Denied.ITEMS;
+                if (!MagicFocus.supplies(player, cost.item()) && countItem(player, cost.item()) < cost.count()) return Denied.ITEMS;
             }
         }
         return null;
@@ -131,9 +141,20 @@ public final class AbilityService {
         data.setMomentum(momentum + def.momentum().generate());
         save(player, data);
         if (!player.isCreative()) {
-            for (AbilityDefinition.ItemCost cost : def.itemCosts()) removeItem(player, cost.item(), cost.count());
+            for (AbilityDefinition.ItemCost cost : def.itemCosts()) {
+                if (!MagicFocus.supplies(player, cost.item())) removeItem(player, cost.item(), cost.count());
+            }
         }
         if (def.isToggle()) {
+            // Turning one on turns off the others in its group (e.g. only one ward at a time)
+            def.toggle().flatMap(AbilityDefinition.Toggle::group).ifPresent(group -> {
+                for (Identifier other : new HashSet<>(runtime.toggles)) {
+                    AbilityDefinition otherDef = AbilityManager.get(other);
+                    if (otherDef != null && otherDef.toggle().flatMap(AbilityDefinition.Toggle::group).map(group::equals).orElse(false)) {
+                        stopToggle(player, other, otherDef);
+                    }
+                }
+            });
             runtime.toggles.add(id);
         } else {
             runtime.readyAt.put(id, now + def.cooldown());
@@ -143,6 +164,11 @@ public final class AbilityService {
         com.toddlandis.skillcraft.network.ModNetwork.sendTo(player, new AbilityCooldownPayload(id, def.isToggle() ? 0 : def.cooldown(),
                 def.offGcd() ? 0 : Config.GLOBAL_COOLDOWN.get(), 0, def.isToggle()));
         return null;
+    }
+
+    // Switches every toggle off (on death, so blessings don't seem to linger on the client)
+    public static void stopAllToggles(ServerPlayer player) {
+        for (Identifier id : new HashSet<>(AbilityRuntime.of(player).toggles)) stopToggle(player, id, AbilityManager.get(id));
     }
 
     private static void stopToggle(ServerPlayer player, Identifier id, AbilityDefinition def) {
@@ -184,23 +210,43 @@ public final class AbilityService {
             }
         }
 
-        // Toggles drain Momentum each tick and switch off when it runs out (or the weapon is gone)
+        // Toggles drain their resource (Momentum or Faith) each tick and switch off when it runs out
+        // (or the weapon is gone). Faith comes back slowly while no blessing is on.
+        boolean faithInUse = false;
         if (!runtime.toggles.isEmpty()) {
             AbilityData data = data(player);
-            boolean changed = false;
+            boolean momentumChanged = false, faithChanged = false;
             for (Iterator<Identifier> it = new HashSet<>(runtime.toggles).iterator(); it.hasNext(); ) {
                 Identifier id = it.next();
                 AbilityDefinition def = AbilityManager.get(id);
                 float drain = def == null ? 0 : def.toggle().map(AbilityDefinition.Toggle::drainPerSecond).orElse(0f) / 20f;
-                if (def == null || data.momentum() < drain || !def.requires().weaponMatches(player.getMainHandItem(), player.getOffhandItem())) {
+                boolean faith = def != null && def.drainsFaith();
+                float have = faith ? com.toddlandis.skillcraft.prayer.PrayerService.points(player) : data.momentum();
+                if (def == null || have < drain || (faith && have <= 0) || !def.requires().weaponMatches(player.getMainHandItem(), player.getOffhandItem())) {
                     stopToggle(player, id, def);
+                    if (faith && def != null && have < drain) {
+                        player.sendOverlayMessage(Component.translatable("message.skillcraft.faith_empty").withStyle(ChatFormatting.GOLD));
+                    }
                     continue;
                 }
-                data.setMomentum(data.momentum() - drain);
-                changed |= drain > 0;
+                if (faith) {
+                    com.toddlandis.skillcraft.prayer.PrayerService.add(player, -drain);
+                    faithChanged |= drain > 0;
+                    faithInUse = true;
+                } else {
+                    data.setMomentum(data.momentum() - drain);
+                    momentumChanged |= drain > 0;
+                }
                 def.behavior().tickToggle(new AbilityContext(player, player.level(), id, def));
             }
-            if (changed && now % 5 == 0) save(player, data);
+            if (momentumChanged && now % 5 == 0) save(player, data);
+            if (faithChanged && (now % 5 == 0 || com.toddlandis.skillcraft.prayer.PrayerService.points(player) <= 0)) {
+                com.toddlandis.skillcraft.prayer.PrayerService.save(player, com.toddlandis.skillcraft.prayer.PrayerService.faith(player));
+            }
+        }
+        int regen = Config.FAITH_REGEN_TICKS.get();
+        if (!faithInUse && regen > 0 && now % regen == 0 && com.toddlandis.skillcraft.prayer.PrayerService.points(player) < com.toddlandis.skillcraft.prayer.PrayerService.maxFaith(player)) {
+            com.toddlandis.skillcraft.prayer.PrayerService.set(player, com.toddlandis.skillcraft.prayer.PrayerService.points(player) + 1);
         }
 
         // Heal over time (Second Wind)
@@ -273,6 +319,8 @@ public final class AbilityService {
 
     // Called from SkillManager on every level-up
     public static void onLevelUp(ServerPlayer player, Skill skill, int oldLevel, int newLevel) {
+        // A higher Prayer level raises maximum Faith: sync the new maximum for the HUD
+        if (skill == Skill.PRAYER) com.toddlandis.skillcraft.prayer.PrayerService.save(player, com.toddlandis.skillcraft.prayer.PrayerService.faith(player));
         for (var entry : AbilityManager.all().entrySet()) {
             AbilityDefinition def = entry.getValue();
             AbilityDefinition.Requirement req = def.requires();
@@ -309,6 +357,7 @@ public final class AbilityService {
             case ITEMS -> Component.translatable("message.skillcraft.ability_items", name);
             case NO_TARGET -> Component.translatable(failKey != null ? failKey : "message.skillcraft.ability_no_target", name);
             case IN_COMBAT -> Component.translatable("message.skillcraft.ability_in_combat");
+            case FAITH -> Component.translatable("message.skillcraft.ability_faith", name);
             case COMING_LATER -> Component.translatable("message.skillcraft.ability_coming_later");
             case BUSY, GCD -> null; // too frequent to be worth a message; the HUD shows it
             default -> Component.translatable("message.skillcraft.ability_unknown");
@@ -332,7 +381,7 @@ public final class AbilityService {
 
     // --- Items (for item-cost abilities) ---
 
-    private static int countItem(Player player, Item item) {
+    public static int countItem(Player player, Item item) {
         int count = 0;
         var inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
@@ -342,7 +391,7 @@ public final class AbilityService {
         return count;
     }
 
-    private static void removeItem(Player player, Item item, int count) {
+    public static void removeItem(Player player, Item item, int count) {
         var inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize() && count > 0; i++) {
             ItemStack stack = inventory.getItem(i);

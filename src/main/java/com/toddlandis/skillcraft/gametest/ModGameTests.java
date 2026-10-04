@@ -47,6 +47,10 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ability_future", () -> AbilityTests::future);
         TEST_FUNCTIONS.register("ability_offhand", () -> AbilityTests::offhand);
         TEST_FUNCTIONS.register("ability_dps", () -> AbilityTests::dps);
+        TEST_FUNCTIONS.register("magic_bolt", () -> Phase7Tests::bolt);
+        TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
+        TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
+        TEST_FUNCTIONS.register("agility", () -> Phase7Tests::agility);
     }
 
     private ModGameTests() {}
@@ -72,6 +76,10 @@ public final class ModGameTests {
         test(event, "ability_future", 120);
         test(event, "ability_offhand", 40);
         test(event, "ability_dps", AbilityTests.HARNESS_TICKS + 100);
+        test(event, "magic_bolt", 60);
+        test(event, "magic_spells", 80);
+        test(event, "prayer", 40);
+        test(event, "agility", 40);
     }
 
     private static void test(RegisterGameTestsEvent event, String name, int maxTicks) {

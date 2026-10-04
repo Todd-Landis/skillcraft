@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "#minecraft:candles",
+    "G": "minecraft:gold_ingot",
+    "S": "minecraft:chiseled_stone_bricks",
+    "B": "minecraft:stone_bricks"
+  },
+  "pattern": [
+    "CGC",
+    " S ",
+    "BBB"
+  ],
+  "result": {
+    "id": "skillcraft:votive_shrine"
+  }
+}

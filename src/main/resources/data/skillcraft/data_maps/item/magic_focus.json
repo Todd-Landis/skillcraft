@@ -1,0 +1,40 @@
+{
+  "values": {
+    "skillcraft:apprentice_wand": {
+      "kind": "wand",
+      "power": 4,
+      "element": "arcane",
+      "cast_cooldown": 16
+    },
+    "skillcraft:ember_staff": {
+      "kind": "staff",
+      "power": 8,
+      "element": "fire",
+      "cast_cooldown": 24
+    },
+    "skillcraft:rime_staff": {
+      "kind": "staff",
+      "power": 8,
+      "element": "frost",
+      "cast_cooldown": 24
+    },
+    "skillcraft:tempest_staff": {
+      "kind": "staff",
+      "power": 8.5,
+      "element": "storm",
+      "cast_cooldown": 24
+    },
+    "skillcraft:arcanist_wand": {
+      "kind": "wand",
+      "power": 6.5,
+      "element": "arcane",
+      "cast_cooldown": 14
+    },
+    "skillcraft:starseer_staff": {
+      "kind": "staff",
+      "power": 11,
+      "element": "arcane",
+      "cast_cooldown": 20
+    }
+  }
+}

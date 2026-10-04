@@ -156,7 +156,7 @@ public final class AbilityEvents {
 
         double multiplier = 1.0;
         DamageStyle style = CombatDamage.currentStyle(source);
-        boolean melee = style != null && !style.isRanged();
+        boolean melee = style != null && style.discipline() == com.toddlandis.skillcraft.combat.Discipline.MELEE;
 
         // Defender buffs
         if (victim.hasEffect(ModEffects.BRACED)) multiplier *= 1 - EffectTuning.get(ModEffects.BRACED, "damage_taken", 0.40);

@@ -1,0 +1,31 @@
+{
+  "category": "spell",
+  "class": "basic",
+  "requires": {
+    "skill": "magic",
+    "level": 12,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 180,
+  "momentum": {
+    "generate": 8
+  },
+  "item_costs": [
+    {
+      "item": "skillcraft:frost_mote",
+      "count": 2
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:spell_bolt",
+    "damage": 0.8,
+    "style": "frost",
+    "effects": [
+      {
+        "effect": "skillcraft:rooted",
+        "duration": 40
+      }
+    ]
+  },
+  "icon": "skillcraft:ability/rime_snare"
+}

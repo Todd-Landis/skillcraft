@@ -1,0 +1,20 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 16
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.1,
+    "resource": "faith",
+    "group": "guard"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "damage_taken": -0.1
+  },
+  "icon": "skillcraft:ability/stoneskin"
+}

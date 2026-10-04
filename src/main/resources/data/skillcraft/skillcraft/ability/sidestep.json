@@ -1,0 +1,16 @@
+{
+  "category": "agility",
+  "class": "basic",
+  "requires": {
+    "skill": "agility",
+    "level": 5
+  },
+  "cooldown": 100,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:dash",
+    "mode": "move",
+    "distance": 3.5
+  },
+  "icon": "skillcraft:ability/sidestep"
+}

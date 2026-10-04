@@ -19,6 +19,8 @@ import net.minecraft.world.entity.player.Player;
 // clear of the offhand slot and attack indicator; on narrow screens it becomes a 2x2 grid, and if
 // even that doesn't fit, a row above the hunger/air bars. Each slot shows the icon, its key, a
 // cooldown sweep, the global cooldown, a windup bar, and is dimmed when it can't be used now.
+// Once Prayer matters (level 2+, a blessing on, or Faith spent) a Faith bar runs beside the Momentum
+// bar, with the icons of active blessings next to it.
 public final class AbilityHud {
     public static final int SLOT = 20, GAP = 2, MOMENTUM_H = 3;
 
@@ -39,7 +41,8 @@ public final class AbilityHud {
     private AbilityHud() {}
 
     // Space the right-edge column takes up (slots, Momentum bar and margins), for other HUD bits to avoid
-    public static final int RIGHT_EDGE_WIDTH = SLOT + MOMENTUM_H + 10;
+    public static final int RIGHT_EDGE_WIDTH = SLOT + 2 * MOMENTUM_H + 13;
+    private static final int FAITH_COLOR = 0xFFE8D27A;
 
     public static Layout layout(Minecraft mc, int width, int height) {
         if (com.toddlandis.skillcraft.client.ClientConfig.barOnRightEdge()) {
@@ -93,10 +96,48 @@ public final class AbilityHud {
             g.fill(layout.x() + barW / 2, barY, layout.x() + barW / 2 + 1, barY + MOMENTUM_H, 0xFF000000);
         }
 
+        drawFaith(g, player, layout);
+
         for (int slot = 0; slot < AbilityData.SLOTS; slot++) {
             Identifier id = data.activeSlot(slot);
             drawSlot(g, mc.font, player, id, AbilityKeys.label(slot), layout.slotX(slot), layout.slotY(slot));
         }
+    }
+
+    // Faith: like Momentum, one bar further out, plus small icons of the blessings that are on
+    private static void drawFaith(GuiGraphicsExtractor g, Player player, Layout layout) {
+        com.toddlandis.skillcraft.prayer.PlayerFaith faith = com.toddlandis.skillcraft.prayer.PrayerService.faith(player);
+        java.util.List<Identifier> blessings = new java.util.ArrayList<>();
+        for (Identifier id : ClientAbilities.toggled()) {
+            AbilityDefinition def = ClientAbilities.get(id);
+            if (def != null && def.drainsFaith()) blessings.add(id);
+        }
+        boolean matters = blessings.size() > 0 || !faith.isFull()
+                || com.toddlandis.skillcraft.skill.SkillManager.level(player, com.toddlandis.skillcraft.skill.Skill.PRAYER) > 1;
+        if (!matters || faith.max() <= 0) return;
+        float share = faith.points() / faith.max();
+        if (layout.columns() == 1) {
+            int barX = layout.x() - 2 * MOMENTUM_H - 6;
+            int barH = AbilityData.SLOTS * SLOT + (AbilityData.SLOTS - 1) * GAP;
+            int top = layout.y(), bottom = top + barH;
+            g.fill(barX - 1, top - 1, barX + MOMENTUM_H + 1, bottom + 1, 0xC0101014);
+            int filled = Math.round(barH * share);
+            g.fill(barX, bottom - filled, barX + MOMENTUM_H, bottom, FAITH_COLOR);
+            for (int i = 0; i < blessings.size(); i++) icon(g, blessings.get(i), layout.x() + SLOT - 10 - i * 11, top - 12);
+        } else {
+            int barY = layout.y() - 2 * MOMENTUM_H - 5;
+            int barW = layout.width();
+            g.fill(layout.x() - 1, barY - 1, layout.x() + barW + 1, barY + MOMENTUM_H + 1, 0xC0101014);
+            g.fill(layout.x(), barY, layout.x() + Math.round(barW * share), barY + MOMENTUM_H, FAITH_COLOR);
+            for (int i = 0; i < blessings.size(); i++) icon(g, blessings.get(i), layout.x() + i * 11, barY - 12);
+        }
+    }
+
+    private static void icon(GuiGraphicsExtractor g, Identifier id, int x, int y) {
+        AbilityDefinition def = ClientAbilities.get(id);
+        if (def == null) return;
+        g.fill(x - 1, y - 1, x + 11, y + 11, 0xC0101014);
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, def.icon(), x, y, 10, 10);
     }
 
     public static void drawSlot(GuiGraphicsExtractor g, Font font, Player player, Identifier id, String key, int x, int y) {

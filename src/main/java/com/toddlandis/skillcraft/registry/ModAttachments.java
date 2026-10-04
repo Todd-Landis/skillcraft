@@ -67,6 +67,14 @@ public class ModAttachments {
                     .sync((holder, to) -> holder == to, AbilityData.STREAM_CODEC)
                     .build());
 
+    // Faith, drained by Prayer blessings (see prayer/PlayerFaith). Not copied on death, so a
+    // respawned player starts full; synced to its owner for the HUD.
+    public static final Supplier<AttachmentType<com.toddlandis.skillcraft.prayer.PlayerFaith>> FAITH = ATTACHMENT_TYPES.register("faith",
+            () -> AttachmentType.builder(com.toddlandis.skillcraft.prayer.PlayerFaith::new)
+                    .serialize(com.toddlandis.skillcraft.prayer.PlayerFaith.CODEC)
+                    .sync((holder, to) -> holder == to, com.toddlandis.skillcraft.prayer.PlayerFaith.STREAM_CODEC)
+                    .build());
+
     // Cooldowns and short-lived ability states (server-side only, never saved)
     public static final Supplier<AttachmentType<AbilityRuntime>> ABILITY_RUNTIME = ATTACHMENT_TYPES.register("ability_runtime",
             () -> AttachmentType.builder(AbilityRuntime::new).build());
