@@ -74,7 +74,8 @@ public final class BondingTests {
 
         Entity summoned = BondService.summon(player, bond.id);
         helper.assertTrue(summoned instanceof net.minecraft.world.entity.animal.wolf.Wolf w && "Rex".equals(w.getCustomName().getString())
-                        && Math.abs(w.getHealth() - 5f) < 0.6f && w.isOwnedBy(player),
+                        && Math.abs(w.getHealth() - 5f) < 0.6f
+                        && w.getOwnerReference() != null && player.getUUID().equals(w.getOwnerReference().getUUID()),
                 "the summoned wolf should be Rex, still hurt and still yours (" + summoned + ")");
         helper.assertTrue(bond.state == BondCodex.State.OUT && player.getUUID().equals(BondService.ownerOf(summoned)), "a summon is tagged as yours and Out");
 
