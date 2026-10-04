@@ -210,6 +210,32 @@ All are off-GCD and need no weapon.
 8. **Hearthward needs no focus,** so it's always an escape option, but it's refused in combat and in arenas.
 9. **Wards reduce by 40%, not 100%,** so bosses stay dangerous. This is the number the Phase 6 spec proposed.
 
+## 5.1 Verified numbers
+These come from `./gradlew runGameTestServer` in CI. **All 24 GameTests pass**: 20 from earlier phases and 4 new ones. The earlier numbers are unchanged: the melee DPS ratio is still ×1.389, and the loot rates and gathering value are the same.
+
+- **`magic_bolt`:**
+  - **Apprentice Wand** at Magic 1 dealt **4.20** = power 4 × Aggressive 1.05. It used 1 Arcane Mote and refused to fire with none left. It paid **16.8 Magic XP** (4 per damage) and no Ranged XP.
+  - **Ember Staff** at Magic 10 dealt **8.59** = 8 × level 1.0225 × 1.05, with no Ember Motes in the inventory (the staff supplies them).
+  - A Magic 1 player can't cast with the Magic 40 Starseer Staff.
+- **`magic_spells`:**
+  - **Frost Nova** (Rime Staff, Magic 28) hit two iron golems for **8.61** each = 8 × 1.2 × level 1.0675 × 1.05 × frost 0.8. It slowed both and spent its Arcane Mote; the staff covered the Frost Motes.
+  - **Chain Lightning** (Tempest Staff, Magic 22) hit three golems for **18.32 → 13.74 → 10.30** = 8.5 × 1.5 × level 1.0525 × 1.05 × storm 1.3, then −25% per jump.
+- **`prayer`:**
+  - Maximum Faith at Prayer 45 is 54.
+  - Turning on Ward of Steel turns off Ward of Arrows.
+  - Ward of Steel is **×0.60** against crush and doesn't touch ranged hits.
+  - Battle Fervor is **×1.10** on melee and doesn't touch spells.
+  - Two blessings drained **0.70 Faith in 2 s**.
+  - 10 bones offered at a shrine paid **150 XP**; 1 buried paid **5 XP**.
+  - **Saving Grace** turned a 30-damage hit at 4 health into 0 damage and left 5 health (25% of 20). All Faith was spent, every blessing switched off the next tick, and a new blessing was then refused for lack of Faith.
+  - The book refuses to toggle non-blessings.
+- **`agility`:**
+  - A 4-block sprint jump over a gap paid **8 XP**. The same jump again paid nothing.
+  - Climbing a 5-block ladder paid **5 XP**.
+  - A 7-block fall at Agility 40 counted as **3 blocks**.
+  - **Grapple Line** at a wall stopped with your edge **0.1 blocks** short of the wall face.
+  - **Shadowstep** moved you from in front of a zombie to behind it, 5 blocks along, and armed a +25% next melee hit.
+
 ## 6. Later
 - **Agility courses:** start, checkpoint and finish markers, with XP for completed laps.
 - **Runecrafting-style mote altars** (motes are crafted at the bench for now).
