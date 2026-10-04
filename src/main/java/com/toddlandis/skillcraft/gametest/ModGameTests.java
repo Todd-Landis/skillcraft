@@ -53,6 +53,8 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("fishing_hook_minigame", () -> FishingTests::hookMinigame);
         TEST_FUNCTIONS.register("cooking_range", () -> CookingTests::range);
         TEST_FUNCTIONS.register("magic_bolt", () -> Phase7Tests::bolt);
+        TEST_FUNCTIONS.register("xp_curve", () -> HeartTests::xpCurve);
+        TEST_FUNCTIONS.register("elemental_hearts", () -> HeartTests::hearts);
         TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
         TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
         TEST_FUNCTIONS.register("agility", () -> Phase7Tests::agility);
@@ -87,6 +89,8 @@ public final class ModGameTests {
         test(event, "fishing_hook_minigame", 40);
         test(event, "cooking_range", 500);
         test(event, "magic_bolt", 60);
+        test(event, "xp_curve", 20);
+        test(event, "elemental_hearts", 40);
         test(event, "magic_spells", 80);
         test(event, "prayer", 40);
         test(event, "agility", 40);

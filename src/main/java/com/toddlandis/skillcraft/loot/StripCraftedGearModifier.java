@@ -40,7 +40,7 @@ public class StripCraftedGearModifier extends LootModifier {
             if (context.getOptionalParameter(LootContextParams.ATTACKING_ENTITY) instanceof Player angler) {
                 int fishing = SkillManager.level(angler, Skill.FISHING);
                 loot.removeIf(stack -> {
-                    NodeType spot = NodeType.byInput(stack.getItem());
+                    NodeType spot = NodeType.byResource(stack.getItem());
                     return spot != null && spot.isSpot() && fishing < spot.level();
                 });
             }

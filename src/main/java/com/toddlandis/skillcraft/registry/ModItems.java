@@ -70,6 +70,11 @@ public class ModItems {
     // Right-click a node with this to pick it up
     public static final DeferredItem<Item> RELOCATOR = ITEMS.registerSimpleItem("relocator", p -> p.stacksTo(1));
 
+    // Found in the vanilla world (trees, ores, fishing); the Attunement Altar turns one into a node.
+    // Which node is in its skillcraft:heart_node component (see node/ElementalHeartItem).
+    public static final DeferredItem<com.toddlandis.skillcraft.node.ElementalHeartItem> ELEMENTAL_HEART = ITEMS.registerItem("elemental_heart",
+            com.toddlandis.skillcraft.node.ElementalHeartItem::new, p -> p.stacksTo(16).rarity(Rarity.UNCOMMON));
+
     // --- Combat (docs/COMBAT.md) ---
 
     // Warhammers: the crush weapon family. Slower and heavier than swords, with extra knockback.

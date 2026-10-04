@@ -17,6 +17,9 @@ public class ModCreativeTabs {
             .displayItems((params, output) -> {
                 output.accept(ModItems.ATTUNEMENT_ALTAR.get());
                 output.accept(ModItems.RELOCATOR.get());
+                for (com.toddlandis.skillcraft.node.NodeType type : com.toddlandis.skillcraft.node.NodeType.values()) {
+                    output.accept(com.toddlandis.skillcraft.node.ElementalHeartItem.of(type));
+                }
                 output.accept(ModItems.SMELTER.get());
                 output.accept(ModItems.COOKING_RANGE.get());
                 output.accept(ModItems.SEARED_REEF_FISH.get());

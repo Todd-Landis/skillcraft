@@ -24,6 +24,11 @@ public class ModDataComponents {
     public static final Supplier<DataComponentType<net.minecraft.resources.Identifier>> CODEX_ABILITY = COMPONENTS.registerComponentType("codex_ability",
             builder -> builder.persistent(net.minecraft.resources.Identifier.CODEC).networkSynchronized(net.minecraft.resources.Identifier.STREAM_CODEC));
 
+    // Which node an Elemental Heart attunes into (see node/ElementalHeartItem)
+    public static final Supplier<DataComponentType<com.toddlandis.skillcraft.node.NodeType>> HEART_NODE = COMPONENTS.registerComponentType("heart_node",
+            builder -> builder.persistent(com.toddlandis.skillcraft.node.NodeType.CODEC)
+                    .networkSynchronized(ByteBufCodecs.idMapper(i -> com.toddlandis.skillcraft.node.NodeType.values()[i], Enum::ordinal)));
+
     // Boss and player for gear won from a boss, e.g. the Emberfall Maul (see loot/EarnedBy)
     public static final Supplier<DataComponentType<EarnedBy>> EARNED_BY = COMPONENTS.registerComponentType("earned_by",
             builder -> builder.persistent(EarnedBy.CODEC).networkSynchronized(EarnedBy.STREAM_CODEC));

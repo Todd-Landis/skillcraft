@@ -2,11 +2,15 @@ package com.toddlandis.skillcraft.skill;
 
 import java.text.DecimalFormat;
 
-// The Old School RuneScape experience curve: XP needed roughly doubles every 7 levels,
-// so level 92 is about halfway to 99.
+// SkillCraft's experience curve: the Old School RuneScape shape (XP needed roughly doubles every
+// 7 levels, so level 92 is about halfway to 99) scaled by CURVE_SCALE = 0.75, so every level takes
+// 25% less XP: level 99 needs 9,775,823 XP instead of 13,034,431 (docs/DESIGN.md "XP curve").
 public final class XpTable {
     public static final int MAX_LEVEL = 99;
     public static final long MAX_XP = 200_000_000L;
+    // Share of the OSRS curve's XP each level needs. Applied to the whole curve, so the doubling every
+    // 7 levels (and the halfway point at 92) stays exactly the same.
+    public static final double CURVE_SCALE = 0.75;
 
     // Content tiers are 10-level bands: I = 1, II = 10, III = 20 ... X = 90.
     // Vanilla content lives in tiers I-V (up to ~50); VI-X are reserved for custom content.
@@ -21,7 +25,7 @@ public final class XpTable {
         XP_FOR_LEVEL[1] = 0;
         for (int level = 1; level < MAX_LEVEL; level++) {
             points += Math.floor(level + 300.0 * Math.pow(2.0, level / 7.0));
-            XP_FOR_LEVEL[level + 1] = (long) Math.floor(points / 4.0);
+            XP_FOR_LEVEL[level + 1] = (long) Math.floor(Math.floor(points / 4.0) * CURVE_SCALE);
         }
     }
 

@@ -102,8 +102,22 @@ public class ModDataMaps {
             .synced(com.toddlandis.skillcraft.prayer.PrayerOffering.CODEC, false)
             .build();
 
+    // vanilla block -> which Elemental Heart it can drop when broken, and how often
+    public static final DataMapType<Block, com.toddlandis.skillcraft.node.HeartDrop> BLOCK_HEARTS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "elemental_hearts"), Registries.BLOCK, com.toddlandis.skillcraft.node.HeartDrop.CODEC)
+            .synced(com.toddlandis.skillcraft.node.HeartDrop.CODEC, false)
+            .build();
+
+    // fish -> which Elemental Heart catching it with a vanilla rod can bring up, and how often
+    public static final DataMapType<Item, com.toddlandis.skillcraft.node.HeartDrop> FISHED_HEARTS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "elemental_hearts"), Registries.ITEM, com.toddlandis.skillcraft.node.HeartDrop.CODEC)
+            .synced(com.toddlandis.skillcraft.node.HeartDrop.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(BLOCK_HEARTS);
+        event.register(FISHED_HEARTS);
         event.register(MAGIC_FOCI);
         event.register(PRAYER_OFFERINGS);
         event.register(EFFECT_TUNING);
