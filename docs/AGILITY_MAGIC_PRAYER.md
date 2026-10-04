@@ -210,6 +210,17 @@ All are off-GCD and need no weapon.
 8. **Hearthward needs no focus,** so it's always an escape option, but it's refused in combat and in arenas.
 9. **Wards reduce by 40%, not 100%,** so bosses stay dangerous. This is the number the Phase 6 spec proposed.
 
+## 5.0 Screenshots
+These come from the CI showcase (`-Pshowcase=abilities`, software rendering, shown at half size).
+
+| HUD: staff, spell bar, Faith bar, two blessings on | Spells tab |
+|---|---|
+| ![HUD](images/phase7/magic_hud.jpg) | ![Spells](images/phase7/book_spells.jpg) |
+
+| Prayers tab (On badges, Faith, tooltip) | Agility tab |
+|---|---|
+| ![Prayers](images/phase7/book_prayers.jpg) | ![Agility](images/phase7/book_agility.jpg) |
+
 ## 5.1 Verified numbers
 These come from `./gradlew runGameTestServer` in CI. **All 24 GameTests pass**: 20 from earlier phases and 4 new ones. The earlier numbers are unchanged: the melee DPS ratio is still ×1.389, and the loot rates and gathering value are the same.
 
