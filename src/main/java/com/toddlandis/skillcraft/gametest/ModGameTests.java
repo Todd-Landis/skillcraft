@@ -55,6 +55,9 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("magic_bolt", () -> Phase7Tests::bolt);
         TEST_FUNCTIONS.register("xp_curve", () -> HeartTests::xpCurve);
         TEST_FUNCTIONS.register("elemental_hearts", () -> HeartTests::hearts);
+        TEST_FUNCTIONS.register("ley_resonance", () -> LeycraftTests::resonance);
+        TEST_FUNCTIONS.register("ley_weaving", () -> LeycraftTests::weaving);
+        TEST_FUNCTIONS.register("steady_the_current", () -> LeycraftTests::steadyTheCurrent);
         TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
         TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
         TEST_FUNCTIONS.register("agility", () -> Phase7Tests::agility);
@@ -91,6 +94,9 @@ public final class ModGameTests {
         test(event, "magic_bolt", 60);
         test(event, "xp_curve", 20);
         test(event, "elemental_hearts", 40);
+        test(event, "ley_resonance", 20);
+        test(event, "ley_weaving", 20);
+        test(event, "steady_the_current", 20);
         test(event, "magic_spells", 80);
         test(event, "prayer", 40);
         test(event, "agility", 40);

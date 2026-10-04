@@ -126,7 +126,9 @@ public class ClientEvents {
         event.register(com.toddlandis.skillcraft.network.AbilityDeniedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.denied());
         event.register(com.toddlandis.skillcraft.network.AbilityUnlockedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.unlocked(payload));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
-                Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
+                Minecraft.getInstance().gui.setScreen(AttunementScreen.attune(payload)));
+        event.register(com.toddlandis.skillcraft.network.OpenWeavePayload.TYPE, (payload, context) ->
+                Minecraft.getInstance().gui.setScreen(AttunementScreen.weave(payload)));
     }
 
     // Cooldowns and toggles from another world or server mean nothing here
@@ -282,6 +284,21 @@ public class ClientEvents {
             tooltip.add(Component.translatable("tooltip.skillcraft.heart_attunes", AttunementAltarBlock.nodeName(heart)).withStyle(ChatFormatting.DARK_AQUA));
             tooltip.add(Component.translatable("tooltip.skillcraft.resource", heart.skill().displayName(), heart.level(), heart.tierName())
                     .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
+        }
+
+        // Leycraft: essence worth, and the level and XP each mote needs (docs/LEYCRAFT.md)
+        com.toddlandis.skillcraft.leycraft.LeyData.Essence essence = event.getItemStack().typeHolder().getData(ModDataMaps.LEY_ESSENCE);
+        if (essence != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_essence", XpTable.format(essence.value())).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+        com.toddlandis.skillcraft.leycraft.LeyData.Weave weave = event.getItemStack().typeHolder().getData(ModDataMaps.LEY_WEAVES);
+        if (weave != null) {
+            boolean met = SkillManager.level(player, Skill.LEYCRAFT) >= weave.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_weave", Skill.LEYCRAFT.displayName(), weave.level(), XpTable.format(weave.xp()))
+                    .withStyle(met ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.RED));
+        }
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.LEY_ALTAR.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_altar").withStyle(ChatFormatting.GRAY));
         }
 
         // Fish whose vanilla catch can bring up a heart

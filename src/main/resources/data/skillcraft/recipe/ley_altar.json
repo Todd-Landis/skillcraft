@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "L": "minecraft:lapis_lazuli",
+    "C": "minecraft:calcite",
+    "D": "minecraft:polished_deepslate"
+  },
+  "pattern": [
+    "ALA",
+    "CCC",
+    "DDD"
+  ],
+  "result": {
+    "id": "skillcraft:ley_altar"
+  }
+}

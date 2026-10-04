@@ -49,6 +49,8 @@ public enum NodeType implements StringRepresentable {
     DIAMOND(Skill.MINING, 30, 100, () -> Items.DIAMOND, 1, 0x60EAE4),
     EMERALD(Skill.MINING, 40, 140, () -> Items.EMERALD, 1, 0x34D866),
     ANCIENT_DEBRIS(Skill.MINING, 40, 175, () -> Items.ANCIENT_DEBRIS, 1, 0x8A5A46),
+    // Leycraft essence (docs/LEYCRAFT.md); its heart comes from amethyst clusters
+    LEY(Skill.MINING, 1, 10, () -> com.toddlandis.skillcraft.registry.ModItems.LEY_SHARD.get(), 2, 0xB07CF0),
 
     // --- Fishing ---
     // Fishing spots aren't blocks: they are patches of churning water (fishing/FishingSpotEntity)

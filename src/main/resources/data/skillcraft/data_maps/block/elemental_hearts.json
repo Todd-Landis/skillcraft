@@ -21,6 +21,8 @@
     "#minecraft:lapis_ores":       { "node": "lapis",          "chance": 0.012 },
     "#minecraft:diamond_ores":     { "node": "diamond",        "chance": 0.04 },
     "#minecraft:emerald_ores":     { "node": "emerald",        "chance": 0.06 },
-    "minecraft:ancient_debris":    { "node": "ancient_debris", "chance": 0.08 }
+    "minecraft:ancient_debris":    { "node": "ancient_debris", "chance": 0.08 },
+
+    "minecraft:amethyst_cluster":  { "node": "ley",            "chance": 0.03 }
   }
 }

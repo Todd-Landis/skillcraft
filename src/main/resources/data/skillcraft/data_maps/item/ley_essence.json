@@ -1,0 +1,6 @@
+{
+  "values": {
+    "skillcraft:ley_shard":     { "value": 1.0 },
+    "minecraft:amethyst_shard": { "value": 0.5 }
+  }
+}

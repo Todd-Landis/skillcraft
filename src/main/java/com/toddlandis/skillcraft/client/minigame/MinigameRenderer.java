@@ -3,6 +3,7 @@ package com.toddlandis.skillcraft.client.minigame;
 import com.toddlandis.skillcraft.altar.minigame.MinigameLogic;
 import com.toddlandis.skillcraft.altar.minigame.ScoreTrack;
 import com.toddlandis.skillcraft.altar.minigame.SetTheHookLogic;
+import com.toddlandis.skillcraft.altar.minigame.SteadyTheCurrentLogic;
 import com.toddlandis.skillcraft.altar.minigame.StrikeTheGrainLogic;
 import com.toddlandis.skillcraft.altar.minigame.TemperTheVeinLogic;
 
@@ -25,6 +26,7 @@ public final class MinigameRenderer {
             case StrikeTheGrainLogic grain -> renderGrain(grain, graphics, x, y, partialTick);
             case TemperTheVeinLogic vein -> renderVein(vein, graphics, x, y, partialTick);
             case SetTheHookLogic hook -> renderHook(hook, graphics, x, y, partialTick);
+            case SteadyTheCurrentLogic current -> renderCurrent(current, graphics, x, y, partialTick);
             default -> {}
         }
         renderScore(logic.score(), graphics, x, y);
@@ -100,6 +102,31 @@ public final class MinigameRenderer {
             graphics.fill(cx - 6, surface, cx - 4, surface + 1, 0xFF8FC4E6);
             graphics.fill(cx + 4, surface, cx + 6, surface + 1, 0xFF8FC4E6);
         }
+    }
+
+    // A violet ley channel: the drifting band, the current (a bright line with a trail showing which
+    // way it's moving) and, under the channel, the next pulse filling up
+    private static void renderCurrent(SteadyTheCurrentLogic logic, GuiGraphicsExtractor graphics, int x, int y, float partialTick) {
+        int border = borderColor(logic.score(), 0xFF6A4AA0);
+        int top = y + BAR_Y, bottom = top + BAR_H;
+        graphics.fill(x - 1, top - 1, x + WIDTH + 1, bottom + 1, border);
+        graphics.fill(x, top, x + WIDTH, bottom, 0xFF1A1030);
+
+        double center = logic.bandCenter(partialTick);
+        int bx0 = x + (int) ((center - logic.bandWidth() / 2) * WIDTH);
+        int bx1 = x + (int) ((center + logic.bandWidth() / 2) * WIDTH);
+        boolean inside = logic.inBand();
+        graphics.fill(bx0, top, bx1, bottom, inside ? 0x90B07CF0 : 0x605A3C90);
+        graphics.fill(bx0, top, bx0 + 1, bottom, 0xFFD8C0FF);
+        graphics.fill(bx1 - 1, top, bx1, bottom, 0xFFD8C0FF);
+
+        int cx = x + (int) (logic.current(partialTick) * (WIDTH - 3));
+        int trail = (int) Math.round(-logic.velocity() * WIDTH * 3);
+        graphics.fill(Math.min(cx, cx + trail), top + 5, Math.max(cx, cx + trail), bottom - 5, 0x80E8D8FF);
+        graphics.fill(cx, top - 2, cx + 3, bottom + 2, logic.holding() ? 0xFFFFFFFF : 0xFFE0C8FF);
+
+        int pulse = (int) (logic.pulseProgress(partialTick) * WIDTH);
+        graphics.fill(x, bottom + 3, x + pulse, bottom + 5, 0xFFD8C0FF);
     }
 
     // Border flashes green after a hit, red after a miss

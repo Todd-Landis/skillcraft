@@ -79,5 +79,54 @@ public class Config {
             .comment("Ticks before the same spot (a 4x4x4 cell) pays parkour XP again.")
             .defineInRange("parkourNoveltyTicks", 1200, 0, 72000);
 
+    // Leycraft (docs/LEYCRAFT.md; resonance blocks, essences and motes live in data maps)
+    public static final ModConfigSpec.IntValue LEY_SCAN_RADIUS = BUILDER
+            .comment("Blocks each way a Ley Altar scans for resonance (4 = a 9x9x9 cube).")
+            .defineInRange("leyScanRadius", 4, 1, 8);
+
+    public static final ModConfigSpec.DoubleValue LEY_POINTS_FOR_FULL = BUILDER
+            .comment("Resonance points (from ley_resonance.json) that make an element 100%.")
+            .defineInRange("leyPointsForFull", 40.0, 1.0, 10000.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_BIOME_BONUS = BUILDER
+            .comment("Resonance added when the altar stands in one of an element's biomes (skillcraft:ley_resonance/<element> biome tags).")
+            .defineInRange("leyBiomeBonus", 0.25, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_THUNDER_BONUS = BUILDER
+            .comment("Storm resonance added during a thunderstorm when the altar is under open sky.")
+            .defineInRange("leyThunderBonus", 0.5, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_RAIN_BONUS = BUILDER
+            .comment("Storm resonance added while it rains (but doesn't thunder) when the altar is under open sky.")
+            .defineInRange("leyRainBonus", 0.15, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_HEIGHT_BONUS = BUILDER
+            .comment("Storm resonance added when the altar is under open sky at or above leyHeightY.")
+            .defineInRange("leyHeightBonus", 0.25, 0.0, 1.0);
+
+    public static final ModConfigSpec.IntValue LEY_HEIGHT_Y = BUILDER
+            .comment("Height (Y) from which an open-sky altar gets the storm height bonus.")
+            .defineInRange("leyHeightY", 120, -64, 320);
+
+    public static final ModConfigSpec.DoubleValue LEY_CAREFUL_BEST = BUILDER
+            .comment("Motes multiplier for a careful weave won with no misses.")
+            .defineInRange("leyCarefulBest", 1.5, 1.0, 10.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_CAREFUL_PER_MISS = BUILDER
+            .comment("How much each miss takes off a won careful weave's multiplier.")
+            .defineInRange("leyCarefulPerMiss", 0.1, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_CAREFUL_FAILED = BUILDER
+            .comment("Motes multiplier for a lost careful weave (a quick weave is 1.0).")
+            .defineInRange("leyCarefulFailed", 0.8, 0.0, 1.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_CAREFUL_XP_BONUS = BUILDER
+            .comment("Extra Leycraft XP for a won careful weave (0.25 = +25%).")
+            .defineInRange("leyCarefulXpBonus", 0.25, 0.0, 10.0);
+
+    public static final ModConfigSpec.DoubleValue LEY_LEVEL_BONUS = BUILDER
+            .comment("Extra motes at Leycraft 99, rising from 0 at the mote's level (0.5 = +50%).")
+            .defineInRange("leyLevelBonus", 0.5, 0.0, 10.0);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

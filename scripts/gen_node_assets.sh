@@ -30,6 +30,7 @@ lapis|lapis_ore|lapis_ore|cobblestone|cobblestone|mossy_cobblestone
 diamond|diamond_ore|diamond_ore|cobblestone|cobblestone|mossy_cobblestone
 emerald|emerald_ore|emerald_ore|cobblestone|cobblestone|mossy_cobblestone
 ancient_debris|ancient_debris_side|ancient_debris_top|netherrack|netherrack|blackstone
+ley|budding_amethyst|amethyst_block|calcite|calcite|smooth_basalt
 "
 
 model() { # parent side end base
