@@ -117,6 +117,11 @@ public final class BondService {
                 .orElse(Component.literal(bond.species.toString()));
     }
 
+    // Lets the next summon happen at once (GameTests summon several times in one tick)
+    public static void resetSummonCooldown(Player player) {
+        LAST_SUMMON.remove(player.getUUID());
+    }
+
     // --- Bonding ---
 
     // Use the Bond Codex on a creature. Returns true if it went into the codex.
@@ -179,7 +184,9 @@ public final class BondService {
     // Tamed by this player: a tamed wolf/cat/parrot they own, or a tamed horse-like they own
     static boolean tamedBy(LivingEntity target, Player player) {
         if (target instanceof AbstractHorse horse && !horse.isTamed()) return false;
-        return target instanceof OwnableEntity ownable && ownable.getOwner() == player;
+        // Compare owner ids rather than looking the owner up, which needs them loaded in the level
+        return target instanceof OwnableEntity ownable && ownable.getOwnerReference() != null
+                && player.getUUID().equals(ownable.getOwnerReference().getUUID());
     }
 
     // Checks (consume = false) or takes (consume = true) an item cost from the inventory

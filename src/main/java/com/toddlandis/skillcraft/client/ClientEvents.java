@@ -310,6 +310,16 @@ public class ClientEvents {
             tooltip.add(Component.translatable("tooltip.skillcraft.ley_weave", Skill.LEYCRAFT.displayName(), weave.level(), XpTable.format(weave.xp()))
                     .withStyle(met ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.RED));
         }
+        // Beastbonding items (docs/BEASTBONDING.md)
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.BOND_CODEX.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.bond_codex").withStyle(ChatFormatting.GRAY));
+        }
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.CLOUDRAY_LURE.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.cloudray_lure", com.toddlandis.skillcraft.Config.CLOUDRAY_LURE_Y.get()).withStyle(ChatFormatting.GRAY));
+        }
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.REKINDLING_SHRINE.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.rekindling_shrine").withStyle(ChatFormatting.GRAY));
+        }
         if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.LEY_TUNER.get())) {
             tooltip.add(Component.translatable("tooltip.skillcraft.ley_tuner").withStyle(ChatFormatting.GRAY));
         }

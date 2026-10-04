@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "minecraft:phantom_membrane",
+    "F": "minecraft:feather",
+    "S": "skillcraft:storm_mote"
+  },
+  "pattern": [
+    "FSF",
+    "PSP",
+    "FSF"
+  ],
+  "result": {
+    "id": "skillcraft:cloudray_lure"
+  }
+}

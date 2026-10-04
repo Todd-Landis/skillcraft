@@ -141,7 +141,7 @@ public final class BondEvents {
         UUID owner = BondService.ownerOf(attacker);
         if (owner == null) return;
         ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
-        if (player != null) SkillManager.awardXp(player, Skill.BEASTBONDING, event.getNewDamage() * Config.BOND_COMPANION_XP_PER_DAMAGE.get());
+        if (player != null) SkillManager.awardXp(player, Skill.BEASTBONDING, event.getHealthDamage() * Config.BOND_COMPANION_XP_PER_DAMAGE.get());
     }
 
     @SubscribeEvent

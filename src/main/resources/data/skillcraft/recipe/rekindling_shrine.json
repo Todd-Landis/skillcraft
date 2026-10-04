@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "L": "minecraft:lantern",
+    "F": "#c:flowers/small",
+    "B": "minecraft:bone_block",
+    "M": "minecraft:mossy_cobblestone"
+  },
+  "pattern": [
+    "GLG",
+    "FBF",
+    "MMM"
+  ],
+  "result": {
+    "id": "skillcraft:rekindling_shrine"
+  }
+}

@@ -126,6 +126,8 @@ public class GenAbilityIcons {
         item("starseer_staff", c -> { staff(c, 0x2A2A3A); c.disc(12, 3, 2.6, GOLD); star(c, 12, 3, 2, VIOLET); });
         item("ley_shard", GenAbilityIcons::leyShard);
         item("ley_tuner", GenAbilityIcons::leyTuner);
+        item("bond_codex", GenAbilityIcons::bondCodex);
+        item("cloudray_lure", GenAbilityIcons::cloudrayLure);
         elementalHeart();
         System.out.println("Wrote ability icons, effect icons, the codex texture, the Phase 7 item textures and the Elemental Heart");
     }
@@ -309,6 +311,30 @@ public class GenAbilityIcons {
         c.set(11, 2, 0xE0D0FF);
         c.set(8, 5, 0xD8C0FF);
         c.set(8, 3, 0xB07CF0);
+    }
+
+    // Bond Codex: a green leather book with a gold paw-print clasp
+    static void bondCodex(Canvas c) {
+        c.poly(new int[]{3, 12, 13, 4}, new int[]{2, 2, 14, 14}, 0x2F6B3A);
+        c.line(4, 3, 4, 13, 0x1E4A27, 1);
+        c.line(12, 3, 13, 13, 0xE8E0C8, 1);
+        c.disc(8.5, 9, 1.6, 0xE8B83A);
+        c.set(7, 6, 0xE8B83A);
+        c.set(9, 5, 0xE8B83A);
+        c.set(11, 6, 0xE8B83A);
+        c.set(6, 8, 0xE8B83A);
+    }
+
+    // Cloudray Lure: a feathered charm around a crackling storm-blue core
+    static void cloudrayLure(Canvas c) {
+        c.line(4, 13, 7, 8, 0xE8E8F0, 2);
+        c.line(12, 13, 9, 8, 0xD0D8E8, 2);
+        c.line(8, 14, 8, 9, 0xB8C0D0, 1);
+        c.disc(8, 6, 3.0, 0x2B3A67);
+        c.disc(8, 6, 1.8, 0x7FD8FF);
+        c.set(8, 5, 0xFFFFFF);
+        c.set(12, 3, 0x7FD8FF);
+        c.set(3, 4, 0x7FD8FF);
     }
 
     static void mote(Canvas c, int body, int light) {
