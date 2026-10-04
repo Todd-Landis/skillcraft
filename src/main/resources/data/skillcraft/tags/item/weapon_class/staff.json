@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "skillcraft:ember_staff",
+    "skillcraft:rime_staff",
+    "skillcraft:tempest_staff",
+    "skillcraft:starseer_staff"
+  ]
+}

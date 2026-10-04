@@ -29,7 +29,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 // Applies the combat triangle to every hit from an entity (see docs/COMBAT.md):
-//   attacker side: monster weakness/resistance, Melee/Ranged level bonus, attack style, Sundered
+//   attacker side: monster weakness/resistance, Melee/Ranged/Magic level bonus, attack style, Sundered
 //   defender side (players): typed armour defence, Defence level, Defensive style
 // Untyped damage (falls, fire, explosions...) is left alone.
 @EventBusSubscriber(modid = SkillCraft.MODID)
@@ -81,7 +81,7 @@ public final class CombatDamage {
                 if (attacker instanceof ServerPlayer player) feedback(player, level, target, style, matchup);
             }
             if (attacker instanceof ServerPlayer player) {
-                Skill skill = style.isRanged() ? Skill.RANGED : Skill.MELEE;
+                Skill skill = style.discipline().skill();
                 multiplier *= 1 + LEVEL_DAMAGE_BONUS * (SkillManager.level(player, skill) - 1);
                 multiplier *= player.getData(ModAttachments.ATTACK_STYLE).damageDealtMultiplier();
             }

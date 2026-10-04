@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#skillcraft:weapon_class/wand",
+    "#skillcraft:weapon_class/staff"
+  ]
+}

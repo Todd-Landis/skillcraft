@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/chiseled_stone_bricks",
+    "base": "minecraft:block/stone_bricks",
+    "pillar": "minecraft:block/chiseled_stone_bricks",
+    "plate_side": "minecraft:block/polished_blackstone",
+    "plate_top": "minecraft:block/gold_block"
+  },
+  "elements": [
+    {
+      "from": [1, 0, 1],
+      "to": [15, 4, 15],
+      "faces": {
+        "down": { "uv": [1, 1, 15, 15], "texture": "#base", "cullface": "down" },
+        "up": { "uv": [1, 1, 15, 15], "texture": "#base" },
+        "north": { "uv": [1, 12, 15, 16], "texture": "#base" },
+        "south": { "uv": [1, 12, 15, 16], "texture": "#base" },
+        "west": { "uv": [1, 12, 15, 16], "texture": "#base" },
+        "east": { "uv": [1, 12, 15, 16], "texture": "#base" }
+      }
+    },
+    {
+      "from": [4, 4, 4],
+      "to": [12, 12, 12],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#pillar" },
+        "south": { "uv": [4, 4, 12, 12], "texture": "#pillar" },
+        "west": { "uv": [4, 4, 12, 12], "texture": "#pillar" },
+        "east": { "uv": [4, 4, 12, 12], "texture": "#pillar" }
+      }
+    },
+    {
+      "from": [2, 12, 2],
+      "to": [14, 15, 14],
+      "faces": {
+        "down": { "uv": [2, 2, 14, 14], "texture": "#plate_side" },
+        "up": { "uv": [2, 2, 14, 14], "texture": "#plate_top" },
+        "north": { "uv": [2, 0, 14, 3], "texture": "#plate_side" },
+        "south": { "uv": [2, 0, 14, 3], "texture": "#plate_side" },
+        "west": { "uv": [2, 0, 14, 3], "texture": "#plate_side" },
+        "east": { "uv": [2, 0, 14, 3], "texture": "#plate_side" }
+      }
+    }
+  ]
+}

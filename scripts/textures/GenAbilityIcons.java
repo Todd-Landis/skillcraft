@@ -7,6 +7,7 @@
 //   ability icons -> textures/gui/sprites/ability/<id>.png (16x16, stitched into the GUI atlas)
 //   effect icons  -> textures/mob_effect/<id>.png (18x18)
 //   codex         -> textures/item/codex.png (16x16)
+//   Phase 7       -> agility, spell and prayer icons, plus the mote, wand and staff item textures
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
@@ -18,7 +19,8 @@ public class GenAbilityIcons {
     static final String ITEM = "src/main/resources/assets/skillcraft/textures/item/";
 
     // Category accents (match ability/AbilityCategory)
-    static final int MELEE = 0xD04040, RANGED = 0x50B848, DEFENCE = 0x4A86E0, ART = 0xE0A030, UTILITY = 0xA060D0;
+    static final int MELEE = 0xD04040, RANGED = 0x50B848, DEFENCE = 0x4A86E0, ART = 0xE0A030, UTILITY = 0xA060D0,
+            AGILITY = 0x3CC8A0, SPELL = 0x8A70F0, PRAYER = 0xE8D27A;
     // Glyph colours
     static final int STEEL = 0xE4E8EE, STEEL_D = 0x9AA2AE, WOOD = 0x9A6A3E, GOLD = 0xF2C14E, RED = 0xE0383A,
             WHITE = 0xFFFFFF, EMBER = 0xFF8A2A, LAVA = 0xFFC040, GREEN = 0x7ED957, CYAN = 0x7FD6E8, VIOLET = 0xC9B8F0, BLUE = 0x6FA8FF;
@@ -58,8 +60,37 @@ public class GenAbilityIcons {
         ability("forgequake", ART, c -> { lavaRing(c); maul(c); });
         ability("twinfang", ART, c -> twinBlades(c));
         ability("torchbrand", ART, c -> torch(c));
+        // --- Agility (Phase 7) ---
+        ability("sprint_burst", AGILITY, c -> { speedLines(c, 1, 5, 4); wing(c, CYAN); });
+        ability("sidestep", AGILITY, c -> { chevronRight(c, 3, WHITE); chevronRight(c, 8, CYAN); });
+        ability("featherfall", AGILITY, c -> feather(c));
+        ability("updraft", AGILITY, c -> { arrowUp(c, WHITE); c.line(2, 12, 5, 10, CYAN, 1); c.line(11, 10, 14, 12, CYAN, 1); });
+        ability("grapple_line", AGILITY, c -> { c.line(2, 14, 9, 7, WOOD, 1); hook(c); });
+        ability("shadowstep", AGILITY, c -> { c.disc(5, 10, 3, 0x3A3A4E); c.disc(9, 12, 2.2, 0x4A4A60); dagger(c); });
+        // --- Spells (Phase 7) ---
+        ability("fireball", SPELL, c -> { c.line(2, 14, 6, 10, EMBER, 2); c.disc(9, 7, 4, EMBER); c.disc(9, 7, 2.4, LAVA); c.set(8, 6, WHITE); });
+        ability("hearthward", SPELL, c -> { c.poly(new int[]{2, 8, 14}, new int[]{8, 2, 8}, 0x7A4A2A); c.rect(4, 8, 8, 6, 0x5A3A22); c.poly(new int[]{6, 8, 10}, new int[]{13, 8, 13}, EMBER); c.set(8, 11, LAVA); });
+        ability("rime_snare", SPELL, c -> snowflake(c, 8, 8, 6));
+        ability("blink", SPELL, c -> { c.set(2, 13, VIOLET); c.set(4, 11, VIOLET); c.set(6, 9, VIOLET); sparkle(c, 11, 5, 4); });
+        ability("chain_lightning", SPELL, c -> { zigzag(c, CYAN, 3); zigzag(c, WHITE, 1); });
+        ability("arcane_ward", SPELL, c -> { shield(c, 0x4A3A8A, VIOLET); sparkle(c, 8, 8, 3); });
+        ability("frost_nova", SPELL, c -> { arc(c, 8, 8, 6, 0, 360, CYAN, 1); for (int a = 0; a < 360; a += 45) { double r = Math.toRadians(a); c.line(8 + Math.cos(r) * 3, 8 + Math.sin(r) * 3, 8 + Math.cos(r) * 5, 8 + Math.sin(r) * 5, WHITE, 1); } c.disc(8, 8, 1.4, WHITE); });
+        ability("starfall", SPELL, c -> { c.line(2, 14, 8, 8, VIOLET, 1); c.line(3, 14, 8, 9, 0x6A5AB0, 1); star(c, 10, 6, 4, LAVA); });
+        // --- Prayers (Phase 7) ---
+        ability("ironhide", PRAYER, c -> shield(c, STEEL_D, STEEL));
+        ability("keen_edge", PRAYER, c -> { swordD(c); c.set(13, 1, WHITE); c.set(14, 2, WHITE); });
+        ability("steady_aim", PRAYER, c -> arrow(c, 2, 8, 14, 8));
+        ability("inner_flame", PRAYER, c -> flame(c, 8, 14, VIOLET));
+        ability("mending", PRAYER, c -> { heart(c, 8, 9, GREEN); plus(c, 12, 4, WHITE); });
+        ability("stoneskin", PRAYER, c -> { shield(c, 0x8C8C8C, 0xC4C4C4); c.set(6, 6, 0x5A5A5A); c.set(10, 8, 0x5A5A5A); c.set(7, 10, 0x5A5A5A); });
+        ability("battle_fervor", PRAYER, c -> { crossedSwords(c); c.disc(8, 8, 1.6, EMBER); });
+        ability("hawkeye", PRAYER, c -> eye(c, 8, 8, GOLD));
+        ability("sages_focus", PRAYER, c -> { star(c, 8, 8, 5, VIOLET); c.disc(8, 8, 1.2, WHITE); });
+        ability("ward_of_steel", PRAYER, c -> { shield(c, 0x8A6A2A, GOLD); c.line(5, 11, 11, 5, STEEL, 1); });
+        ability("ward_of_arrows", PRAYER, c -> { shield(c, 0x8A6A2A, GOLD); c.line(5, 11, 11, 5, WOOD, 1); c.poly(new int[]{10, 12, 12}, new int[]{4, 4, 6}, STEEL); });
+        ability("ward_of_sorcery", PRAYER, c -> { shield(c, 0x8A6A2A, GOLD); sparkle(c, 8, 8, 3); });
+        ability("saving_grace", PRAYER, c -> { arc(c, 8, 4, 4, 180, 360, GOLD, 1); heart(c, 8, 10, RED); });
         // --- Utility ---
-        ability("sprint_burst", UTILITY, c -> { speedLines(c, 1, 5, 4); wing(c, CYAN); });
 
         // --- Status effects (18x18, no frame, like vanilla) ---
         effect("bleeding", c -> { drop(c, 9, 10, RED); drop(c, 5, 6, RED); });
@@ -79,7 +110,19 @@ public class GenAbilityIcons {
         effect("second_wind", c -> heart(c, 9, 10, RED));
 
         codex();
-        System.out.println("Wrote ability icons, effect icons and the codex texture");
+
+        // --- Phase 7 items: motes (spell reagents), wands and staves ---
+        item("arcane_mote", c -> mote(c, 0x8A5AE0, 0xD8C0FF));
+        item("ember_mote", c -> mote(c, 0xE0601A, 0xFFD070));
+        item("frost_mote", c -> mote(c, 0x3AA0D0, 0xD8F6FF));
+        item("storm_mote", c -> mote(c, 0xC8C860, 0xFFFFFF));
+        item("apprentice_wand", c -> wand(c, WOOD, 0xB070F0, false));
+        item("arcanist_wand", c -> wand(c, 0x3A2A22, 0x5A8AF0, true));
+        item("ember_staff", c -> { staff(c, WOOD); c.disc(12, 3, 2.4, EMBER); c.disc(12, 3, 1.2, LAVA); });
+        item("rime_staff", c -> { staff(c, 0x8A9AA8); c.poly(new int[]{10, 12, 14, 12}, new int[]{3, 0, 3, 6}, CYAN); c.set(12, 2, WHITE); });
+        item("tempest_staff", c -> { staff(c, 0x8A5A3A); c.line(10, 5, 10, 1, 0xC07040, 1); c.line(14, 5, 14, 1, 0xC07040, 1); c.line(10, 5, 14, 5, 0xC07040, 1); c.set(12, 2, WHITE); c.set(12, 3, 0xFFFFA0); });
+        item("starseer_staff", c -> { staff(c, 0x2A2A3A); c.disc(12, 3, 2.6, GOLD); star(c, 12, 3, 2, VIOLET); });
+        System.out.println("Wrote ability icons, effect icons, the codex texture and the Phase 7 item textures");
     }
 
     // ---------- canvas ----------
@@ -202,7 +245,99 @@ public class GenAbilityIcons {
         c.write(ITEM + "codex.png");
     }
 
+    // Item texture: glyph with a dark outline, no frame
+    static void item(String id, Consumer<Canvas> glyph) throws Exception {
+        Canvas c = new Canvas(16, 16);
+        glyph.accept(c);
+        c.outline(0x141018);
+        c.write(ITEM + id + ".png");
+    }
+
+    static void mote(Canvas c, int body, int light) {
+        c.disc(7.5, 8, 3.6, body);
+        c.disc(7, 7.5, 2.2, light);
+        c.set(6, 6, WHITE);
+        c.set(13, 3, light);
+        c.set(2, 12, light);
+        c.set(12, 13, body);
+    }
+
+    static void wand(Canvas c, int shaft, int gem, boolean banded) {
+        c.line(3, 13, 11, 5, shaft, 1);
+        c.line(4, 13, 11, 6, shade(shaft, 0.75), 1);
+        if (banded) c.line(9, 6, 10, 8, GOLD, 1);
+        c.disc(12, 4, 1.8, gem);
+        c.set(12, 3, WHITE);
+    }
+
+    static void staff(Canvas c, int shaft) {
+        c.line(2, 14, 11, 5, shaft, 2);
+        c.line(3, 14, 11, 6, shade(shaft, 0.7), 1);
+    }
+
     // ---------- glyphs ----------
+
+    static void chevronRight(Canvas c, int x, int rgb) {
+        c.line(x, 3, x + 4, 8, rgb, 2);
+        c.line(x + 4, 8, x, 13, rgb, 2);
+    }
+
+    static void arrowUp(Canvas c, int rgb) {
+        c.poly(new int[]{3, 8, 13}, new int[]{8, 2, 8}, rgb);
+        c.rect(7, 8, 3, 6, rgb);
+    }
+
+    static void feather(Canvas c) {
+        c.poly(new int[]{3, 6, 13, 12}, new int[]{13, 8, 2, 7}, WHITE);
+        c.poly(new int[]{4, 9, 13, 8}, new int[]{13, 10, 3, 6}, 0xC8D8E8);
+        c.line(2, 14, 12, 3, STEEL_D, 1);
+    }
+
+    static void hook(Canvas c) {
+        c.line(9, 7, 12, 3, STEEL, 1);
+        arc(c, 11, 6, 3, 270, 450, STEEL, 1);
+        c.line(13, 8, 14, 6, STEEL, 1);
+    }
+
+    static void dagger(Canvas c) {
+        c.line(6, 10, 13, 3, STEEL, 2);
+        c.line(6, 10, 13, 3, WHITE, 1);
+        c.line(4, 8, 8, 12, GOLD, 1);
+        c.line(3, 13, 5, 11, WOOD, 2);
+    }
+
+    static void snowflake(Canvas c, int cx, int cy, int r) {
+        c.line(cx, cy - r, cx, cy + r, WHITE, 1);
+        c.line(cx - r, cy, cx + r, cy, WHITE, 1);
+        c.line(cx - r + 2, cy - r + 2, cx + r - 2, cy + r - 2, CYAN, 1);
+        c.line(cx + r - 2, cy - r + 2, cx - r + 2, cy + r - 2, CYAN, 1);
+        c.disc(cx, cy, 1.2, WHITE);
+    }
+
+    static void zigzag(Canvas c, int rgb, int thickness) {
+        c.line(10, 1, 5, 8, rgb, thickness);
+        c.line(5, 8, 11, 8, rgb, thickness);
+        c.line(11, 8, 6, 15, rgb, thickness);
+    }
+
+    // A four-pointed sparkle: white rays around a violet core
+    static void sparkle(Canvas c, int cx, int cy, int r) {
+        c.line(cx, cy - r, cx, cy + r, WHITE, 1);
+        c.line(cx - r, cy, cx + r, cy, WHITE, 1);
+        c.disc(cx, cy, 1.3, VIOLET);
+        c.set(cx, cy, WHITE);
+    }
+
+    static void star(Canvas c, int cx, int cy, int r, int rgb) {
+        int[] xs = new int[10], ys = new int[10];
+        for (int i = 0; i < 10; i++) {
+            double a = Math.toRadians(-90 + i * 36);
+            double rr = i % 2 == 0 ? r + 0.5 : r * 0.45;
+            xs[i] = (int) Math.round(cx + Math.cos(a) * rr);
+            ys[i] = (int) Math.round(cy + Math.sin(a) * rr);
+        }
+        c.poly(xs, ys, rgb);
+    }
 
     static void swordD(Canvas c) {
         c.line(4, 11, 13, 2, STEEL, 2);

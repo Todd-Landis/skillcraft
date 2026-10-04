@@ -1,0 +1,20 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 1
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.05,
+    "resource": "faith",
+    "group": "guard"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "damage_taken": -0.05
+  },
+  "icon": "skillcraft:ability/ironhide"
+}

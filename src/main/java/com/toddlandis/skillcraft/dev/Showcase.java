@@ -180,6 +180,27 @@ public final class Showcase {
         return cod;
     }
 
+    // Phase 7 (-Pshowcase=abilities, second half): Magic/Prayer/Agility levels, a Starseer Staff, a spell
+    // bar, Ward of Steel and Battle Fervor on with some Faith spent
+    public static void magicScene(ServerPlayer player) {
+        for (com.toddlandis.skillcraft.skill.Skill skill : new com.toddlandis.skillcraft.skill.Skill[]{com.toddlandis.skillcraft.skill.Skill.MAGIC,
+                com.toddlandis.skillcraft.skill.Skill.PRAYER, com.toddlandis.skillcraft.skill.Skill.AGILITY}) {
+            com.toddlandis.skillcraft.skill.SkillManager.setXp(player, skill, com.toddlandis.skillcraft.skill.XpTable.xpForLevel(50));
+        }
+        player.getInventory().setItem(4, new ItemStack(ModItems.STARSEER_STAFF.get()));
+        player.getInventory().setItem(5, new ItemStack(ModItems.ARCANE_MOTE.get(), 32));
+        player.getInventory().setItem(6, new ItemStack(net.minecraft.world.item.Items.BONE, 16));
+        player.getInventory().setSelectedSlot(4);
+        String[] spells = {"fireball", "chain_lightning", "frost_nova", "starfall"};
+        net.minecraft.resources.Identifier[] ids = new net.minecraft.resources.Identifier[spells.length];
+        for (int i = 0; i < ids.length; i++) ids[i] = net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, spells[i]);
+        com.toddlandis.skillcraft.ability.AbilityService.setLoadout(player, 0, ids, "Staff", true);
+        for (String blessing : new String[]{"ward_of_steel", "battle_fervor"}) {
+            com.toddlandis.skillcraft.ability.AbilityService.useFromBook(player, net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, blessing));
+        }
+        com.toddlandis.skillcraft.prayer.PrayerService.set(player, com.toddlandis.skillcraft.prayer.PrayerService.maxFaith(player) * 0.6f);
+    }
+
     private static Mob dummy(ServerLevel level, Vec3 pos, ItemLike held) {
         Mob mob = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
         mob.snapTo(pos.x, pos.y, pos.z, 0f, 0f);

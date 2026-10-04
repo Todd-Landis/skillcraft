@@ -1,0 +1,18 @@
+{
+  "category": "agility",
+  "class": "surge",
+  "requires": {
+    "skill": "agility",
+    "level": 38
+  },
+  "cooldown": 300,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:dash",
+    "mode": "behind_target",
+    "distance": 10,
+    "next_hit_bonus": 0.25,
+    "next_hit_window": 60
+  },
+  "icon": "skillcraft:ability/shadowstep"
+}

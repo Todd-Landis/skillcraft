@@ -5,16 +5,18 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
-// The Ability Book's tabs. Spells and Prayers are reserved for the Magic and Prayer skills: the
-// book shows them locked, and the framework already supports their item costs and toggles.
+// The Ability Book's tabs, in order. Agility, Spells and Prayers arrived with their skills in
+// Phase 7 (docs/AGILITY_MAGIC_PRAYER.md). comingLater shows a tab locked until its skill exists;
+// nothing uses it now, but it stays for future tabs. Empty tabs are hidden.
 public enum AbilityCategory implements StringRepresentable {
     MELEE(0xFFD04040, false),
     RANGED(0xFF50B848, false),
     DEFENCE(0xFF4A86E0, false),
     WEAPON_ART(0xFFE0A030, false),
-    UTILITY(0xFFA060D0, false),
-    SPELL(0xFF40C0D0, true),
-    PRAYER(0xFFE8E0A0, true);
+    AGILITY(0xFF3CC8A0, false),
+    SPELL(0xFF8A70F0, false),
+    PRAYER(0xFFE8D27A, false),
+    UTILITY(0xFFA060D0, false);
 
     public static final Codec<AbilityCategory> CODEC = StringRepresentable.fromEnum(AbilityCategory::values);
 

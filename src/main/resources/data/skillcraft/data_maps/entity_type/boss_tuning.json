@@ -23,8 +23,8 @@
       "stoked_multiplier": 0.5,
       "enrage_seconds": 360,
       "stances": {
-        "banked": { "stab": 0.8, "slash": 0.6, "crush": 1.25, "light": 0.6, "medium": 0.85, "heavy": 1.2 },
-        "vented": { "stab": 1.5, "slash": 1.2, "crush": 1.0, "light": 1.4, "medium": 1.2, "heavy": 1.0 }
+        "banked": { "stab": 0.8, "slash": 0.6, "crush": 1.25, "light": 0.6, "medium": 0.85, "heavy": 1.2, "fire": 0.25, "frost": 1.3, "storm": 0.8, "arcane": 0.9 },
+        "vented": { "stab": 1.5, "slash": 1.2, "crush": 1.0, "light": 1.4, "medium": 1.2, "heavy": 1.0, "fire": 0.5, "frost": 1.5, "storm": 1.2, "arcane": 1.1 }
       }
     }
   }

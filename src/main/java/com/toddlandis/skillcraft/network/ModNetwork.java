@@ -34,6 +34,7 @@ public class ModNetwork {
         registrar.playToServer(CycleAttackStylePayload.TYPE, CycleAttackStylePayload.STREAM_CODEC, CycleAttackStylePayload::handle);
         // Abilities (see ability/AbilityService)
         registrar.playToServer(UseAbilityPayload.TYPE, UseAbilityPayload.STREAM_CODEC, UseAbilityPayload::handle);
+        registrar.playToServer(ToggleBlessingPayload.TYPE, ToggleBlessingPayload.STREAM_CODEC, ToggleBlessingPayload::handle);
         registrar.playToServer(SetLoadoutPayload.TYPE, SetLoadoutPayload.STREAM_CODEC, SetLoadoutPayload::handle);
         registrar.playToClient(AbilityDefinitionsPayload.TYPE, AbilityDefinitionsPayload.STREAM_CODEC);
         registrar.playToClient(AbilityCooldownPayload.TYPE, AbilityCooldownPayload.STREAM_CODEC);

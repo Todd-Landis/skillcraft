@@ -41,6 +41,12 @@ public final class AbilityBehaviors {
         register("parry", Parry.CODEC);
         register("cleanse", Cleanse.CODEC);
         register("toggle_effect", ToggleEffect.CODEC);
+        // Phase 7: Magic, Prayer, Agility
+        register("spell_bolt", com.toddlandis.skillcraft.ability.behavior.CastBolt.CODEC);
+        register("ground_target", com.toddlandis.skillcraft.ability.behavior.GroundTarget.CODEC);
+        register("dash", com.toddlandis.skillcraft.ability.behavior.Dash.CODEC);
+        register("recall", com.toddlandis.skillcraft.ability.behavior.Recall.CODEC);
+        register("blessing", com.toddlandis.skillcraft.ability.behavior.Blessing.CODEC);
     }
 
     public static final Codec<AbilityBehavior> CODEC = Identifier.CODEC

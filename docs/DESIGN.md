@@ -16,7 +16,9 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 |---|---|---|---|
 | Melee | Combat | Swords, spears, axes, warhammers | Stab/slash/crush damage types vs. monster weaknesses, attack styles, weapon speed tiers, special attacks |
 | Ranged | Combat | Bows, crossbows | Light/medium/heavy ammo, range and draw-speed tradeoffs, positioning |
+| Magic | Combat | Wands and staves | Elemental bolts (fire, frost, storm, arcane) vs. monster weaknesses; spells on the ability bar; motes as reagents, staves supply their element ([AGILITY_MAGIC_PRAYER.md](AGILITY_MAGIC_PRAYER.md)) |
 | Defence | Combat | Armour | Gates armour; typed armour defends against stab/slash/crush/ranged |
+| Prayer | Combat | Bones and shrines | Blessings that drain Faith while on (boosts, wards, Saving Grace); bury or offer bones at a Votive Shrine |
 | Constitution | Combat | Health | Max HP scales with level; XP comes from dealing damage |
 | Mining | Gathering | Ores | Level-gated ores, ore veins that deplete and respawn, pickaxe tiers, rare gems |
 | Woodcutting | Gathering | Trees | Level-gated tree types (oak → willow → maple → yew → magic-style equivalents), stumps that regrow, success chance per swing |
@@ -27,10 +29,10 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 | Cooking | Artisan | Cooking Range | Raw food cooks over time; burn chance falls with level until a stop-burn level |
 | Firemaking | Artisan | Fire | Log tiers burn for XP; campfires used for cooking and buffs |
 | Construction | Artisan | Building | Blueprint-based furniture and utility blocks (bank chest, altars, teleports) built from planks and bars |
-| Agility | Support | Parkour | Agility courses with obstacles; unlocks shortcuts and movement perks |
+| Agility | Support | Parkour | XP for climbing, gap jumps and high dives (once per spot); movement abilities (Sidestep, Grapple Line, Shadowstep...) and perks (safe falls, faster sprint); courses with obstacles later |
 | Sailing | Support | Boats | Upgradeable ships, sea regions and island content |
 
-Planned for later: Magic, Prayer, Herblore, Fletching, Thieving, Slayer, Hunter, Runecrafting (renamed equivalents).
+Planned for later: Herblore, Fletching, Thieving, Slayer, Hunter, Runecrafting (renamed equivalents).
 
 ## XP curve
 OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config multiplier (`xpMultiplier`) scales all gains. Implemented in `skill/XpTable.java`.
@@ -267,8 +269,13 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - a framework ready for Spells (item costs) and Prayers (toggles with drain)
 - [x] **Phase 6.6 – Fishing & Cooking:** fishing spots on open water (cod, salmon, reef fish, pufferfish) with the Set the Hook minigame, shoals that swim off and resurface instead of stumps, vanilla fishing gated by level; the Cooking skill and the Cooking Range with burn chance; vanilla food cooking switched off
 - [ ] **Phase 6.5 – More combat content:** higher-tier weapon/ammo/armour families, the remaining abilities (Undertow), more mid-tier bosses with niche uniques and Codices
-- [ ] **Phase 7 – World generation:** new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
-- [ ] **Phase 8+:** Farming, Firemaking, Construction, Agility, Sailing, more bosses
+- [x] **Phase 7 – Agility, Magic and Prayer:** (see [AGILITY_MAGIC_PRAYER.md](AGILITY_MAGIC_PRAYER.md))
+  - Magic: wands and staves, elemental damage types, motes, bolts and 8 spells
+  - Prayer: Faith, 13 blessings, the Votive Shrine and bone offerings
+  - Agility: parkour XP, passive perks and 6 movement abilities
+  - the Ability Book's Agility, Spells and Prayers tabs
+- [ ] **Phase 7.5 – World generation** (was Phase 7; Agility, Magic and Prayer went first): new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
+- [ ] **Phase 8+:** Farming, Firemaking, Construction, Sailing, more bosses
 
 ## IP guidelines
 - Mechanics and formulas may be inspired by OSRS.

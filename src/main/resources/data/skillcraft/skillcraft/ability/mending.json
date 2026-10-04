@@ -1,0 +1,22 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 12
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.08,
+    "resource": "faith"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "heal": {
+      "amount": 1,
+      "interval": 100
+    }
+  },
+  "icon": "skillcraft:ability/mending"
+}

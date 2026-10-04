@@ -22,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 // One ability, loaded from data/<namespace>/skillcraft/ability/<name>.json (see AbilityManager and
 // docs/ABILITIES_SPEC.md). Everything numeric lives here or in the behaviour, so /reload retunes it.
 //   cooldown and windup are in ticks (20 = 1 s)
-//   item_costs: items consumed on use (for future Spells: runes)
-//   toggle: a sustained ability that drains Momentum per second while on (for future Prayers)
+//   item_costs: items consumed on use (spells: motes; a staff of the mote's element pays for you)
+//   toggle: a sustained ability that drains Momentum or Faith per second while on (Prayer blessings)
 public record AbilityDefinition(
         AbilityCategory category,
         AbilityClass abilityClass,
@@ -121,11 +121,33 @@ public record AbilityDefinition(
     }
 
     // A sustained ability: pressing it turns it on, pressing again (or running dry) turns it off.
-    // drain_per_second comes out of Momentum today; Prayer will bring its own resource.
-    public record Toggle(float drainPerSecond) {
+    //   drain_per_second: taken from `resource` (momentum or faith) every tick while on
+    //   group: turning this on turns off any other active toggle in the same group (e.g. two wards)
+    public record Toggle(float drainPerSecond, Resource resource, Optional<String> group) {
         public static final Codec<Toggle> CODEC = RecordCodecBuilder.create(i -> i.group(
-                Codec.floatRange(0, 100).fieldOf("drain_per_second").forGetter(Toggle::drainPerSecond)
+                Codec.floatRange(0, 100).fieldOf("drain_per_second").forGetter(Toggle::drainPerSecond),
+                Resource.CODEC.optionalFieldOf("resource", Resource.MOMENTUM).forGetter(Toggle::resource),
+                Codec.STRING.optionalFieldOf("group").forGetter(Toggle::group)
         ).apply(i, Toggle::new));
+
+        public Toggle(float drainPerSecond) {
+            this(drainPerSecond, Resource.MOMENTUM, Optional.empty());
+        }
+    }
+
+    public enum Resource implements net.minecraft.util.StringRepresentable {
+        MOMENTUM, FAITH;
+
+        public static final Codec<Resource> CODEC = net.minecraft.util.StringRepresentable.fromEnum(Resource::values);
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(java.util.Locale.ROOT);
+        }
+    }
+
+    public boolean drainsFaith() {
+        return toggle.map(t -> t.resource() == Resource.FAITH).orElse(false);
     }
 
     public static Identifier id(String path) {
