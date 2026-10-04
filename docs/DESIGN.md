@@ -31,7 +31,7 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 | Construction | Artisan | Building | Blueprint-based furniture and utility blocks (bank chest, altars, teleports) built from planks and bars |
 | Leycraft | Artisan | Amethyst and the world around you | Mine ley shards, weave them into Magic's motes at a Ley Altar whose element comes from its surroundings (lava, ice, lightning rods, amethyst); quick or careful (minigame) weaves ([LEYCRAFT.md](LEYCRAFT.md)) |
 | Agility | Support | Parkour | XP for climbing, gap jumps and high dives (once per spot); movement abilities (Sidestep, Grapple Line, Shadowstep...) and perks (safe falls, faster sprint); courses with obstacles later |
-| Sailing | Support | Boats | Upgradeable ships, sea regions and island content |
+| Beastbonding | Support | Pets, mounts and tamed mobs | Bond creatures into a Bond Codex, then summon or store them at will: vanilla pets and mounts early, changed mobs (wall-climbing Cliffstrider, fetching fox, Ironward golem) mid-game, the new flying Cloudray at 62. Fallen bonds are rekindled at a shrine ([BEASTBONDING.md](BEASTBONDING.md)). Replaced Sailing |
 
 Planned for later: Herblore, Fletching, Thieving, Slayer, Hunter (renamed equivalents). The rune-making skill arrived as Leycraft.
 
@@ -320,7 +320,8 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - Agility: parkour XP, passive perks and 6 movement abilities
   - the Ability Book's Agility, Spells and Prayers tabs
 - [ ] **Phase 7.5 – World generation** (was Phase 7; Agility, Magic and Prayer went first): new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
-- [ ] **Phase 8+:** Farming, Firemaking, Construction, Sailing, more bosses
+- [x] **Phase 6.9 – Beastbonding** (replaced Sailing): the Bond Codex (bond, summon, store, release), 18 creatures from wolves to the new flying Cloudray, changed mobs (Cliffstrider, fetching fox, Ironward), level bonuses for mounts, death and rekindling at a Rekindling Shrine ([BEASTBONDING.md](BEASTBONDING.md))
+- [ ] **Phase 8+:** Farming, Firemaking, Construction, more bosses; equipment slots (rings, amulets) with crafting phase two
 
 ## IP guidelines
 - Mechanics and formulas may be inspired by OSRS.
