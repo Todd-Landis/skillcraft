@@ -166,6 +166,7 @@ public final class ShowcaseClient {
             mc.options.guiScale().set(2);
             mc.resizeGui();
             server.execute(() -> Showcase.magicScene(server.getPlayerList().getPlayers().getFirst()));
+            if (mc.player != null) mc.player.getInventory().setSelectedSlot(4); // the client tells the server on its next tick
         });
         at(t += 30, () -> shot(mc, "magic_hud"));
         at(t += 2, () -> server.execute(() -> {

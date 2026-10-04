@@ -300,11 +300,12 @@ public class AbilityBookScreen extends Screen {
                 if (def != null) hovered = Map.entry(bars[editing][s], def);
             }
         }
-        g.text(font, Component.translatable("screen.skillcraft.ability_momentum", Math.round(data.momentum())), barX + PAD, barY + 74, GRAY, false);
-        com.toddlandis.skillcraft.prayer.PlayerFaith faith = com.toddlandis.skillcraft.prayer.PrayerService.faith(player);
-        Component faithText = Component.translatable("screen.skillcraft.faith", Math.round(faith.points()), Math.round(faith.max()));
+        // On the Prayers tab the line shows Faith (what blessings spend) instead of Momentum
         if (tab == AbilityCategory.PRAYER) {
-            g.text(font, faithText, barX + BAR_W - PAD - font.width(faithText), barY + 74, 0xFFE8D27A, false);
+            com.toddlandis.skillcraft.prayer.PlayerFaith faith = com.toddlandis.skillcraft.prayer.PrayerService.faith(player);
+            g.text(font, Component.translatable("screen.skillcraft.faith", Math.round(faith.points()), Math.round(faith.max())), barX + PAD, barY + 74, 0xFFE8D27A, false);
+        } else {
+            g.text(font, Component.translatable("screen.skillcraft.ability_momentum", Math.round(data.momentum())), barX + PAD, barY + 74, GRAY, false);
         }
         g.textWithWordWrap(font, Component.translatable(tab == AbilityCategory.PRAYER ? "screen.skillcraft.blessing_hint" : "screen.skillcraft.ability_hint"),
                 barX + PAD, barY + 83, BAR_W - PAD * 2, 0xFF6A6A78, false);
