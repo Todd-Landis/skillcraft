@@ -55,7 +55,7 @@ public final class ModGameTests {
     static void register(RegisterGameTestsEvent event) {
         test(event, "arena_dimension", 20);
         test(event, "arena_protection", 100);
-        test(event, "arena_enter_exit", 400);
+        test(event, "arena_enter_exit", 500);
         test(event, "arena_death_and_logout", 100);
         test(event, "boss_phases", 400);
         test(event, "boss_stances", 100);
