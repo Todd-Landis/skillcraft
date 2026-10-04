@@ -1,0 +1,15 @@
+{
+  "values": {
+    "minecraft:kelp":          { "result": "minecraft:dried_kelp",              "level": 1,  "xp": 5,   "time": 40,  "stop_burn": 10 },
+    "minecraft:potato":        { "result": "minecraft:baked_potato",            "level": 1,  "xp": 10,  "time": 60,  "stop_burn": 20 },
+    "minecraft:cod":           { "result": "minecraft:cooked_cod",              "level": 1,  "xp": 30,  "time": 80,  "stop_burn": 30 },
+    "minecraft:chicken":       { "result": "minecraft:cooked_chicken",          "level": 5,  "xp": 35,  "time": 80,  "stop_burn": 35 },
+    "minecraft:rabbit":        { "result": "minecraft:cooked_rabbit",           "level": 8,  "xp": 40,  "time": 80,  "stop_burn": 38 },
+    "minecraft:salmon":        { "result": "minecraft:cooked_salmon",           "level": 10, "xp": 50,  "time": 80,  "stop_burn": 40 },
+    "minecraft:mutton":        { "result": "minecraft:cooked_mutton",           "level": 12, "xp": 55,  "time": 80,  "stop_burn": 42 },
+    "minecraft:porkchop":      { "result": "minecraft:cooked_porkchop",         "level": 15, "xp": 60,  "time": 90,  "stop_burn": 45 },
+    "minecraft:beef":          { "result": "minecraft:cooked_beef",             "level": 20, "xp": 70,  "time": 90,  "stop_burn": 50 },
+    "minecraft:tropical_fish": { "result": "skillcraft:seared_reef_fish",       "level": 25, "xp": 90,  "time": 100, "stop_burn": 58 },
+    "minecraft:pufferfish":    { "result": "skillcraft:prepared_pufferfish",    "level": 35, "xp": 120, "time": 110, "stop_burn": 68 }
+  }
+}

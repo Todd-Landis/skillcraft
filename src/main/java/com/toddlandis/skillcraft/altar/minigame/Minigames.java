@@ -19,6 +19,7 @@ public final class Minigames {
         return switch (kind) {
             case STRIKE_THE_GRAIN -> new StrikeTheGrainLogic(tier, seed);
             case TEMPER_THE_VEIN -> new TemperTheVeinLogic(tier, seed);
+            case SET_THE_HOOK -> new SetTheHookLogic(tier, seed);
         };
     }
 

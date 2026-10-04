@@ -30,6 +30,7 @@ public enum Skill implements StringRepresentable {
     // Artisan
     SMITHING(Category.ARTISAN),
     CRAFTING(Category.ARTISAN),
+    COOKING(Category.ARTISAN),
     FIREMAKING(Category.ARTISAN),
     CONSTRUCTION(Category.ARTISAN),
 

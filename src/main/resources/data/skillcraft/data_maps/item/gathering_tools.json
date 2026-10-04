@@ -14,6 +14,8 @@
     "minecraft:golden_pickaxe":    { "tier": 1, "power": 1.5 },
     "minecraft:iron_pickaxe":      { "tier": 2, "power": 1.15 },
     "minecraft:diamond_pickaxe":   { "tier": 3, "power": 1.3 },
-    "minecraft:netherite_pickaxe": { "tier": 4, "power": 1.4 }
+    "minecraft:netherite_pickaxe": { "tier": 4, "power": 1.4 },
+
+    "minecraft:fishing_rod":       { "tier": 0, "power": 1.0 }
   }
 }

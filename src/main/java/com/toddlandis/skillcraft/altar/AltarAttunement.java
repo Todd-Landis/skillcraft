@@ -10,7 +10,7 @@ import com.toddlandis.skillcraft.altar.minigame.Minigames;
 import com.toddlandis.skillcraft.network.AttunementResultPayload;
 import com.toddlandis.skillcraft.network.OpenAttunementPayload;
 import com.toddlandis.skillcraft.node.NodeType;
-import com.toddlandis.skillcraft.registry.ModBlocks;
+import com.toddlandis.skillcraft.registry.ModItems;
 import com.toddlandis.skillcraft.skill.SkillManager;
 
 import net.minecraft.ChatFormatting;
@@ -86,7 +86,7 @@ public final class AltarAttunement {
     private static void succeed(ServerPlayer player, ServerLevel level, BlockPos pos, AttunementAltarBlockEntity altar, NodeType type) {
         altar.clear();
         ItemEntity node = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5,
-                new ItemStack(ModBlocks.NODES.get(type).get()));
+                new ItemStack(ModItems.NODES.get(type).get()));
         node.setDeltaMovement(0, 0.2, 0);
         level.addFreshEntity(node);
         level.sendParticles(ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, 40, 0.4, 0.4, 0.4, 0.5);

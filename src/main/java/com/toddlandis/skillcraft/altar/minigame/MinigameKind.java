@@ -5,5 +5,6 @@ package com.toddlandis.skillcraft.altar.minigame;
 // without touching the altar or networking code.
 public enum MinigameKind {
     STRIKE_THE_GRAIN, // tap when a sweeping marker is inside the zone (woodcutting)
-    TEMPER_THE_VEIN   // hold to build heat, release inside the target band (mining)
+    TEMPER_THE_VEIN,  // hold to build heat, release inside the target band (mining)
+    SET_THE_HOOK      // strike when the float is pulled under, not at nibbles (fishing)
 }

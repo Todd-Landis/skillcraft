@@ -20,6 +20,9 @@ public class ModMenuTypes {
     public static final Supplier<MenuType<SmelterMenu>> SMELTER = MENUS.register("smelter",
             () -> new MenuType<>(SmelterMenu::new, FeatureFlags.VANILLA_SET));
 
+    public static final Supplier<MenuType<com.toddlandis.skillcraft.cooking.CookingRangeMenu>> COOKING_RANGE = MENUS.register("cooking_range",
+            () -> new MenuType<>(com.toddlandis.skillcraft.cooking.CookingRangeMenu::new, FeatureFlags.VANILLA_SET));
+
     public static final Supplier<MenuType<BenchMenu>> FORGING_ANVIL = MENUS.register("forging_anvil",
             () -> new MenuType<>((id, inventory) -> new BenchMenu(Station.ANVIL, id, inventory), FeatureFlags.VANILLA_SET));
 

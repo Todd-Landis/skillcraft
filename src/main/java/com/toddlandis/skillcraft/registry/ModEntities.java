@@ -4,6 +4,8 @@ import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.boss.SlagGlob;
 import com.toddlandis.skillcraft.boss.SlagheartEntity;
 import com.toddlandis.skillcraft.combat.SkillArrow;
+import com.toddlandis.skillcraft.fishing.FishingLine;
+import com.toddlandis.skillcraft.fishing.FishingSpotEntity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -30,6 +32,14 @@ public class ModEntities {
             SkillArrow::new, MobCategory.MISC, builder -> builder.sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20).noLootTable());
     public static final DeferredHolder<EntityType<?>, EntityType<SkillArrow>> HEAVY_ARROW = ENTITIES.registerEntityType("heavy_arrow",
             SkillArrow::new, MobCategory.MISC, builder -> builder.sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20).noLootTable());
+
+    // Fishing spots: churning water on a pond (see fishing/FishingSpotEntity)
+    public static final DeferredHolder<EntityType<?>, EntityType<FishingSpotEntity>> FISHING_SPOT = ENTITIES.registerEntityType("fishing_spot",
+            FishingSpotEntity::new, MobCategory.MISC, builder -> builder.sized(1.0f, 0.25f).clientTrackingRange(8).updateInterval(5).noLootTable());
+
+    // The bobber shown while fishing at a spot (never saved)
+    public static final DeferredHolder<EntityType<?>, EntityType<FishingLine>> FISHING_LINE = ENTITIES.registerEntityType("fishing_line",
+            FishingLine::new, MobCategory.MISC, builder -> builder.sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(2).noSave().noSummon().noLootTable());
 
     // Magic bolts from wands, staves and spells (docs/AGILITY_MAGIC_PRAYER.md)
     public static final DeferredHolder<EntityType<?>, EntityType<com.toddlandis.skillcraft.magic.SpellBolt>> SPELL_BOLT = ENTITIES.registerEntityType("spell_bolt",

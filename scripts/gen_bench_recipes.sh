@@ -121,7 +121,7 @@ recipe skillcraft:tempest_staff crafting_bench 22 70 120 "$(part minecraft:stick
 recipe skillcraft:arcanist_wand crafting_bench 30 110 140 "$(part minecraft:blaze_rod 1), $(part minecraft:amethyst_shard 4), $(part minecraft:lapis_lazuli 6), $(part minecraft:gold_ingot 2)"
 recipe skillcraft:starseer_staff crafting_bench 40 180 200 "$(part minecraft:blaze_rod 2), $(part minecraft:amethyst_shard 6), $(part minecraft:diamond 2), $(part minecraft:ender_eye 1)"
 
-recipe fishing_rod crafting_bench 5 15 60 "$(part minecraft:stick 3), $(part minecraft:string 2)"
+recipe fishing_rod crafting_bench 1 15 60 "$(part minecraft:stick 3), $(part minecraft:string 2)"
 recipe bow crafting_bench 10 25 60 "$(part minecraft:stick 3), $(part minecraft:string 3)"
 recipe shield crafting_bench 15 40 80 "$(part '#minecraft:planks' 6), $(part minecraft:iron_ingot 1)"
 recipe crossbow crafting_bench 25 60 120 "$(part minecraft:stick 3), $(part minecraft:string 2), $(part minecraft:iron_ingot 1), $(part minecraft:tripwire_hook 1)"

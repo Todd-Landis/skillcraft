@@ -47,6 +47,11 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ability_future", () -> AbilityTests::future);
         TEST_FUNCTIONS.register("ability_offhand", () -> AbilityTests::offhand);
         TEST_FUNCTIONS.register("ability_dps", () -> AbilityTests::dps);
+        TEST_FUNCTIONS.register("fishing_water", () -> FishingTests::water);
+        TEST_FUNCTIONS.register("fishing_session", () -> FishingTests::session);
+        TEST_FUNCTIONS.register("fishing_vanilla_catches", () -> FishingTests::vanillaCatches);
+        TEST_FUNCTIONS.register("fishing_hook_minigame", () -> FishingTests::hookMinigame);
+        TEST_FUNCTIONS.register("cooking_range", () -> CookingTests::range);
         TEST_FUNCTIONS.register("magic_bolt", () -> Phase7Tests::bolt);
         TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
         TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
@@ -76,6 +81,11 @@ public final class ModGameTests {
         test(event, "ability_future", 120);
         test(event, "ability_offhand", 40);
         test(event, "ability_dps", AbilityTests.HARNESS_TICKS + 100);
+        test(event, "fishing_water", 40);
+        test(event, "fishing_session", 1200);
+        test(event, "fishing_vanilla_catches", 40);
+        test(event, "fishing_hook_minigame", 40);
+        test(event, "cooking_range", 500);
         test(event, "magic_bolt", 60);
         test(event, "magic_spells", 80);
         test(event, "prayer", 40);

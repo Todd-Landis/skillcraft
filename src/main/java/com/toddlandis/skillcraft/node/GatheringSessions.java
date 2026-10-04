@@ -161,12 +161,12 @@ public final class GatheringSessions {
 
     private static final double FATIGUE_WARNING = 0.75;
 
-    private static boolean isFatigued(ServerPlayer player, NodeType type) {
+    public static boolean isFatigued(ServerPlayer player, NodeType type) {
         int level = SkillManager.level(player, type.skill());
         return player.getData(ModAttachments.FATIGUE).isExhausted(type, level, player.level().getGameTime());
     }
 
-    private static void addFatigue(ServerPlayer player, NodeType type) {
+    public static void addFatigue(ServerPlayer player, NodeType type) {
         GatheringFatigue fatigue = player.getData(ModAttachments.FATIGUE);
         int level = SkillManager.level(player, type.skill());
         long now = player.level().getGameTime();
@@ -179,7 +179,7 @@ public final class GatheringSessions {
         }
     }
 
-    private static void sendFatigued(ServerPlayer player, NodeType type) {
+    public static void sendFatigued(ServerPlayer player, NodeType type) {
         int level = SkillManager.level(player, type.skill());
         int seconds = player.getData(ModAttachments.FATIGUE).secondsUntilReady(type, level, player.level().getGameTime());
         String wait = seconds < 60 ? seconds + "s" : (seconds / 60) + "m " + (seconds % 60) + "s";

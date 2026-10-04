@@ -50,6 +50,12 @@ public class ModDataMaps {
             .synced(SmeltingRecipe.CODEC, false)
             .build();
 
+    // raw food -> what the Cooking Range makes from it, level, XP, time and stop-burn level
+    public static final DataMapType<Item, com.toddlandis.skillcraft.cooking.CookingRecipe> COOKING = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "cooking"), Registries.ITEM, com.toddlandis.skillcraft.cooking.CookingRecipe.CODEC)
+            .synced(com.toddlandis.skillcraft.cooking.CookingRecipe.CODEC, false)
+            .build();
+
     // item -> how to make it at a Forging Anvil or Crafting Bench
     public static final DataMapType<Item, BenchRecipe> BENCH_RECIPES = DataMapType
             .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "bench_recipes"), Registries.ITEM, BenchRecipe.CODEC)
@@ -109,6 +115,7 @@ public class ModDataMaps {
         event.register(BLOCK_RESOURCES);
         event.register(GATHERING_TOOLS);
         event.register(SMELTING);
+        event.register(COOKING);
         event.register(BENCH_RECIPES);
     }
 

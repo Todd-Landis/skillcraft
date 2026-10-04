@@ -30,6 +30,7 @@ public class ModBlocks {
 
     static {
         for (NodeType type : NodeType.values()) {
+            if (type.isSpot()) continue; // fishing spots are entities, see fishing/FishingSpotEntity
             boolean wood = type.skill() == Skill.WOODCUTTING;
             NODES.put(type, BLOCKS.registerBlock(type.blockName(), p -> new NodeBlock(type, p), p -> p
                     .strength(-1f, 3600000f) // unbreakable in survival; use the Relocator
@@ -47,6 +48,14 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .sound(SoundType.STONE)
                     .lightLevel(state -> state.getValue(SmelterBlock.LIT) ? 13 : 0));
+
+    public static final DeferredBlock<com.toddlandis.skillcraft.cooking.CookingRangeBlock> COOKING_RANGE = BLOCKS.registerBlock("cooking_range",
+            com.toddlandis.skillcraft.cooking.CookingRangeBlock::new, p -> p
+                    .strength(3.5f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.STONE)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> state.getValue(com.toddlandis.skillcraft.cooking.CookingRangeBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<BenchBlock> FORGING_ANVIL = BLOCKS.registerBlock("forging_anvil",
             p -> new BenchBlock(Station.ANVIL, p), p -> p
