@@ -163,6 +163,8 @@ public class ModItems {
     // Essence mined from a Ley Stone node; woven into motes at a Ley Altar
     public static final DeferredItem<Item> LEY_SHARD = ITEMS.registerSimpleItem("ley_shard");
     public static final DeferredItem<BlockItem> LEY_ALTAR = ITEMS.registerSimpleBlockItem("ley_altar", ModBlocks.LEY_ALTAR);
+    // A tuning fork that points to the nearest strong source of an element (where to build an altar)
+    public static final DeferredItem<com.toddlandis.skillcraft.leycraft.LeyTunerItem> LEY_TUNER = ITEMS.registerItem("ley_tuner", com.toddlandis.skillcraft.leycraft.LeyTunerItem::new, p -> p.stacksTo(1));
 
     // Main-hand attributes for heavy weapons: damage, speed, extra knockback, and a movement penalty
     private static ItemAttributeModifiers weaponAttributes(float damage, float speed, double knockback, double moveSpeed) {

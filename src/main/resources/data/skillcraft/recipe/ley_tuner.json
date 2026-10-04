@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "A A",
+    "C C",
+    " C "
+  ],
+  "result": {
+    "id": "skillcraft:ley_tuner"
+  }
+}

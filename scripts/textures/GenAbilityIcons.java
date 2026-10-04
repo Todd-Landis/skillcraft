@@ -125,6 +125,7 @@ public class GenAbilityIcons {
         item("tempest_staff", c -> { staff(c, 0x8A5A3A); c.line(10, 5, 10, 1, 0xC07040, 1); c.line(14, 5, 14, 1, 0xC07040, 1); c.line(10, 5, 14, 5, 0xC07040, 1); c.set(12, 2, WHITE); c.set(12, 3, 0xFFFFA0); });
         item("starseer_staff", c -> { staff(c, 0x2A2A3A); c.disc(12, 3, 2.6, GOLD); star(c, 12, 3, 2, VIOLET); });
         item("ley_shard", GenAbilityIcons::leyShard);
+        item("ley_tuner", GenAbilityIcons::leyTuner);
         elementalHeart();
         System.out.println("Wrote ability icons, effect icons, the codex texture, the Phase 7 item textures and the Elemental Heart");
     }
@@ -292,6 +293,22 @@ public class GenAbilityIcons {
         c.set(10, 7, 0xE8DCFF);
         c.set(13, 12, 0xD8C0FF);
         c.set(2, 4, 0xB07CF0);
+    }
+
+    // Ley Tuner: a copper tuning fork with amethyst-tipped prongs
+    static void leyTuner(Canvas c) {
+        int copper = 0xC87533, dark = 0x8A4A22;
+        c.line(8, 15, 8, 10, dark, 2);
+        c.line(4, 10, 12, 10, copper, 1);
+        c.line(4, 10, 4, 3, copper, 2);
+        c.line(11, 10, 11, 3, copper, 2);
+        c.line(5, 9, 5, 4, 0xE89A5A, 1);
+        c.disc(4.5, 2.5, 1.6, 0x8A5AE0);
+        c.disc(11.5, 2.5, 1.6, 0x8A5AE0);
+        c.set(4, 2, 0xE0D0FF);
+        c.set(11, 2, 0xE0D0FF);
+        c.set(8, 5, 0xD8C0FF);
+        c.set(8, 3, 0xB07CF0);
     }
 
     static void mote(Canvas c, int body, int light) {

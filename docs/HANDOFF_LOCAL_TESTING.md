@@ -228,6 +228,10 @@ Details are in `docs/LEYCRAFT.md`. Take a **Ley Altar**, a **Ley Stone** node (o
 - [ ] **Amethyst:** amethyst shards work as essence at half value.
 - [ ] **Ownership:** a second player can't weave from or break your loaded altar. Breaking your own gives the shards back.
 - [ ] **Ley Stone:** place the node and mine it with a pickaxe: 2 Ley Shards per success and Mining XP. Breaking natural amethyst clusters in a geode sometimes drops a Ley Heart.
+- [ ] **Ley Tuner:** craft one (2 amethyst shards, 3 copper ingots, fork shape) and use it.
+  - Tuned to Arcane near a geode, it points to the budding amethyst, and the chime rises as you get closer.
+  - Sneak + use cycles the element: Fire finds lava, Frost finds ice.
+  - With nothing in range it names the nearest biome of that element, with a direction.
 - [ ] **Feel:** is *Steady the Current* fun and fair at Arcane, Frost and Storm? Are mote yields generous enough for wand combat? The numbers are in `ley_weaves.json`, `ley_resonance.json` and the server config.
 
 ### C. Things only a person can judge

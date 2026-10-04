@@ -29,6 +29,11 @@ public class ModDataComponents {
             builder -> builder.persistent(com.toddlandis.skillcraft.node.NodeType.CODEC)
                     .networkSynchronized(ByteBufCodecs.idMapper(i -> com.toddlandis.skillcraft.node.NodeType.values()[i], Enum::ordinal)));
 
+    // Which element a Ley Tuner is tuned to (see leycraft/LeyTunerItem)
+    public static final Supplier<DataComponentType<com.toddlandis.skillcraft.leycraft.LeyElement>> LEY_TUNING = COMPONENTS.registerComponentType("ley_tuning",
+            builder -> builder.persistent(com.toddlandis.skillcraft.leycraft.LeyElement.CODEC)
+                    .networkSynchronized(ByteBufCodecs.idMapper(i -> com.toddlandis.skillcraft.leycraft.LeyElement.values()[i], Enum::ordinal)));
+
     // Boss and player for gear won from a boss, e.g. the Emberfall Maul (see loot/EarnedBy)
     public static final Supplier<DataComponentType<EarnedBy>> EARNED_BY = COMPONENTS.registerComponentType("earned_by",
             builder -> builder.persistent(EarnedBy.CODEC).networkSynchronized(EarnedBy.STREAM_CODEC));

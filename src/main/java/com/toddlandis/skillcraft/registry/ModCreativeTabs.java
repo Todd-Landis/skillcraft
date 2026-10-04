@@ -47,6 +47,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.STARSEER_STAFF.get());
                 output.accept(ModItems.LEY_ALTAR.get());
                 output.accept(ModItems.LEY_SHARD.get());
+                output.accept(ModItems.LEY_TUNER.get());
                 output.accept(ModItems.ARCANE_MOTE.get());
                 output.accept(ModItems.EMBER_MOTE.get());
                 output.accept(ModItems.FROST_MOTE.get());

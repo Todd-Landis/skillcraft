@@ -58,6 +58,7 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ley_resonance", () -> LeycraftTests::resonance);
         TEST_FUNCTIONS.register("ley_weaving", () -> LeycraftTests::weaving);
         TEST_FUNCTIONS.register("steady_the_current", () -> LeycraftTests::steadyTheCurrent);
+        TEST_FUNCTIONS.register("ley_tuner", () -> LeycraftTests::tuner);
         TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
         TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
         TEST_FUNCTIONS.register("agility", () -> Phase7Tests::agility);
@@ -97,6 +98,7 @@ public final class ModGameTests {
         test(event, "ley_resonance", 20);
         test(event, "ley_weaving", 20);
         test(event, "steady_the_current", 20);
+        test(event, "ley_tuner", 20);
         test(event, "magic_spells", 80);
         test(event, "prayer", 40);
         test(event, "agility", 40);
