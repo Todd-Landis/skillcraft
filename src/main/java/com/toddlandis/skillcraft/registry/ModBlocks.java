@@ -97,6 +97,16 @@ public class ModBlocks {
                     .noOcclusion()
                     .lightLevel(state -> 9));
 
+    // Leycraft: weaves essence into motes of the element its surroundings resonate with (docs/LEYCRAFT.md)
+    public static final DeferredBlock<com.toddlandis.skillcraft.leycraft.LeyAltarBlock> LEY_ALTAR = BLOCKS.registerBlock("ley_altar",
+            com.toddlandis.skillcraft.leycraft.LeyAltarBlock::new, p -> p
+                    .strength(3.5f, 6.0f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .sound(SoundType.AMETHYST)
+                    .noOcclusion()
+                    .lightLevel(state -> 7));
+
     // Boss arena entrance (overworld), reward chest and exit (arena only; unbreakable)
     public static final DeferredBlock<SummoningBrazierBlock> SUMMONING_BRAZIER = BLOCKS.registerBlock("summoning_brazier",
             SummoningBrazierBlock::new, p -> p

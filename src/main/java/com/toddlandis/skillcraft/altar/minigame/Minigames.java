@@ -20,6 +20,7 @@ public final class Minigames {
             case STRIKE_THE_GRAIN -> new StrikeTheGrainLogic(tier, seed);
             case TEMPER_THE_VEIN -> new TemperTheVeinLogic(tier, seed);
             case SET_THE_HOOK -> new SetTheHookLogic(tier, seed);
+            case STEADY_THE_CURRENT -> new SteadyTheCurrentLogic(tier, seed);
         };
     }
 
@@ -32,7 +33,8 @@ public final class Minigames {
         public static final StreamCodec<ByteBuf, List<Input>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list(MAX_INPUTS));
     }
 
-    public record ReplayResult(MinigameLogic.State state, int ticks, boolean started) {}
+    // misses: how many the player made (Leycraft scales its yield by them)
+    public record ReplayResult(MinigameLogic.State state, int ticks, boolean started, int misses) {}
 
     // Re-runs a minigame from its seed with the player's recorded inputs. Inputs are applied
     // before the tick with the same number, exactly as the client did.
@@ -43,15 +45,15 @@ public final class Minigames {
             while (next < inputs.size() && inputs.get(next).tick() == tick) {
                 Input input = inputs.get(next++);
                 if (input.press()) logic.press(); else logic.release();
-                if (logic.state() != MinigameLogic.State.RUNNING) return new ReplayResult(logic.state(), tick, true);
+                if (logic.state() != MinigameLogic.State.RUNNING) return new ReplayResult(logic.state(), tick, true, logic.score().misses());
             }
             if (next < inputs.size() && inputs.get(next).tick() < tick) {
-                return new ReplayResult(MinigameLogic.State.FAILURE, tick, true); // out of order: tampered
+                return new ReplayResult(MinigameLogic.State.FAILURE, tick, true, logic.score().missesAllowed() + 1); // out of order: tampered
             }
             logic.tick();
-            if (logic.state() != MinigameLogic.State.RUNNING) return new ReplayResult(logic.state(), tick + 1, logic.started());
+            if (logic.state() != MinigameLogic.State.RUNNING) return new ReplayResult(logic.state(), tick + 1, logic.started(), logic.score().misses());
             if (next >= inputs.size() && !logic.started()) break; // nothing more will happen
         }
-        return new ReplayResult(logic.state(), MAX_TICKS, logic.started());
+        return new ReplayResult(logic.state(), MAX_TICKS, logic.started(), logic.score().misses());
     }
 }

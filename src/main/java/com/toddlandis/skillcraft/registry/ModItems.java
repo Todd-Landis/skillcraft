@@ -70,6 +70,11 @@ public class ModItems {
     // Right-click a node with this to pick it up
     public static final DeferredItem<Item> RELOCATOR = ITEMS.registerSimpleItem("relocator", p -> p.stacksTo(1));
 
+    // Found in the vanilla world (trees, ores, fishing); the Attunement Altar turns one into a node.
+    // Which node is in its skillcraft:heart_node component (see node/ElementalHeartItem).
+    public static final DeferredItem<com.toddlandis.skillcraft.node.ElementalHeartItem> ELEMENTAL_HEART = ITEMS.registerItem("elemental_heart",
+            com.toddlandis.skillcraft.node.ElementalHeartItem::new, p -> p.stacksTo(16).rarity(Rarity.UNCOMMON));
+
     // --- Combat (docs/COMBAT.md) ---
 
     // Warhammers: the crush weapon family. Slower and heavier than swords, with extra knockback.
@@ -129,7 +134,7 @@ public class ModItems {
 
     // --- Magic (docs/AGILITY_MAGIC_PRAYER.md) ---
 
-    // Motes: spell reagents, one per element (crafted at the Crafting Bench)
+    // Motes: spell reagents, one per element (woven at a Ley Altar, see docs/LEYCRAFT.md)
     public static final DeferredItem<Item> ARCANE_MOTE = ITEMS.registerSimpleItem("arcane_mote");
     public static final DeferredItem<Item> EMBER_MOTE = ITEMS.registerSimpleItem("ember_mote");
     public static final DeferredItem<Item> FROST_MOTE = ITEMS.registerSimpleItem("frost_mote");
@@ -152,6 +157,12 @@ public class ModItems {
     // --- Prayer ---
 
     public static final DeferredItem<BlockItem> VOTIVE_SHRINE = ITEMS.registerSimpleBlockItem("votive_shrine", ModBlocks.VOTIVE_SHRINE);
+
+    // --- Leycraft (docs/LEYCRAFT.md) ---
+
+    // Essence mined from a Ley Stone node; woven into motes at a Ley Altar
+    public static final DeferredItem<Item> LEY_SHARD = ITEMS.registerSimpleItem("ley_shard");
+    public static final DeferredItem<BlockItem> LEY_ALTAR = ITEMS.registerSimpleBlockItem("ley_altar", ModBlocks.LEY_ALTAR);
 
     // Main-hand attributes for heavy weapons: damage, speed, extra knockback, and a movement penalty
     private static ItemAttributeModifiers weaponAttributes(float damage, float speed, double knockback, double moveSpeed) {

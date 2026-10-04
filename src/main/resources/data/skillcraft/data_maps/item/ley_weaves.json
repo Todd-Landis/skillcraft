@@ -1,0 +1,8 @@
+{
+  "values": {
+    "skillcraft:arcane_mote": { "level": 1,  "xp": 6,   "motes_per_shard": 4 },
+    "skillcraft:ember_mote":  { "level": 5,  "xp": 8,   "motes_per_shard": 4 },
+    "skillcraft:frost_mote":  { "level": 12, "xp": 9.5, "motes_per_shard": 4 },
+    "skillcraft:storm_mote":  { "level": 20, "xp": 11,  "motes_per_shard": 4 }
+  }
+}

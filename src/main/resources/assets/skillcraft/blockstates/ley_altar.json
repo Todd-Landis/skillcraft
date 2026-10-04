@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "element=arcane": { "model": "skillcraft:block/ley_altar" },
+    "element=fire": { "model": "skillcraft:block/ley_altar" },
+    "element=frost": { "model": "skillcraft:block/ley_altar" },
+    "element=storm": { "model": "skillcraft:block/ley_altar" }
+  }
+}

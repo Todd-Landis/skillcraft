@@ -102,8 +102,43 @@ public class ModDataMaps {
             .synced(com.toddlandis.skillcraft.prayer.PrayerOffering.CODEC, false)
             .build();
 
+    // vanilla block -> which Elemental Heart it can drop when broken, and how often
+    public static final DataMapType<Block, com.toddlandis.skillcraft.node.HeartDrop> BLOCK_HEARTS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "elemental_hearts"), Registries.BLOCK, com.toddlandis.skillcraft.node.HeartDrop.CODEC)
+            .synced(com.toddlandis.skillcraft.node.HeartDrop.CODEC, false)
+            .build();
+
+    // fish -> which Elemental Heart catching it with a vanilla rod can bring up, and how often
+    public static final DataMapType<Item, com.toddlandis.skillcraft.node.HeartDrop> FISHED_HEARTS = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "elemental_hearts"), Registries.ITEM, com.toddlandis.skillcraft.node.HeartDrop.CODEC)
+            .synced(com.toddlandis.skillcraft.node.HeartDrop.CODEC, false)
+            .build();
+
+    // Leycraft (docs/LEYCRAFT.md): blocks that make a Ley Altar resonate with an element
+    public static final DataMapType<Block, com.toddlandis.skillcraft.leycraft.LeyData.Resonance> LEY_RESONANCE = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "ley_resonance"), Registries.BLOCK, com.toddlandis.skillcraft.leycraft.LeyData.Resonance.CODEC)
+            .synced(com.toddlandis.skillcraft.leycraft.LeyData.Resonance.CODEC, false)
+            .build();
+
+    // ...items a Ley Altar accepts as essence, and what each is worth in ley shards
+    public static final DataMapType<Item, com.toddlandis.skillcraft.leycraft.LeyData.Essence> LEY_ESSENCE = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "ley_essence"), Registries.ITEM, com.toddlandis.skillcraft.leycraft.LeyData.Essence.CODEC)
+            .synced(com.toddlandis.skillcraft.leycraft.LeyData.Essence.CODEC, false)
+            .build();
+
+    // ...and each mote's Leycraft level, XP per shard and base motes per shard
+    public static final DataMapType<Item, com.toddlandis.skillcraft.leycraft.LeyData.Weave> LEY_WEAVES = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "ley_weaves"), Registries.ITEM, com.toddlandis.skillcraft.leycraft.LeyData.Weave.CODEC)
+            .synced(com.toddlandis.skillcraft.leycraft.LeyData.Weave.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(LEY_RESONANCE);
+        event.register(LEY_ESSENCE);
+        event.register(LEY_WEAVES);
+        event.register(BLOCK_HEARTS);
+        event.register(FISHED_HEARTS);
         event.register(MAGIC_FOCI);
         event.register(PRAYER_OFFERINGS);
         event.register(EFFECT_TUNING);

@@ -28,6 +28,9 @@ public class ModNetwork {
         registrar.playToClient(XpGainPayload.TYPE, XpGainPayload.STREAM_CODEC);
         registrar.playToClient(OpenAttunementPayload.TYPE, OpenAttunementPayload.STREAM_CODEC);
         registrar.playToServer(AttunementResultPayload.TYPE, AttunementResultPayload.STREAM_CODEC, AltarAttunement::handleResult);
+        // Leycraft careful weave (see leycraft/LeyWeaving)
+        registrar.playToClient(OpenWeavePayload.TYPE, OpenWeavePayload.STREAM_CODEC);
+        registrar.playToServer(WeaveResultPayload.TYPE, WeaveResultPayload.STREAM_CODEC, com.toddlandis.skillcraft.leycraft.LeyWeaving::handleResult);
         registrar.playToServer(BenchActionPayload.TYPE, BenchActionPayload.STREAM_CODEC, BenchActionPayload::handle);
         registrar.playToServer(BankActionPayload.TYPE, BankActionPayload.STREAM_CODEC, BankActions::handle);
         registrar.playToClient(BankSyncPayload.TYPE, BankSyncPayload.STREAM_CODEC);

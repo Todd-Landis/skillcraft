@@ -37,8 +37,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public final class AltarAttunement {
     // XP for a successful attunement, as a multiple of one node success
     private static final double XP_MULTIPLE = 5;
-    // Share of the loaded material lost on a failed attunement
-    private static final double FAIL_LOSS = 0.25;
+    // Chance a failed attunement cracks the heart (the old rule lost 25% of a pile of resources;
+    // a single rare heart keeps the same expected loss as a chance instead)
+    private static final double CRACK_CHANCE = 0.25;
     private static final double MAX_DISTANCE_SQ = 8 * 8;
     // Allowed difference (in ticks) between the game length the client claims and real time passed.
     // A client can't have played longer than the time that actually went by.
@@ -96,10 +97,10 @@ public final class AltarAttunement {
     }
 
     private static void fail(ServerPlayer player, ServerLevel level, BlockPos pos, AttunementAltarBlockEntity altar) {
-        altar.loseFraction(FAIL_LOSS);
+        boolean cracked = altar.crack(CRACK_CHANCE, level.getRandom());
         level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 20, 0.3, 0.2, 0.3, 0.02);
-        level.playSound(null, pos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.5f, 1.5f);
-        player.sendOverlayMessage(Component.translatable("message.skillcraft.attune_fail").withStyle(ChatFormatting.RED));
+        level.playSound(null, pos, cracked ? SoundEvents.GLASS_BREAK : SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.5f, 1.5f);
+        player.sendOverlayMessage(Component.translatable(cracked ? "message.skillcraft.attune_cracked" : "message.skillcraft.attune_fail").withStyle(ChatFormatting.RED));
     }
 
     @SubscribeEvent

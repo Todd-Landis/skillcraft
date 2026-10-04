@@ -67,6 +67,12 @@ public class ClientEvents {
         com.toddlandis.skillcraft.client.ability.AbilityKeys.register(event);
     }
 
+    // "skillcraft:heart": tints Elemental Hearts by their node (client/HeartTint)
+    @SubscribeEvent
+    static void registerTints(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, "heart"), HeartTint.MAP_CODEC);
+    }
+
     // FishingHookRenderer is typed for FishingHook; FishingLine is one, so the cast is safe
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static net.minecraft.client.renderer.entity.EntityRenderer<com.toddlandis.skillcraft.fishing.FishingLine, ?> fishingLineRenderer(
@@ -120,7 +126,9 @@ public class ClientEvents {
         event.register(com.toddlandis.skillcraft.network.AbilityDeniedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.denied());
         event.register(com.toddlandis.skillcraft.network.AbilityUnlockedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.unlocked(payload));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
-                Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
+                Minecraft.getInstance().gui.setScreen(AttunementScreen.attune(payload)));
+        event.register(com.toddlandis.skillcraft.network.OpenWeavePayload.TYPE, (payload, context) ->
+                Minecraft.getInstance().gui.setScreen(AttunementScreen.weave(payload)));
     }
 
     // Cooldowns and toggles from another world or server mean nothing here
@@ -269,10 +277,34 @@ public class ClientEvents {
             }
         }
 
-        // Resource items that can be attuned into a node at the altar
-        NodeType attunable = NodeType.byInput(event.getItemStack().getItem());
-        if (attunable != null) {
-            tooltip.add(Component.translatable("tooltip.skillcraft.attunable", attunable.inputCount(), AttunementAltarBlock.nodeName(attunable))
+        // Elemental Hearts: what they attune into, and the level it needs
+        NodeType heart = com.toddlandis.skillcraft.node.ElementalHeartItem.node(event.getItemStack());
+        if (heart != null) {
+            boolean met = SkillManager.level(player, heart.skill()) >= heart.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.heart_attunes", AttunementAltarBlock.nodeName(heart)).withStyle(ChatFormatting.DARK_AQUA));
+            tooltip.add(Component.translatable("tooltip.skillcraft.resource", heart.skill().displayName(), heart.level(), heart.tierName())
+                    .withStyle(met ? ChatFormatting.GREEN : ChatFormatting.RED));
+        }
+
+        // Leycraft: essence worth, and the level and XP each mote needs (docs/LEYCRAFT.md)
+        com.toddlandis.skillcraft.leycraft.LeyData.Essence essence = event.getItemStack().typeHolder().getData(ModDataMaps.LEY_ESSENCE);
+        if (essence != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_essence", XpTable.format(essence.value())).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+        com.toddlandis.skillcraft.leycraft.LeyData.Weave weave = event.getItemStack().typeHolder().getData(ModDataMaps.LEY_WEAVES);
+        if (weave != null) {
+            boolean met = SkillManager.level(player, Skill.LEYCRAFT) >= weave.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_weave", Skill.LEYCRAFT.displayName(), weave.level(), XpTable.format(weave.xp()))
+                    .withStyle(met ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.RED));
+        }
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.LEY_ALTAR.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_altar").withStyle(ChatFormatting.GRAY));
+        }
+
+        // Fish whose vanilla catch can bring up a heart
+        com.toddlandis.skillcraft.node.HeartDrop fished = event.getItemStack().typeHolder().getData(ModDataMaps.FISHED_HEARTS);
+        if (fished != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.heart_source", com.toddlandis.skillcraft.node.ElementalHeartItem.of(fished.node()).getHoverName())
                     .withStyle(ChatFormatting.DARK_AQUA));
         }
     }

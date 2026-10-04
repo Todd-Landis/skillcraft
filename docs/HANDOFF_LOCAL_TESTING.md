@@ -200,6 +200,36 @@ Details are in `docs/AGILITY_MAGIC_PRAYER.md`.
   - Fire does almost nothing.
   - Ward of Steel makes its hammer slams hurt much less.
 
+### F. Elemental Hearts and the XP curve
+Details are in `docs/DESIGN.md` ("Elemental Hearts" and "XP curve"). Hearts are rare on purpose, so for a quick look take one of each from the creative tab (after the Relocator). To feel the real drop rate, play normally in **survival**.
+
+- [ ] **Look:** every heart has its own colour (oak tan, diamond cyan, emerald green, cod beige …) and a clear name ("Diamond Heart"). The tooltip says what it attunes into and the level needed.
+- [ ] **Altar:**
+  - Right-clicking with plain logs or ores is refused, with a message that mentions hearts.
+  - One heart loads it. Sneak with an empty hand to get it back.
+  - Win: the node pops out. Lose a few times: sometimes "the heart held together" (it stays in), sometimes it cracks with a glass sound and is gone (about 1 in 4).
+- [ ] **Trees:** chop a few dozen naturally grown oak or birch trees with an axe. Expect about one heart per 25 trees, with a sparkle, a chime and a "You found …" message. Chopping logs you placed yourself (or a log cabin) never gives one.
+- [ ] **Ores:** mine diamonds in survival; expect about one Diamond Heart per 25 ores. Silk-touch an ore, place it and mine it again: no heart.
+- [ ] **Fishing:** fish with a normal rod in any water. A Cod Heart about every 70 cod; tropical fish are rare but often bring one up. Catching fish at a SkillCraft fishing spot gives XP, not hearts.
+- [ ] **XP curve:** open the Skills screen (**K**). An existing save's levels should be a little higher than before (XP is kept, levels need 25% less). `/skill set @s woodcutting 99` should show 9,775,823 XP.
+- [ ] **Feel:** does finding hearts feel rewarding but not common? The rates are in `data/skillcraft/data_maps/block/elemental_hearts.json` and `item/elemental_hearts.json`; edit them and `/reload`.
+
+### G. Leycraft
+Details are in `docs/LEYCRAFT.md`. Take a **Ley Altar**, a **Ley Stone** node (or a Ley Heart) and a stack of **Ley Shards** from the creative tab. Then switch to survival.
+
+- [ ] **Bare altar:** place it on open grass. Use it with an empty hand: it says Arcane 0% and shows the other elements. Purple glyphs drift up from it.
+- [ ] **Quick weave:** load 64 ley shards (use with the stack), then sneak + use with an empty hand. You should get 256 Arcane Motes and 384 Leycraft XP at level 1.
+- [ ] **Careful weave:** load again and use with an empty hand. *Steady the Current* opens: hold Space or the mouse to push the bright line right, let go and it drifts back.
+  - Keep it in the band when the pulse bar under the channel fills.
+  - A clean win says "A steady weave" and gives about 1.5× the motes. A loss gives 0.8×.
+- [ ] **Fire altar:** put about 10 magma blocks, or a lava pool, within 4 blocks. The particles turn to flames and the altar names Fire.
+  - At Leycraft 1 it refuses ("You need Leycraft 5"). After `/skill set @s leycraft 5` it weaves Ember Motes, twice as many per shard.
+- [ ] **Frost and Storm:** packed ice around an altar gives Frost (Leycraft 12). Lightning rods, or a mountaintop in a thunderstorm, give Storm (Leycraft 20).
+- [ ] **Amethyst:** amethyst shards work as essence at half value.
+- [ ] **Ownership:** a second player can't weave from or break your loaded altar. Breaking your own gives the shards back.
+- [ ] **Ley Stone:** place the node and mine it with a pickaxe: 2 Ley Shards per success and Mining XP. Breaking natural amethyst clusters in a geode sometimes drops a Ley Heart.
+- [ ] **Feel:** is *Steady the Current* fun and fair at Arcane, Frost and Storm? Are mote yields generous enough for wand combat? The numbers are in `ley_weaves.json`, `ley_resonance.json` and the server config.
+
 ### C. Things only a person can judge
 These matter most:
 - **Slagheart model and animations:** proportions, whether every attack reads clearly, and whether windups are long enough to react to.

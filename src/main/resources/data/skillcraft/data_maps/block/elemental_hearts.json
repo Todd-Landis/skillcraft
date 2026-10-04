@@ -1,0 +1,28 @@
+{
+  "values": {
+    "#minecraft:oak_logs":      { "node": "oak",      "chance": 0.008 },
+    "#minecraft:birch_logs":    { "node": "birch",    "chance": 0.008 },
+    "#minecraft:spruce_logs":   { "node": "spruce",   "chance": 0.007 },
+    "#minecraft:jungle_logs":   { "node": "jungle",   "chance": 0.0045 },
+    "#minecraft:acacia_logs":   { "node": "acacia",   "chance": 0.0055 },
+    "#minecraft:mangrove_logs": { "node": "mangrove", "chance": 0.005 },
+    "#minecraft:cherry_logs":   { "node": "cherry",   "chance": 0.004 },
+    "#minecraft:dark_oak_logs": { "node": "dark_oak", "chance": 0.0035 },
+    "#minecraft:pale_oak_logs": { "node": "pale_oak", "chance": 0.003 },
+    "#minecraft:crimson_stems": { "node": "crimson",  "chance": 0.002 },
+    "#minecraft:warped_stems":  { "node": "warped",   "chance": 0.002 },
+
+    "#minecraft:coal_ores":        { "node": "coal",           "chance": 0.01 },
+    "#minecraft:copper_ores":      { "node": "copper",         "chance": 0.008 },
+    "#minecraft:iron_ores":        { "node": "iron",           "chance": 0.007 },
+    "minecraft:nether_quartz_ore": { "node": "quartz",         "chance": 0.006 },
+    "#minecraft:redstone_ores":    { "node": "redstone",       "chance": 0.008 },
+    "#minecraft:gold_ores":        { "node": "gold",           "chance": 0.012 },
+    "#minecraft:lapis_ores":       { "node": "lapis",          "chance": 0.012 },
+    "#minecraft:diamond_ores":     { "node": "diamond",        "chance": 0.04 },
+    "#minecraft:emerald_ores":     { "node": "emerald",        "chance": 0.06 },
+    "minecraft:ancient_debris":    { "node": "ancient_debris", "chance": 0.08 },
+
+    "minecraft:amethyst_cluster":  { "node": "ley",            "chance": 0.03 }
+  }
+}

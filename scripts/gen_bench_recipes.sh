@@ -109,11 +109,7 @@ done
 recipe skillcraft:light_arrow crafting_bench 1 4 30 "$(part minecraft:stick 1), $(part minecraft:feather 2)" - 6
 recipe skillcraft:heavy_arrow crafting_bench 15 12 50 "$(part minecraft:stick 1), $(part minecraft:feather 1), $(part minecraft:iron_nugget 3)" - 4
 
-# Magic (docs/AGILITY_MAGIC_PRAYER.md): motes, 16 per craft, then wands and staves
-recipe skillcraft:arcane_mote crafting_bench 1 6 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:lapis_lazuli 1)" - 16
-recipe skillcraft:ember_mote crafting_bench 5 8 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:coal 2)" - 16
-recipe skillcraft:frost_mote crafting_bench 5 8 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:snowball 4)" - 16
-recipe skillcraft:storm_mote crafting_bench 8 10 40 "$(part minecraft:amethyst_shard 1), $(part minecraft:redstone 2)" - 16
+# Magic (docs/AGILITY_MAGIC_PRAYER.md): wands and staves. Motes are woven at a Ley Altar (docs/LEYCRAFT.md)
 recipe skillcraft:apprentice_wand crafting_bench 5 20 60 "$(part minecraft:stick 1), $(part minecraft:amethyst_shard 2)"
 recipe skillcraft:ember_staff crafting_bench 12 45 100 "$(part minecraft:stick 2), $(part minecraft:amethyst_shard 2), $(part minecraft:coal 6)"
 recipe skillcraft:rime_staff crafting_bench 16 55 100 "$(part minecraft:stick 2), $(part minecraft:amethyst_shard 2), $(part minecraft:snow_block 4)"

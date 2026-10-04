@@ -1,0 +1,40 @@
+{
+  "values": {
+    "minecraft:lava":            { "element": "fire", "points": 8 },
+    "minecraft:lava_cauldron":   { "element": "fire", "points": 6 },
+    "minecraft:magma_block":     { "element": "fire", "points": 4 },
+    "minecraft:fire":            { "element": "fire", "points": 4 },
+    "minecraft:soul_fire":       { "element": "fire", "points": 4 },
+    "minecraft:campfire":        { "element": "fire", "points": 3 },
+    "minecraft:soul_campfire":   { "element": "fire", "points": 3 },
+    "minecraft:netherrack":      { "element": "fire", "points": 1 },
+
+    "minecraft:blue_ice":        { "element": "frost", "points": 6 },
+    "minecraft:packed_ice":      { "element": "frost", "points": 4 },
+    "minecraft:ice":             { "element": "frost", "points": 3 },
+    "minecraft:powder_snow":     { "element": "frost", "points": 3 },
+    "minecraft:snow_block":      { "element": "frost", "points": 2 },
+    "minecraft:snow":            { "element": "frost", "points": 1 },
+
+    "minecraft:lightning_rod":                  { "element": "storm", "points": 8 },
+    "minecraft:exposed_lightning_rod":          { "element": "storm", "points": 8 },
+    "minecraft:weathered_lightning_rod":        { "element": "storm", "points": 8 },
+    "minecraft:oxidized_lightning_rod":         { "element": "storm", "points": 8 },
+    "minecraft:waxed_lightning_rod":            { "element": "storm", "points": 8 },
+    "minecraft:waxed_exposed_lightning_rod":    { "element": "storm", "points": 8 },
+    "minecraft:waxed_weathered_lightning_rod":  { "element": "storm", "points": 8 },
+    "minecraft:waxed_oxidized_lightning_rod":   { "element": "storm", "points": 8 },
+    "minecraft:oxidized_copper":                { "element": "storm", "points": 3 },
+    "minecraft:waxed_oxidized_copper":          { "element": "storm", "points": 3 },
+    "minecraft:weathered_copper":               { "element": "storm", "points": 2 },
+    "minecraft:waxed_weathered_copper":         { "element": "storm", "points": 2 },
+
+    "minecraft:enchanting_table":   { "element": "arcane", "points": 8 },
+    "minecraft:budding_amethyst":   { "element": "arcane", "points": 4 },
+    "minecraft:amethyst_block":     { "element": "arcane", "points": 3 },
+    "minecraft:crying_obsidian":    { "element": "arcane", "points": 3 },
+    "minecraft:amethyst_cluster":   { "element": "arcane", "points": 2 },
+    "minecraft:bookshelf":          { "element": "arcane", "points": 1 },
+    "minecraft:chiseled_bookshelf": { "element": "arcane", "points": 1 }
+  }
+}

@@ -33,6 +33,7 @@ public enum Skill implements StringRepresentable {
     COOKING(Category.ARTISAN),
     FIREMAKING(Category.ARTISAN),
     CONSTRUCTION(Category.ARTISAN),
+    LEYCRAFT(Category.ARTISAN), // weaving ley shards into motes (docs/LEYCRAFT.md)
 
     // Support
     AGILITY(Category.SUPPORT),

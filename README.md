@@ -23,7 +23,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the design and roadmap.
    ```
    ./gradlew runClient
    ```
-5. In game: press **K** for the Skills screen, **V** to change attack style, **J** for the Ability Book, and **R / Z / B / N** for the four ability slots. Craft an Attunement Altar, load it with 32 oak logs, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
+5. In game: press **K** for the Skills screen, **V** to change attack style, **J** for the Ability Book, and **R / Z / B / N** for the four ability slots. Chop down grown trees until one drops an Oak Heart (or take one from the creative tab), craft an Attunement Altar, load the heart, play the minigame, then place the node and right-click it with an axe. With cheats on, `/skill set @s mining 30` helps test level gates.
 6. Build a mod jar with `./gradlew build`. The jar is written to `build/libs/`.
 7. Run the automated tests with `./gradlew runGameTestServer`. For a full local test plan (screenshot showcase, in-game checklist), see [docs/HANDOFF_LOCAL_TESTING.md](docs/HANDOFF_LOCAL_TESTING.md).
 
@@ -35,8 +35,9 @@ src/main/java/com/toddlandis/skillcraft/
   Config.java              server config values
   skill/                   skills, XP curve, player skill data, SkillManager (XP + level-ups)
   gathering/               level gates for breaking world blocks
-  node/                    skilling nodes, NodeType stats, auto-gathering sessions
-  altar/                   Attunement Altar (turns resources into nodes)
+  node/                    skilling nodes, NodeType stats, auto-gathering sessions, Elemental Hearts (drops from the vanilla world)
+  altar/                   Attunement Altar (turns Elemental Hearts into nodes)
+  leycraft/                Leycraft: Ley Altar, resonance, weaving motes (docs/LEYCRAFT.md)
   magic/                   wands and staves (MagicFocus), motes, bolts (SpellBolt), casting
   prayer/                  Faith, blessings in combat, Votive Shrine, bone offerings
   agility/                 parkour XP, safe falls and sprint perks, recent movement for Sidestep

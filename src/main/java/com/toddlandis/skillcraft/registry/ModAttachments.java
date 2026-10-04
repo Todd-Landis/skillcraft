@@ -75,6 +75,13 @@ public class ModAttachments {
                     .sync((holder, to) -> holder == to, com.toddlandis.skillcraft.prayer.PlayerFaith.STREAM_CODEC)
                     .build());
 
+    // Positions of heart-dropping blocks (logs, ores) a player placed in this chunk, so re-placing
+    // and re-breaking them never drops Elemental Hearts (see node/HeartEvents)
+    public static final Supplier<AttachmentType<com.toddlandis.skillcraft.node.PlacedResources>> PLACED_RESOURCES = ATTACHMENT_TYPES.register("placed_resources",
+            () -> AttachmentType.builder(com.toddlandis.skillcraft.node.PlacedResources::new)
+                    .serialize(com.toddlandis.skillcraft.node.PlacedResources.CODEC)
+                    .build());
+
     // Cooldowns and short-lived ability states (server-side only, never saved)
     public static final Supplier<AttachmentType<AbilityRuntime>> ABILITY_RUNTIME = ATTACHMENT_TYPES.register("ability_runtime",
             () -> AttachmentType.builder(AbilityRuntime::new).build());

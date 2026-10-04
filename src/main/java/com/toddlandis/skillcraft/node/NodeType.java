@@ -18,45 +18,48 @@ import net.minecraft.world.item.Items;
 // full XP per successful attempt, but items come slowly and the node depletes and regrows.
 //
 //   level    - level needed to use it (and to attune it at the Attunement Altar)
-//   xp       - XP per successful attempt. Breaking the matching block in the world gives 1% of this
+//   xp       - XP per successful attempt (world blocks give no XP; they can drop the node's heart)
 //   drop     - item given per success, and how many
-//   input    - resource used to create the node at the altar, and how many
+//   color    - its Elemental Heart's colour (nodes are attuned from hearts found in the vanilla
+//              world, see ElementalHeartItem and docs/DESIGN.md "Elemental Hearts")
 //   (depletion chance is calculated from tier and level, see depleteChance())
 //   (regrow time and placement spacing are set by tier, see the tables below)
 public enum NodeType implements StringRepresentable {
     // --- Woodcutting ---
-    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 32),
-    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 32),
-    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 32),
-    JUNGLE(Skill.WOODCUTTING, 10, 50, () -> Items.JUNGLE_LOG, 1, 32),
-    ACACIA(Skill.WOODCUTTING, 10, 52.5, () -> Items.ACACIA_LOG, 1, 32),
-    MANGROVE(Skill.WOODCUTTING, 10, 55, () -> Items.MANGROVE_LOG, 1, 32),
-    CHERRY(Skill.WOODCUTTING, 20, 85, () -> Items.CHERRY_LOG, 1, 48),
-    DARK_OAK(Skill.WOODCUTTING, 20, 90, () -> Items.DARK_OAK_LOG, 1, 48),
-    PALE_OAK(Skill.WOODCUTTING, 30, 135, () -> Items.PALE_OAK_LOG, 1, 48),
-    CRIMSON(Skill.WOODCUTTING, 40, 175, () -> Items.CRIMSON_STEM, 1, 64),
-    WARPED(Skill.WOODCUTTING, 40, 175, () -> Items.WARPED_STEM, 1, 64),
+    OAK(Skill.WOODCUTTING, 1, 25, () -> Items.OAK_LOG, 1, 0xB8945F),
+    BIRCH(Skill.WOODCUTTING, 1, 27.5, () -> Items.BIRCH_LOG, 1, 0xE2DCB8),
+    SPRUCE(Skill.WOODCUTTING, 1, 30, () -> Items.SPRUCE_LOG, 1, 0x7A5432),
+    JUNGLE(Skill.WOODCUTTING, 10, 50, () -> Items.JUNGLE_LOG, 1, 0xB0804E),
+    ACACIA(Skill.WOODCUTTING, 10, 52.5, () -> Items.ACACIA_LOG, 1, 0xD0703C),
+    MANGROVE(Skill.WOODCUTTING, 10, 55, () -> Items.MANGROVE_LOG, 1, 0x9A3E38),
+    CHERRY(Skill.WOODCUTTING, 20, 85, () -> Items.CHERRY_LOG, 1, 0xF2A6C2),
+    DARK_OAK(Skill.WOODCUTTING, 20, 90, () -> Items.DARK_OAK_LOG, 1, 0x5A3C24),
+    PALE_OAK(Skill.WOODCUTTING, 30, 135, () -> Items.PALE_OAK_LOG, 1, 0xDCD4CC),
+    CRIMSON(Skill.WOODCUTTING, 40, 175, () -> Items.CRIMSON_STEM, 1, 0xB03E62),
+    WARPED(Skill.WOODCUTTING, 40, 175, () -> Items.WARPED_STEM, 1, 0x2FB09A),
 
     // --- Mining ---
-    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 32),
-    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 32),
-    IRON(Skill.MINING, 10, 35, () -> Items.RAW_IRON, 1, 32),
-    QUARTZ(Skill.MINING, 10, 37.5, () -> Items.QUARTZ, 1, 32),
-    REDSTONE(Skill.MINING, 20, 60, () -> Items.REDSTONE, 2, 64),
-    GOLD(Skill.MINING, 20, 65, () -> Items.RAW_GOLD, 1, 24),
-    LAPIS(Skill.MINING, 20, 62.5, () -> Items.LAPIS_LAZULI, 2, 48),
-    DIAMOND(Skill.MINING, 30, 100, () -> Items.DIAMOND, 1, 16),
-    EMERALD(Skill.MINING, 40, 140, () -> Items.EMERALD, 1, 16),
-    ANCIENT_DEBRIS(Skill.MINING, 40, 175, () -> Items.ANCIENT_DEBRIS, 1, 8),
+    COAL(Skill.MINING, 1, 17.5, () -> Items.COAL, 1, 0x4A4A4E),
+    COPPER(Skill.MINING, 1, 17.5, () -> Items.RAW_COPPER, 1, 0xD87C4C),
+    IRON(Skill.MINING, 10, 35, () -> Items.RAW_IRON, 1, 0xE0CCB8),
+    QUARTZ(Skill.MINING, 10, 37.5, () -> Items.QUARTZ, 1, 0xF0EAE2),
+    REDSTONE(Skill.MINING, 20, 60, () -> Items.REDSTONE, 2, 0xE52A2A),
+    GOLD(Skill.MINING, 20, 65, () -> Items.RAW_GOLD, 1, 0xF7D44A),
+    LAPIS(Skill.MINING, 20, 62.5, () -> Items.LAPIS_LAZULI, 2, 0x3A5CD8),
+    DIAMOND(Skill.MINING, 30, 100, () -> Items.DIAMOND, 1, 0x60EAE4),
+    EMERALD(Skill.MINING, 40, 140, () -> Items.EMERALD, 1, 0x34D866),
+    ANCIENT_DEBRIS(Skill.MINING, 40, 175, () -> Items.ANCIENT_DEBRIS, 1, 0x8A5A46),
+    // Leycraft essence (docs/LEYCRAFT.md); its heart comes from amethyst clusters
+    LEY(Skill.MINING, 1, 10, () -> com.toddlandis.skillcraft.registry.ModItems.LEY_SHARD.get(), 2, 0xB07CF0),
 
     // --- Fishing ---
     // Fishing spots aren't blocks: they are patches of churning water (fishing/FishingSpotEntity)
     // placed on open water from a "shoal" item. Depleting one makes the shoal swim off and
     // resurface somewhere else in the same pond after the regrow time.
-    COD(Skill.FISHING, 1, 20, () -> Items.COD, 1, 32),
-    SALMON(Skill.FISHING, 10, 45, () -> Items.SALMON, 1, 32),
-    TROPICAL_FISH(Skill.FISHING, 20, 80, () -> Items.TROPICAL_FISH, 1, 48),
-    PUFFERFISH(Skill.FISHING, 30, 120, () -> Items.PUFFERFISH, 1, 48);
+    COD(Skill.FISHING, 1, 20, () -> Items.COD, 1, 0xC2AA80),
+    SALMON(Skill.FISHING, 10, 45, () -> Items.SALMON, 1, 0xE8705A),
+    TROPICAL_FISH(Skill.FISHING, 20, 80, () -> Items.TROPICAL_FISH, 1, 0xF89028),
+    PUFFERFISH(Skill.FISHING, 30, 120, () -> Items.PUFFERFISH, 1, 0xEED84A);
 
     public static final Codec<NodeType> CODEC = StringRepresentable.fromEnum(NodeType::values);
 
@@ -69,15 +72,15 @@ public enum NodeType implements StringRepresentable {
     private final double xp;
     private final Supplier<Item> drop;
     private final int dropCount;
-    private final int inputCount;
+    private final int color;
 
-    NodeType(Skill skill, int level, double xp, Supplier<Item> drop, int dropCount, int inputCount) {
+    NodeType(Skill skill, int level, double xp, Supplier<Item> drop, int dropCount, int color) {
         this.skill = skill;
         this.level = level;
         this.xp = xp;
         this.drop = drop;
         this.dropCount = dropCount;
-        this.inputCount = inputCount;
+        this.color = color;
     }
 
     public Skill skill() { return skill; }
@@ -85,9 +88,8 @@ public enum NodeType implements StringRepresentable {
     public double xp() { return xp; }
     public Item drop() { return drop.get(); }
     public int dropCount() { return dropCount; }
-    // Nodes are attuned from the same resource they produce
-    public Item input() { return drop.get(); }
-    public int inputCount() { return inputCount; }
+    // The heart's tint (RGB)
+    public int color() { return color; }
     public int tierIndex() { return XpTable.tierIndex(level); }
     // Change per node here if a specific node should use a different minigame
     public MinigameKind minigame() {
@@ -177,13 +179,18 @@ public enum NodeType implements StringRepresentable {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    private static final Map<Item, NodeType> BY_INPUT = new HashMap<>();
+    // Lang key for the short resource name used in heart names, e.g. "Oak", "Diamond", "Cod"
+    public String heartKey() {
+        return "heart.skillcraft." + getSerializedName();
+    }
 
-    // The node a resource item can be attuned into, or null
-    public static NodeType byInput(Item item) {
-        if (BY_INPUT.isEmpty()) {
-            for (NodeType type : values()) BY_INPUT.put(type.input(), type);
+    private static final Map<Item, NodeType> BY_RESOURCE = new HashMap<>();
+
+    // The node that produces this item, or null (e.g. vanilla fishing checks a fish's level)
+    public static NodeType byResource(Item item) {
+        if (BY_RESOURCE.isEmpty()) {
+            for (NodeType type : values()) BY_RESOURCE.put(type.drop(), type);
         }
-        return BY_INPUT.get(item);
+        return BY_RESOURCE.get(item);
     }
 }

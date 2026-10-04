@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "depleted=false": { "model": "skillcraft:block/ley_node" },
+    "depleted=true": { "model": "skillcraft:block/ley_node_depleted" }
+  }
+}

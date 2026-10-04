@@ -1,0 +1,8 @@
+{
+  "values": {
+    "minecraft:cod":           { "node": "cod",           "chance": 0.025 },
+    "minecraft:salmon":        { "node": "salmon",        "chance": 0.05 },
+    "minecraft:pufferfish":    { "node": "pufferfish",    "chance": 0.05 },
+    "minecraft:tropical_fish": { "node": "tropical_fish", "chance": 0.4 }
+  }
+}

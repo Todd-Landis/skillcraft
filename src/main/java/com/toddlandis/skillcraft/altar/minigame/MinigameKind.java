@@ -6,5 +6,6 @@ package com.toddlandis.skillcraft.altar.minigame;
 public enum MinigameKind {
     STRIKE_THE_GRAIN, // tap when a sweeping marker is inside the zone (woodcutting)
     TEMPER_THE_VEIN,  // hold to build heat, release inside the target band (mining)
-    SET_THE_HOOK      // strike when the float is pulled under, not at nibbles (fishing)
+    SET_THE_HOOK,     // strike when the float is pulled under, not at nibbles (fishing)
+    STEADY_THE_CURRENT // keep the ley current inside a drifting band (Leycraft careful weave)
 }

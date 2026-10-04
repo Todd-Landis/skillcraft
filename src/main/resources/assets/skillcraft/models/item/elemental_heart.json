@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "skillcraft:item/elemental_heart",
+    "layer1": "skillcraft:item/elemental_heart_overlay"
+  }
+}

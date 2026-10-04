@@ -17,6 +17,9 @@ public class ModCreativeTabs {
             .displayItems((params, output) -> {
                 output.accept(ModItems.ATTUNEMENT_ALTAR.get());
                 output.accept(ModItems.RELOCATOR.get());
+                for (com.toddlandis.skillcraft.node.NodeType type : com.toddlandis.skillcraft.node.NodeType.values()) {
+                    output.accept(com.toddlandis.skillcraft.node.ElementalHeartItem.of(type));
+                }
                 output.accept(ModItems.SMELTER.get());
                 output.accept(ModItems.COOKING_RANGE.get());
                 output.accept(ModItems.SEARED_REEF_FISH.get());
@@ -42,6 +45,8 @@ public class ModCreativeTabs {
                 output.accept(ModItems.TEMPEST_STAFF.get());
                 output.accept(ModItems.ARCANIST_WAND.get());
                 output.accept(ModItems.STARSEER_STAFF.get());
+                output.accept(ModItems.LEY_ALTAR.get());
+                output.accept(ModItems.LEY_SHARD.get());
                 output.accept(ModItems.ARCANE_MOTE.get());
                 output.accept(ModItems.EMBER_MOTE.get());
                 output.accept(ModItems.FROST_MOTE.get());

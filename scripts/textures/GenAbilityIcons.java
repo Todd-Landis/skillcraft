@@ -8,6 +8,8 @@
 //   effect icons  -> textures/mob_effect/<id>.png (18x18)
 //   codex         -> textures/item/codex.png (16x16)
 //   Phase 7       -> agility, spell and prayer icons, plus the mote, wand and staff item textures
+//   hearts        -> textures/item/elemental_heart.png (greyscale, tinted per node in game) and
+//                    elemental_heart_overlay.png (outline and glints, not tinted)
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
@@ -122,7 +124,9 @@ public class GenAbilityIcons {
         item("rime_staff", c -> { staff(c, 0x8A9AA8); c.poly(new int[]{10, 12, 14, 12}, new int[]{3, 0, 3, 6}, CYAN); c.set(12, 2, WHITE); });
         item("tempest_staff", c -> { staff(c, 0x8A5A3A); c.line(10, 5, 10, 1, 0xC07040, 1); c.line(14, 5, 14, 1, 0xC07040, 1); c.line(10, 5, 14, 5, 0xC07040, 1); c.set(12, 2, WHITE); c.set(12, 3, 0xFFFFA0); });
         item("starseer_staff", c -> { staff(c, 0x2A2A3A); c.disc(12, 3, 2.6, GOLD); star(c, 12, 3, 2, VIOLET); });
-        System.out.println("Wrote ability icons, effect icons, the codex texture and the Phase 7 item textures");
+        item("ley_shard", GenAbilityIcons::leyShard);
+        elementalHeart();
+        System.out.println("Wrote ability icons, effect icons, the codex texture, the Phase 7 item textures and the Elemental Heart");
     }
 
     // ---------- canvas ----------
@@ -245,12 +249,49 @@ public class GenAbilityIcons {
         c.write(ITEM + "codex.png");
     }
 
+    // Elemental Heart: a faceted crystal heart. The base is greyscale so the item tint (HeartTint)
+    // gives each node its colour; the overlay keeps the outline dark and the glints white.
+    static void elementalHeart() throws Exception {
+        Canvas shape = new Canvas(16, 16);
+        heart(shape, 8, 8, 0xFFFFFF);
+        Canvas base = new Canvas(16, 16);
+        for (int x = 0; x < 16; x++) for (int y = 0; y < 16; y++) {
+            if (shape.get(x, y) == 0) continue;
+            // lighter towards the top-left, a darker facet line down the middle-right
+            double light = 1.08 - 0.02 * (x + y) + (x == 8 || x == 9 ? -0.10 : 0) + (y < 7 && x < 8 ? 0.05 : 0);
+            int v = (int) Math.round(255 * Math.clamp(light, 0.6, 1.0));
+            base.set(x, y, (v << 16) | (v << 8) | v);
+        }
+        base.write(ITEM + "elemental_heart.png");
+        Canvas overlay = new Canvas(16, 16);
+        Canvas outlined = new Canvas(16, 16);
+        System.arraycopy(shape.px, 0, outlined.px, 0, 256);
+        outlined.outline(0x1A1420);
+        for (int i = 0; i < 256; i++) if (outlined.px[i] != 0 && shape.px[i] == 0) overlay.px[i] = outlined.px[i];
+        overlay.set(5, 5, WHITE);
+        overlay.set(4, 6, WHITE);
+        overlay.set(6, 4, 0xE8E8F0);
+        overlay.set(11, 6, 0xE8E8F0);
+        overlay.write(ITEM + "elemental_heart_overlay.png");
+    }
+
     // Item texture: glyph with a dark outline, no frame
     static void item(String id, Consumer<Canvas> glyph) throws Exception {
         Canvas c = new Canvas(16, 16);
         glyph.accept(c);
         c.outline(0x141018);
         c.write(ITEM + id + ".png");
+    }
+
+    // Leycraft essence: a jagged violet crystal with a lit facet and a couple of loose sparks
+    static void leyShard(Canvas c) {
+        c.poly(new int[]{6, 3, 8, 12, 10}, new int[]{15, 10, 1, 6, 14}, 0x6A3AB8);
+        c.poly(new int[]{8, 12, 10, 8}, new int[]{1, 6, 14, 8}, 0xA070E8);
+        c.line(7, 4, 5, 10, 0xD8C0FF, 1);
+        c.set(8, 3, WHITE);
+        c.set(10, 7, 0xE8DCFF);
+        c.set(13, 12, 0xD8C0FF);
+        c.set(2, 4, 0xB07CF0);
     }
 
     static void mote(Canvas c, int body, int light) {

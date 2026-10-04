@@ -2,14 +2,19 @@ package com.toddlandis.skillcraft.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
+import com.toddlandis.skillcraft.altar.minigame.MinigameKind;
 import com.toddlandis.skillcraft.altar.minigame.MinigameLogic;
 import com.toddlandis.skillcraft.altar.minigame.Minigames;
 import com.toddlandis.skillcraft.client.minigame.MinigameRenderer;
 import com.toddlandis.skillcraft.network.AttunementResultPayload;
+import com.toddlandis.skillcraft.leycraft.LeyWeaving;
 import com.toddlandis.skillcraft.network.OpenAttunementPayload;
+import com.toddlandis.skillcraft.network.OpenWeavePayload;
+import com.toddlandis.skillcraft.network.WeaveResultPayload;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,11 +22,14 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-// Hosts whichever minigame the node uses. Records every button press/release with the tick it
+// Hosts an altar minigame: the node's attunement game at the Attunement Altar, or Steady the
+// Current for a careful weave at a Ley Altar. Records every button press/release with the tick it
 // happened on and sends that list to the server, which replays the minigame from the same seed
-// to decide the result (see AltarAttunement). Shows the local outcome briefly, then closes.
+// to decide the result (see AltarAttunement and leycraft/LeyWeaving). Shows the local outcome
+// briefly, then closes.
 public class AttunementScreen extends Screen {
     private static final int RESULT_DISPLAY_TICKS = 30;
     private static final int PANEL_W = MinigameRenderer.WIDTH + 24;
@@ -29,16 +37,30 @@ public class AttunementScreen extends Screen {
 
     private final BlockPos altarPos;
     private final MinigameLogic minigame;
+    private final Function<List<Minigames.Input>, CustomPacketPayload> result;
     private final List<Minigames.Input> inputs = new ArrayList<>();
     private int ticks;
     private boolean sent;
     private int closeTimer;
     private boolean buttonDown;
 
-    public AttunementScreen(OpenAttunementPayload payload) {
-        super(Component.translatable("screen.skillcraft.attunement", AttunementAltarBlock.nodeName(payload.node())));
-        this.altarPos = payload.pos();
-        this.minigame = Minigames.create(payload.node().minigame(), payload.node().tierIndex(), payload.seed());
+    private AttunementScreen(Component title, BlockPos altarPos, MinigameLogic minigame, Function<List<Minigames.Input>, CustomPacketPayload> result) {
+        super(title);
+        this.altarPos = altarPos;
+        this.minigame = minigame;
+        this.result = result;
+    }
+
+    public static AttunementScreen attune(OpenAttunementPayload payload) {
+        return new AttunementScreen(Component.translatable("screen.skillcraft.attunement", AttunementAltarBlock.nodeName(payload.node())), payload.pos(),
+                Minigames.create(payload.node().minigame(), payload.node().tierIndex(), payload.seed()),
+                inputs -> new AttunementResultPayload(payload.pos(), inputs));
+    }
+
+    public static AttunementScreen weave(OpenWeavePayload payload) {
+        return new AttunementScreen(Component.translatable("screen.skillcraft.weave", LeyWeaving.moteName(payload.element())), payload.pos(),
+                Minigames.create(MinigameKind.STEADY_THE_CURRENT, payload.tier(), payload.seed()),
+                inputs -> new WeaveResultPayload(payload.pos(), inputs));
     }
 
     @Override
@@ -65,7 +87,7 @@ public class AttunementScreen extends Screen {
 
     private void send() {
         sent = true;
-        ClientPacketDistributor.sendToServer(new AttunementResultPayload(altarPos, List.copyOf(inputs)));
+        ClientPacketDistributor.sendToServer(result.apply(List.copyOf(inputs)));
     }
 
     @Override
