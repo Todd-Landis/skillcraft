@@ -45,8 +45,17 @@ public class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<com.toddlandis.skillcraft.magic.SpellBolt>> SPELL_BOLT = ENTITIES.registerEntityType("spell_bolt",
             com.toddlandis.skillcraft.magic.SpellBolt::new, MobCategory.MISC, builder -> builder.sized(0.3f, 0.3f).clientTrackingRange(6).updateInterval(2).noLootTable());
 
+    // Beastbonding (docs/BEASTBONDING.md): a bonded spider is summoned as a rideable, wall-climbing
+    // Cliffstrider; the Cloudray is the level-62 flying mount
+    public static final DeferredHolder<EntityType<?>, EntityType<com.toddlandis.skillcraft.bonding.Cliffstrider>> CLIFFSTRIDER = ENTITIES.registerEntityType("cliffstrider",
+            com.toddlandis.skillcraft.bonding.Cliffstrider::new, MobCategory.CREATURE, builder -> builder.sized(1.4f, 0.9f).eyeHeight(0.65f).clientTrackingRange(8).noLootTable());
+    public static final DeferredHolder<EntityType<?>, EntityType<com.toddlandis.skillcraft.bonding.Cloudray>> CLOUDRAY = ENTITIES.registerEntityType("cloudray",
+            com.toddlandis.skillcraft.bonding.Cloudray::new, MobCategory.CREATURE, builder -> builder.sized(2.6f, 0.9f).eyeHeight(0.5f).clientTrackingRange(10).noLootTable());
+
     @SubscribeEvent
     static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(SLAGHEART.get(), SlagheartEntity.createAttributes().build());
+        event.put(CLIFFSTRIDER.get(), net.minecraft.world.entity.monster.spider.Spider.createAttributes().build());
+        event.put(CLOUDRAY.get(), com.toddlandis.skillcraft.bonding.Cloudray.createAttributes().build());
     }
 }

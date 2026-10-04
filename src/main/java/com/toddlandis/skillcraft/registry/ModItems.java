@@ -158,6 +158,16 @@ public class ModItems {
 
     public static final DeferredItem<BlockItem> VOTIVE_SHRINE = ITEMS.registerSimpleBlockItem("votive_shrine", ModBlocks.VOTIVE_SHRINE);
 
+    // --- Beastbonding (docs/BEASTBONDING.md) ---
+
+    // Use on a creature to bond it, or in the air to open the codex (the bonds live on the player)
+    public static final DeferredItem<com.toddlandis.skillcraft.bonding.BondCodexItem> BOND_CODEX = ITEMS.registerItem("bond_codex",
+            com.toddlandis.skillcraft.bonding.BondCodexItem::new, p -> p.stacksTo(1));
+    public static final DeferredItem<BlockItem> REKINDLING_SHRINE = ITEMS.registerSimpleBlockItem("rekindling_shrine", ModBlocks.REKINDLING_SHRINE);
+    // Calls a wild Cloudray when used high up under open sky
+    public static final DeferredItem<com.toddlandis.skillcraft.bonding.CloudrayLureItem> CLOUDRAY_LURE = ITEMS.registerItem("cloudray_lure",
+            com.toddlandis.skillcraft.bonding.CloudrayLureItem::new, p -> p.stacksTo(16).rarity(net.minecraft.world.item.Rarity.UNCOMMON));
+
     // --- Leycraft (docs/LEYCRAFT.md) ---
 
     // Essence mined from a Ley Stone node; woven into motes at a Ley Altar

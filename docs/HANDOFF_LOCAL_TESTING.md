@@ -234,6 +234,25 @@ Details are in `docs/LEYCRAFT.md`. Take a **Ley Altar**, a **Ley Stone** node (o
   - With nothing in range it names the nearest biome of that element, with a direction.
 - [ ] **Feel:** is *Steady the Current* fun and fair at Arcane, Frost and Storm? Are mote yields generous enough for wand combat? The numbers are in `ley_weaves.json`, `ley_resonance.json` and the server config.
 
+### H. Beastbonding
+Details are in `docs/BEASTBONDING.md`. Take a **Bond Codex**, a **Rekindling Shrine** and a **Cloudray Lure** from the creative tab, then switch to survival. Use `/skill set @s beastbonding 70` to reach everything.
+
+- [ ] **Tamed pets:** tame a wolf, then use the codex on it. It vanishes with sparkles: "joins your codex. A new page!"
+  - Press **H**: it's listed as Stored, and the pages column names Wolf.
+  - Summon it, Store it, Summon again. It keeps its name, health and collar.
+- [ ] **Offerings:** bond a fox (3 sweet berries), a camel (4 cactus) and a wild spider (8 string).
+  - The fox follows you and **fetches** dropped items into your inventory.
+  - The spider comes back as a **Cliffstrider**: right-click to ride it, and walk into a wall to **climb**. It never attacks.
+- [ ] **Limits:** with a companion out, summoning another companion sends the first home. The mount stays out.
+- [ ] **Death:** let a summon die (lava works). It drops nothing and becomes **Fallen**.
+  - Place a Rekindling Shrine, stand by it, open H and press **Rekindle** with the tribute in your inventory (4 bones for a wolf). After the timer it's back at full health.
+- [ ] **Cloudray:** go to Y 140+ under open sky (build a tower) and use the lure. A Cloudray glides in.
+  - Bond it with 8 Storm Motes, summon it and ride it. It **flies where you look**: W to go, look up or down to climb or dive, let go to hover.
+  - Getting off in the air gives Slow Falling.
+  - Check the model, wing beat and glowing markings.
+- [ ] **Safety:** log out with a summon out and log back in. It's Stored, and there's no duplicate in the world.
+- [ ] **Feel:** are the levels, offerings, rekindle times and ride XP right? They're all in `bondable.json` (`/reload`).
+
 ### C. Things only a person can judge
 These matter most:
 - **Slagheart model and animations:** proportions, whether every attack reads clearly, and whether windups are long enough to react to.

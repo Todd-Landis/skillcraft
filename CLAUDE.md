@@ -50,6 +50,10 @@ SkillCraft is an OSRS-inspired RPG mod for Minecraft Java. The owner, Todd, is n
   - Weave numbers (radius, biome and weather bonuses, careful-weave multipliers) are server config.
   - The Ley Tuner (`LeyTuning`) finds the nearest strong source of an element. It scans only loaded chunk sections, using the palette check `maybeHas` to skip most of them, and falls back to `findClosestBiome3d`.
   - Careful weaves use the `STEADY_THE_CURRENT` minigame through `LeyWeaving`, with the same seeded replay as attunement. `Minigames.ReplayResult` carries the miss count.
+- **Beastbonding** (`bonding/`, `docs/BEASTBONDING.md`): creatures are bonded into a per-player `BondCodex` attachment (not the book item), then summoned and stored by `BondService`.
+  - Per-creature numbers: `data_maps/entity_type/bondable.json` (level, mount/companion, tamed or offering, tribute, rekindle time, XP, `summon_as`).
+  - Live summons carry `skillcraft_bond_owner`/`skillcraft_bond_id` in their persistent data. `BondEvents` removes any loaded copy the owner's codex doesn't list as Out, and stores summons on logout and dimension change.
+  - Changed creatures: `Cliffstrider` (spider subclass, vanilla spider renderer), and follow/fetch goals added to bonded foxes and golems on join. The Cloudray has its own model (`client/bonding/CloudrayModel`), whose texOffs must match `scripts/textures/GenCloudrayTexture.java`.
 - **Agility, Magic and Prayer:** design and numbers in `docs/AGILITY_MAGIC_PRAYER.md`.
   - Foci: `item/magic_focus.json`. Offerings: `item/prayer_offerings.json`.
   - Spells, blessings and movement abilities are ability JSON (categories `spell`, `prayer`, `agility`).
@@ -92,6 +96,7 @@ SkillCraft is an OSRS-inspired RPG mod for Minecraft Java. The owner, Todd, is n
 - **Fishing and cooking:** `FishingTests.pond(...)` builds a stone-rimmed pond for water tests. Drive fishing with `FishingSessions.tick(player)` (fake players aren't ticked). `fishing_session` waits for the 20 s cod resurface.
 - **Hearts and XP curve** (`HeartTests`): `xp_curve` pins 99 = 9,775,823 and the doubling every 7 levels; `elemental_hearts` posts `BlockDropsEvent` directly (2,000 diamond-ore breaks) to check the rate and the placed-block rule.
 - **Leycraft** (`LeycraftTests`): `ley_resonance` places magma, ice and lightning rods; `ley_weaving` checks exact yields through `quickWeave`/`completeCareful` (call those directly; fake players can't play the minigame); `steady_the_current` wins the minigame with an autopilot and checks the server replay agrees; `ley_tuner` checks the source search and compass directions from the centre of its area (neighbouring test areas may hold leftover blocks).
+- **Beastbonding** (`BondingTests`): fake players aren't in the server's player list, so owner lookups by id find nobody. Call `BondService.fallen` directly (the death event can't find the owner), and `BondService.resetSummonCooldown` between summons in one tick.
 - **Loot balance:** `LootRateTests` rolls the boss table 20,000 times. It fails if the unique rate, the sigil rate or the per-kill value (6.5–9 gathering-minutes) drifts.
 
 ## NeoForge 26.2 API notes (checked against the real classes)

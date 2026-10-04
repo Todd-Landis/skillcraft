@@ -12,9 +12,10 @@ import net.minecraft.network.codec.StreamCodec;
 // A player's XP in every skill. Stored on the player as a data attachment
 // (see SkillAttachments), saved with the world and synced to that player's client.
 public class PlayerSkills {
-    // Saved as {"xp": {"mining": 1234, ...}} so adding new skills later never breaks old saves
-    public static final MapCodec<PlayerSkills> CODEC = Codec.unboundedMap(Skill.CODEC, Codec.DOUBLE)
-            .xmap(PlayerSkills::new, PlayerSkills::asMap)
+    // Saved as {"xp": {"mining": 1234, ...}} by name, so adding skills never breaks old saves, and
+    // names it no longer knows (a removed skill, e.g. "sailing") are skipped instead of failing the load
+    public static final MapCodec<PlayerSkills> CODEC = Codec.unboundedMap(Codec.STRING, Codec.DOUBLE)
+            .xmap(PlayerSkills::fromNames, PlayerSkills::asNames)
             .fieldOf("xp");
 
     public static final StreamCodec<ByteBuf, PlayerSkills> STREAM_CODEC = StreamCodec.of(
@@ -31,8 +32,20 @@ public class PlayerSkills {
 
     public PlayerSkills() {}
 
-    private PlayerSkills(Map<Skill, Double> saved) {
-        saved.forEach((skill, value) -> xp[skill.ordinal()] = value);
+    private static PlayerSkills fromNames(Map<String, Double> saved) {
+        PlayerSkills skills = new PlayerSkills();
+        saved.forEach((name, value) -> {
+            for (Skill skill : Skill.values()) {
+                if (skill.getSerializedName().equals(name)) skills.xp[skill.ordinal()] = value;
+            }
+        });
+        return skills;
+    }
+
+    private Map<String, Double> asNames() {
+        Map<String, Double> map = new java.util.LinkedHashMap<>();
+        asMap().forEach((skill, value) -> map.put(skill.getSerializedName(), value));
+        return map;
     }
 
     private Map<Skill, Double> asMap() {

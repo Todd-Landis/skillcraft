@@ -50,6 +50,15 @@ public class ModAttachments {
                     .sync((holder, to) -> holder == to, AttackStyle.STREAM_CODEC)
                     .build());
 
+    // Each player's Bond Codex: bonded creatures and filled pages (docs/BEASTBONDING.md). Kept through
+    // death; the owner's client gets a light copy (without the creatures' saved data) for the screen.
+    public static final Supplier<AttachmentType<com.toddlandis.skillcraft.bonding.BondCodex>> BOND_CODEX = ATTACHMENT_TYPES.register("bond_codex",
+            () -> AttachmentType.builder(com.toddlandis.skillcraft.bonding.BondCodex::new)
+                    .serialize(com.toddlandis.skillcraft.bonding.BondCodex.CODEC)
+                    .copyOnDeath()
+                    .sync((holder, to) -> holder == to, com.toddlandis.skillcraft.bonding.BondCodex.STREAM_CODEC)
+                    .build());
+
     // Where to send a player back to when they leave a boss arena (see arena/ArenaReturn).
     // Saved with the player so a logout or crash mid-fight never strands anyone.
     public static final Supplier<AttachmentType<ArenaReturn>> ARENA_RETURN = ATTACHMENT_TYPES.register("arena_return",

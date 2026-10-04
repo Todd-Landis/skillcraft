@@ -84,6 +84,16 @@ public final class AbilityTests {
         return player;
     }
 
+    // How many of an item are anywhere in the player's inventory
+    static int countOf(ServerPlayer player, net.minecraft.world.item.Item item) {
+        int total = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (stack.is(item)) total += stack.getCount();
+        }
+        return total;
+    }
+
     static void level(ServerPlayer player, Skill skill, int level) {
         SkillManager.setXp(player, skill, XpTable.xpForLevel(level));
     }

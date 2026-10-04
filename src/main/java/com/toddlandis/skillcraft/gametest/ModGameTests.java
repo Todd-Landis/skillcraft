@@ -59,6 +59,10 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ley_weaving", () -> LeycraftTests::weaving);
         TEST_FUNCTIONS.register("steady_the_current", () -> LeycraftTests::steadyTheCurrent);
         TEST_FUNCTIONS.register("ley_tuner", () -> LeycraftTests::tuner);
+        TEST_FUNCTIONS.register("bond_round_trip", () -> BondingTests::roundTrip);
+        TEST_FUNCTIONS.register("bond_rules", () -> BondingTests::rules);
+        TEST_FUNCTIONS.register("bond_rekindle", () -> BondingTests::rekindle);
+        TEST_FUNCTIONS.register("bond_cloudray", () -> BondingTests::cloudray);
         TEST_FUNCTIONS.register("magic_spells", () -> Phase7Tests::spells);
         TEST_FUNCTIONS.register("prayer", () -> Phase7Tests::prayer);
         TEST_FUNCTIONS.register("agility", () -> Phase7Tests::agility);
@@ -70,7 +74,7 @@ public final class ModGameTests {
     static void register(RegisterGameTestsEvent event) {
         test(event, "arena_dimension", 20);
         test(event, "arena_protection", 100);
-        test(event, "arena_enter_exit", 500);
+        test(event, "arena_enter_exit", 6000); // waits in real time for the boss chunk to load (see ArenaTests)
         test(event, "arena_death_and_logout", 100);
         test(event, "boss_phases", 400);
         test(event, "boss_stances", 100);
@@ -99,6 +103,10 @@ public final class ModGameTests {
         test(event, "ley_weaving", 20);
         test(event, "steady_the_current", 20);
         test(event, "ley_tuner", 20);
+        test(event, "bond_round_trip", 20);
+        test(event, "bond_rules", 20);
+        test(event, "bond_rekindle", 20);
+        test(event, "bond_cloudray", 20);
         test(event, "magic_spells", 80);
         test(event, "prayer", 40);
         test(event, "agility", 40);

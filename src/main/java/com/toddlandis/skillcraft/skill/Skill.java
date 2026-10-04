@@ -37,7 +37,7 @@ public enum Skill implements StringRepresentable {
 
     // Support
     AGILITY(Category.SUPPORT),
-    SAILING(Category.SUPPORT);
+    BEASTBONDING(Category.SUPPORT); // bonded mounts and helpers (docs/BEASTBONDING.md); replaced Sailing
 
     public enum Category { COMBAT, GATHERING, ARTISAN, SUPPORT }
 
