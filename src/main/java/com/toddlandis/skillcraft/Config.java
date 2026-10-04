@@ -128,21 +128,70 @@ public class Config {
             .comment("Extra motes at Leycraft 99, rising from 0 at the mote's level (0.5 = +50%).")
             .defineInRange("leyLevelBonus", 0.5, 0.0, 10.0);
 
-public static final ModConfigSpec.IntValue LEY_TUNER_RADIUS = BUILDER
-        .comment("Blocks a Ley Tuner searches for a strong source at Leycraft 0; it adds half the player's Leycraft level.")
-        .defineInRange("leyTunerRadius", 32, 8, 128);
+    public static final ModConfigSpec.IntValue LEY_TUNER_RADIUS = BUILDER
+            .comment("Blocks a Ley Tuner searches for a strong source at Leycraft 0; it adds half the player's Leycraft level.")
+            .defineInRange("leyTunerRadius", 32, 8, 128);
 
-public static final ModConfigSpec.DoubleValue LEY_TUNER_MIN_POINTS = BUILDER
-        .comment("Resonance points (ley_resonance.json) a block needs to count as a strong source for the Ley Tuner.")
-        .defineInRange("leyTunerMinPoints", 3.0, 0.0, 1000.0);
+    public static final ModConfigSpec.DoubleValue LEY_TUNER_MIN_POINTS = BUILDER
+            .comment("Resonance points (ley_resonance.json) a block needs to count as a strong source for the Ley Tuner.")
+            .defineInRange("leyTunerMinPoints", 3.0, 0.0, 1000.0);
 
-public static final ModConfigSpec.IntValue LEY_TUNER_BIOME_RADIUS = BUILDER
-        .comment("Blocks a Ley Tuner searches for a biome of its element when no source block is near.")
-        .defineInRange("leyTunerBiomeRadius", 1600, 0, 6400);
+    public static final ModConfigSpec.IntValue LEY_TUNER_BIOME_RADIUS = BUILDER
+            .comment("Blocks a Ley Tuner searches for a biome of its element when no source block is near.")
+            .defineInRange("leyTunerBiomeRadius", 1600, 0, 6400);
 
-public static final ModConfigSpec.IntValue LEY_TUNER_COOLDOWN = BUILDER
-        .comment("Ticks between rings of a Ley Tuner.")
-        .defineInRange("leyTunerCooldown", 60, 0, 1200);
+    public static final ModConfigSpec.IntValue LEY_TUNER_COOLDOWN = BUILDER
+            .comment("Ticks between rings of a Ley Tuner.")
+            .defineInRange("leyTunerCooldown", 60, 0, 1200);
 
-static final ModConfigSpec SPEC = BUILDER.build();
+    // Beastbonding (docs/BEASTBONDING.md; per-creature numbers live in data_maps/entity_type/bondable.json)
+    public static final ModConfigSpec.IntValue BOND_SLOTS_BASE = BUILDER
+            .comment("Bond Codex slots at Beastbonding 0; one more per bondSlotsEveryLevels levels.")
+            .defineInRange("bondSlotsBase", 4, 1, 200);
+
+    public static final ModConfigSpec.IntValue BOND_SLOTS_EVERY = BUILDER
+            .comment("Beastbonding levels per extra Bond Codex slot.")
+            .defineInRange("bondSlotsEveryLevels", 5, 1, 99);
+
+    public static final ModConfigSpec.IntValue BOND_SECOND_COMPANION_LEVEL = BUILDER
+            .comment("Beastbonding level from which two companions can be out at once.")
+            .defineInRange("bondSecondCompanionLevel", 50, 1, 100);
+
+    public static final ModConfigSpec.DoubleValue BOND_SPEED_PER_LEVEL = BUILDER
+            .comment("Summoned mount speed bonus per Beastbonding level (0.0025 = +25% at 99).")
+            .defineInRange("bondSpeedPerLevel", 0.0025, 0.0, 0.05);
+
+    public static final ModConfigSpec.DoubleValue BOND_HEALTH_PER_LEVEL = BUILDER
+            .comment("Summoned creature max health bonus per Beastbonding level (0.005 = +50% at 99).")
+            .defineInRange("bondHealthPerLevel", 0.005, 0.0, 0.1);
+
+    public static final ModConfigSpec.DoubleValue BOND_FIRST_PAGE_MULTIPLIER = BUILDER
+            .comment("Bond XP multiplier the first time a species is bonded (a new codex page).")
+            .defineInRange("bondFirstPageMultiplier", 5.0, 1.0, 100.0);
+
+    public static final ModConfigSpec.DoubleValue BOND_COMPANION_XP_PER_DAMAGE = BUILDER
+            .comment("Beastbonding XP per point of damage a bonded companion deals to a monster.")
+            .defineInRange("bondCompanionXpPerDamage", 0.5, 0.0, 100.0);
+
+    public static final ModConfigSpec.DoubleValue BOND_FETCH_XP = BUILDER
+            .comment("Beastbonding XP per item stack a bonded fox fetches.")
+            .defineInRange("bondFetchXp", 2.0, 0.0, 100.0);
+
+    public static final ModConfigSpec.IntValue BOND_SHRINE_RADIUS = BUILDER
+            .comment("How close (blocks) to a Rekindling Shrine a player must be to rekindle.")
+            .defineInRange("bondShrineRadius", 4, 1, 16);
+
+    public static final ModConfigSpec.IntValue BOND_SUMMON_COOLDOWN = BUILDER
+            .comment("Ticks between summons.")
+            .defineInRange("bondSummonCooldown", 40, 0, 1200);
+
+    public static final ModConfigSpec.IntValue CLOUDRAY_LURE_Y = BUILDER
+            .comment("Lowest Y at which a Cloudray Lure works (under open sky).")
+            .defineInRange("cloudrayLureY", 140, -64, 320);
+
+    public static final ModConfigSpec.IntValue CLOUDRAY_WILD_TICKS = BUILDER
+            .comment("Ticks a lured, unbonded Cloudray stays before it flies off.")
+            .defineInRange("cloudrayWildTicks", 3600, 200, 72000);
+
+    static final ModConfigSpec SPEC = BUILDER.build();
 }

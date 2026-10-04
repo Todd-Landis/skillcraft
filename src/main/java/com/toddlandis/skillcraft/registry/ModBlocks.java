@@ -107,6 +107,16 @@ public class ModBlocks {
                     .noOcclusion()
                     .lightLevel(state -> 7));
 
+    // Beastbonding: where Fallen bonds are rekindled (docs/BEASTBONDING.md section 5)
+    public static final DeferredBlock<com.toddlandis.skillcraft.bonding.RekindlingShrineBlock> REKINDLING_SHRINE = BLOCKS.registerBlock("rekindling_shrine",
+            com.toddlandis.skillcraft.bonding.RekindlingShrineBlock::new, p -> p
+                    .strength(2.5f, 6.0f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.STONE)
+                    .sound(SoundType.STONE)
+                    .noOcclusion()
+                    .lightLevel(state -> 10));
+
     // Boss arena entrance (overworld), reward chest and exit (arena only; unbreakable)
     public static final DeferredBlock<SummoningBrazierBlock> SUMMONING_BRAZIER = BLOCKS.registerBlock("summoning_brazier",
             SummoningBrazierBlock::new, p -> p

@@ -53,6 +53,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.FROST_MOTE.get());
                 output.accept(ModItems.STORM_MOTE.get());
                 output.accept(ModItems.VOTIVE_SHRINE.get());
+                output.accept(ModItems.BOND_CODEX.get());
+                output.accept(ModItems.REKINDLING_SHRINE.get());
+                output.accept(ModItems.CLOUDRAY_LURE.get());
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

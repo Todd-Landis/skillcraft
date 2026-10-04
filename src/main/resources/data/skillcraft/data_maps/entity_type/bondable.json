@@ -1,0 +1,22 @@
+{
+  "values": {
+    "minecraft:wolf":           { "level": 1,  "kind": "companion", "bond": "tamed",    "tribute": { "item": "minecraft:bone", "count": 4 },            "rekindle_seconds": 60,  "bond_xp": 20 },
+    "minecraft:cat":            { "level": 1,  "kind": "companion", "bond": "tamed",    "tribute": { "item": "minecraft:cod", "count": 3 },             "rekindle_seconds": 60,  "bond_xp": 20 },
+    "minecraft:parrot":         { "level": 5,  "kind": "companion", "bond": "tamed",    "tribute": { "item": "minecraft:wheat_seeds", "count": 6 },     "rekindle_seconds": 60,  "bond_xp": 30 },
+    "minecraft:donkey":         { "level": 5,  "kind": "mount",     "bond": "tamed",    "tribute": { "item": "minecraft:hay_block", "count": 2 },       "rekindle_seconds": 90,  "bond_xp": 30,  "ride_xp": 20 },
+    "minecraft:horse":          { "level": 10, "kind": "mount",     "bond": "tamed",    "tribute": { "item": "minecraft:golden_carrot", "count": 2 },   "rekindle_seconds": 120, "bond_xp": 45,  "ride_xp": 25 },
+    "minecraft:snow_golem":     { "level": 10, "kind": "companion", "bond": "offering", "offering": { "item": "minecraft:snowball", "count": 8 },     "tribute": { "item": "minecraft:snow_block", "count": 4 },      "rekindle_seconds": 60,  "bond_xp": 40 },
+    "minecraft:mule":           { "level": 12, "kind": "mount",     "bond": "tamed",    "tribute": { "item": "minecraft:hay_block", "count": 2 },       "rekindle_seconds": 90,  "bond_xp": 50,  "ride_xp": 22 },
+    "minecraft:llama":          { "level": 15, "kind": "mount",     "bond": "tamed",    "tribute": { "item": "minecraft:hay_block", "count": 3 },       "rekindle_seconds": 120, "bond_xp": 60,  "ride_xp": 22 },
+    "minecraft:fox":            { "level": 15, "kind": "companion", "bond": "offering", "offering": { "item": "minecraft:sweet_berries", "count": 3 }, "tribute": { "item": "minecraft:sweet_berries", "count": 6 },   "rekindle_seconds": 90,  "bond_xp": 60 },
+    "minecraft:allay":          { "level": 18, "kind": "companion", "bond": "offering", "offering": { "item": "minecraft:amethyst_shard", "count": 1 }, "tribute": { "item": "minecraft:amethyst_shard", "count": 4 }, "rekindle_seconds": 120, "bond_xp": 75 },
+    "minecraft:camel":          { "level": 20, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:cactus", "count": 4 },        "tribute": { "item": "minecraft:cactus", "count": 8 },          "rekindle_seconds": 150, "bond_xp": 90,  "ride_xp": 30 },
+    "minecraft:skeleton_horse": { "level": 25, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:bone", "count": 6 },          "tribute": { "item": "minecraft:bone_block", "count": 2 },      "rekindle_seconds": 150, "bond_xp": 110, "ride_xp": 30 },
+    "minecraft:zombie_horse":   { "level": 25, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:rotten_flesh", "count": 6 },  "tribute": { "item": "minecraft:rotten_flesh", "count": 12 },   "rekindle_seconds": 150, "bond_xp": 110, "ride_xp": 30 },
+    "minecraft:strider":        { "level": 30, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:warped_fungus", "count": 2 }, "tribute": { "item": "minecraft:warped_fungus", "count": 6 },  "rekindle_seconds": 180, "bond_xp": 140, "ride_xp": 35 },
+    "minecraft:spider":         { "level": 35, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:string", "count": 8 },        "tribute": { "item": "minecraft:spider_eye", "count": 4 },      "rekindle_seconds": 240, "bond_xp": 170, "ride_xp": 40, "summon_as": "skillcraft:cliffstrider" },
+    "minecraft:iron_golem":     { "level": 45, "kind": "companion", "bond": "offering", "offering": { "item": "minecraft:iron_block", "count": 1 },    "tribute": { "item": "minecraft:iron_ingot", "count": 6 },      "rekindle_seconds": 300, "bond_xp": 230 },
+    "minecraft:happy_ghast":    { "level": 45, "kind": "mount",     "bond": "offering", "offering": { "item": "minecraft:snowball", "count": 4 },      "tribute": { "item": "minecraft:snow_block", "count": 6 },      "rekindle_seconds": 300, "bond_xp": 230, "ride_xp": 35 },
+    "skillcraft:cloudray":      { "level": 62, "kind": "mount",     "bond": "offering", "offering": { "item": "skillcraft:storm_mote", "count": 8 },   "tribute": { "item": "minecraft:phantom_membrane", "count": 4 }, "rekindle_seconds": 600, "bond_xp": 600, "ride_xp": 60 }
+  }
+}

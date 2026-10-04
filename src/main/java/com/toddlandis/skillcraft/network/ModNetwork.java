@@ -28,6 +28,9 @@ public class ModNetwork {
         registrar.playToClient(XpGainPayload.TYPE, XpGainPayload.STREAM_CODEC);
         registrar.playToClient(OpenAttunementPayload.TYPE, OpenAttunementPayload.STREAM_CODEC);
         registrar.playToServer(AttunementResultPayload.TYPE, AttunementResultPayload.STREAM_CODEC, AltarAttunement::handleResult);
+        // Beastbonding: the Bond Codex screen (see bonding/BondService)
+        registrar.playToClient(OpenCodexPayload.TYPE, OpenCodexPayload.STREAM_CODEC);
+        registrar.playToServer(CodexActionPayload.TYPE, CodexActionPayload.STREAM_CODEC, CodexActionPayload::handle);
         // Leycraft careful weave (see leycraft/LeyWeaving)
         registrar.playToClient(OpenWeavePayload.TYPE, OpenWeavePayload.STREAM_CODEC);
         registrar.playToServer(WeaveResultPayload.TYPE, WeaveResultPayload.STREAM_CODEC, com.toddlandis.skillcraft.leycraft.LeyWeaving::handleResult);

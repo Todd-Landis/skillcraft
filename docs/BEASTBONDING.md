@@ -73,7 +73,7 @@ A new creature with its own model: a great sky-manta. It has broad, slow-beating
   - With no input it hovers in place.
   - It's quick: about 14 blocks a second at level 62, faster with level.
   - Getting off in mid-air gives you Slow Falling, so a dismount over a canyon isn't a death sentence.
-- It's a mount slot creature. Rekindling it takes 10 minutes and a tribute of 4 Storm Motes and 2 phantom membranes.
+- It's a mount slot creature. Rekindling it takes 10 minutes and a tribute of 4 phantom membranes.
 
 ## 5. Death and the Rekindling Shrine
 - **When a summoned creature dies,** it drops nothing: its saddle, armour and chest stay with its codex entry. The entry becomes **Fallen** and you get a message.

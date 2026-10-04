@@ -8,6 +8,9 @@ import com.toddlandis.skillcraft.SkillCraft;
 import com.toddlandis.skillcraft.altar.AttunementAltarBlock;
 import com.toddlandis.skillcraft.bench.BenchRecipe;
 import com.toddlandis.skillcraft.client.boss.SlagheartModel;
+import com.toddlandis.skillcraft.client.bonding.BondCodexScreen;
+import com.toddlandis.skillcraft.client.bonding.CloudrayModel;
+import com.toddlandis.skillcraft.client.bonding.CloudrayRenderer;
 import com.toddlandis.skillcraft.client.boss.SlagheartRenderer;
 import com.toddlandis.skillcraft.combat.ArmorDefence;
 import com.toddlandis.skillcraft.combat.DamageStyle;
@@ -58,12 +61,14 @@ public class ClientEvents {
     private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "main"));
     public static final KeyMapping OPEN_SKILLS = new KeyMapping("key.skillcraft.open_skills", InputConstants.KEY_K, CATEGORY);
     public static final KeyMapping ATTACK_STYLE = new KeyMapping("key.skillcraft.attack_style", InputConstants.KEY_V, CATEGORY);
+    public static final KeyMapping BOND_CODEX = new KeyMapping("key.skillcraft.bond_codex", InputConstants.KEY_H, CATEGORY);
 
     @SubscribeEvent
     static void registerKeys(RegisterKeyMappingsEvent event) {
         event.registerCategory(CATEGORY);
         event.register(OPEN_SKILLS);
         event.register(ATTACK_STYLE);
+        event.register(BOND_CODEX);
         com.toddlandis.skillcraft.client.ability.AbilityKeys.register(event);
     }
 
@@ -83,6 +88,8 @@ public class ClientEvents {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.SLAGHEART.get(), SlagheartRenderer::new);
+        event.registerEntityRenderer(ModEntities.CLIFFSTRIDER.get(), net.minecraft.client.renderer.entity.SpiderRenderer::new);
+        event.registerEntityRenderer(ModEntities.CLOUDRAY.get(), CloudrayRenderer::new);
         event.registerEntityRenderer(ModEntities.SLAG_GLOB.get(), context -> new ThrownItemRenderer<>(context, 1.4f, true));
         event.registerEntityRenderer(ModEntities.SPELL_BOLT.get(), context -> new ThrownItemRenderer<>(context, 0.9f, true));
         event.registerEntityRenderer(ModEntities.LIGHT_ARROW.get(), SkillArrowRenderer::new);
@@ -95,6 +102,7 @@ public class ClientEvents {
     @SubscribeEvent
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(SlagheartModel.LAYER, SlagheartModel::createBodyLayer);
+        event.registerLayerDefinition(CloudrayModel.LAYER, CloudrayModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -125,6 +133,8 @@ public class ClientEvents {
         event.register(com.toddlandis.skillcraft.network.AbilityCooldownPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.apply(payload));
         event.register(com.toddlandis.skillcraft.network.AbilityDeniedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.denied());
         event.register(com.toddlandis.skillcraft.network.AbilityUnlockedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.unlocked(payload));
+        event.register(com.toddlandis.skillcraft.network.OpenCodexPayload.TYPE, (payload, context) ->
+                Minecraft.getInstance().gui.setScreen(new BondCodexScreen()));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
                 Minecraft.getInstance().gui.setScreen(AttunementScreen.attune(payload)));
         event.register(com.toddlandis.skillcraft.network.OpenWeavePayload.TYPE, (payload, context) ->
@@ -142,6 +152,9 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getInstance();
         while (OPEN_SKILLS.consumeClick()) {
             if (mc.player != null && mc.gui.screen() == null) mc.gui.setScreen(new SkillsScreen());
+        }
+        while (BOND_CODEX.consumeClick()) {
+            if (mc.player != null && mc.gui.screen() == null) mc.gui.setScreen(new BondCodexScreen());
         }
         while (ATTACK_STYLE.consumeClick()) {
             if (mc.player != null && mc.gui.screen() == null) ClientPacketDistributor.sendToServer(new CycleAttackStylePayload());

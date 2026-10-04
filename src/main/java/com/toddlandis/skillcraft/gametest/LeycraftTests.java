@@ -168,32 +168,32 @@ public final class LeycraftTests {
         return total;
     }
 
-// --- Ley Tuner: finds the nearest strong source of its element, and names the direction ---
-static void tuner(GameTestHelper helper) {
-    ServerLevel level = helper.getLevel();
-    BlockPos origin = helper.absolutePos(new BlockPos(8, 1, 8)); // the centre, so other tests' areas are 8+ away
-    helper.setBlock(new BlockPos(8, 1, 14), Blocks.MAGMA_BLOCK);   // 6 south
-    helper.setBlock(new BlockPos(13, 1, 8), Blocks.MAGMA_BLOCK);   // 5 east: nearer
-    helper.setBlock(new BlockPos(9, 1, 9), Blocks.NETHERRACK);     // fire, but too weak to count
-    helper.setBlock(new BlockPos(8, 1, 11), Blocks.PACKED_ICE);    // frost, 3 south
-    BlockPos fire = LeyTuning.nearestSource(level, origin, LeyElement.FIRE, 32);
-    helper.assertTrue(helper.absolutePos(new BlockPos(13, 1, 8)).equals(fire), "the tuner should find the nearer magma block, found " + fire);
-    BlockPos frost = LeyTuning.nearestSource(level, origin, LeyElement.FROST, 32);
-    helper.assertTrue(helper.absolutePos(new BlockPos(8, 1, 11)).equals(frost), "tuned to Frost it should find the packed ice, found " + frost);
-    helper.assertTrue(LeyTuning.nearestSource(level, origin, LeyElement.STORM, 6) == null, "there is no storm source here");
-    helper.assertTrue(LeyTuning.nearestSource(level, origin, LeyElement.FIRE, 4) == null, "a source beyond the radius must not count");
-    String east = LeyTuning.direction(BlockPos.ZERO, new BlockPos(10, 0, 0)).getString();
-    String north = LeyTuning.direction(BlockPos.ZERO, new BlockPos(0, 0, -10)).getString();
-    String southWest = LeyTuning.direction(BlockPos.ZERO, new BlockPos(-10, 0, 10)).getString();
-    helper.assertTrue(east.equals("direction.skillcraft.e") || east.equals("east"), "+X is east, got " + east);
-    helper.assertTrue(north.equals("direction.skillcraft.n") || north.equals("north"), "-Z is north, got " + north);
-    helper.assertTrue(southWest.equals("direction.skillcraft.sw") || southWest.equals("south-west"), "-X +Z is south-west, got " + southWest);
-    helper.assertTrue(LeyTuning.radius(1) == 32 && LeyTuning.radius(99) == 81, "the search radius should grow from 32 to 81 with Leycraft level");
-    SkillCraft.LOGGER.info("[leycraft] tuner: fire -> {} (nearest magma), frost -> {}, radius 32..81", fire, frost);
-    helper.succeed();
-}
+    // --- Ley Tuner: finds the nearest strong source of its element, and names the direction ---
+    static void tuner(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = helper.absolutePos(new BlockPos(8, 1, 8)); // the centre, so other tests' areas are 8+ away
+        helper.setBlock(new BlockPos(8, 1, 14), Blocks.MAGMA_BLOCK);   // 6 south
+        helper.setBlock(new BlockPos(13, 1, 8), Blocks.MAGMA_BLOCK);   // 5 east: nearer
+        helper.setBlock(new BlockPos(9, 1, 9), Blocks.NETHERRACK);     // fire, but too weak to count
+        helper.setBlock(new BlockPos(8, 1, 11), Blocks.PACKED_ICE);    // frost, 3 south
+        BlockPos fire = LeyTuning.nearestSource(level, origin, LeyElement.FIRE, 32);
+        helper.assertTrue(helper.absolutePos(new BlockPos(13, 1, 8)).equals(fire), "the tuner should find the nearer magma block, found " + fire);
+        BlockPos frost = LeyTuning.nearestSource(level, origin, LeyElement.FROST, 32);
+        helper.assertTrue(helper.absolutePos(new BlockPos(8, 1, 11)).equals(frost), "tuned to Frost it should find the packed ice, found " + frost);
+        helper.assertTrue(LeyTuning.nearestSource(level, origin, LeyElement.STORM, 6) == null, "there is no storm source here");
+        helper.assertTrue(LeyTuning.nearestSource(level, origin, LeyElement.FIRE, 4) == null, "a source beyond the radius must not count");
+        String east = LeyTuning.direction(BlockPos.ZERO, new BlockPos(10, 0, 0)).getString();
+        String north = LeyTuning.direction(BlockPos.ZERO, new BlockPos(0, 0, -10)).getString();
+        String southWest = LeyTuning.direction(BlockPos.ZERO, new BlockPos(-10, 0, 10)).getString();
+        helper.assertTrue(east.equals("direction.skillcraft.e") || east.equals("east"), "+X is east, got " + east);
+        helper.assertTrue(north.equals("direction.skillcraft.n") || north.equals("north"), "-Z is north, got " + north);
+        helper.assertTrue(southWest.equals("direction.skillcraft.sw") || southWest.equals("south-west"), "-X +Z is south-west, got " + southWest);
+        helper.assertTrue(LeyTuning.radius(1) == 32 && LeyTuning.radius(99) == 81, "the search radius should grow from 32 to 81 with Leycraft level");
+        SkillCraft.LOGGER.info("[leycraft] tuner: fire -> {} (nearest magma), frost -> {}, radius 32..81", fire, frost);
+        helper.succeed();
+    }
 
-// --- Steady the Current: an autopilot wins it, and the server's replay agrees ---
+    // --- Steady the Current: an autopilot wins it, and the server's replay agrees ---
     static void steadyTheCurrent(GameTestHelper helper) {
         StringBuilder log = new StringBuilder();
         for (int tier = 0; tier <= 2; tier++) {

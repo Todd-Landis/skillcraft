@@ -132,8 +132,15 @@ public class ModDataMaps {
             .synced(com.toddlandis.skillcraft.leycraft.LeyData.Weave.CODEC, false)
             .build();
 
+    // Beastbonding (docs/BEASTBONDING.md): creatures that can be bonded into the Bond Codex
+    public static final DataMapType<EntityType<?>, com.toddlandis.skillcraft.bonding.Bondable> BONDABLE = DataMapType
+            .builder(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "bondable"), Registries.ENTITY_TYPE, com.toddlandis.skillcraft.bonding.Bondable.CODEC)
+            .synced(com.toddlandis.skillcraft.bonding.Bondable.CODEC, false)
+            .build();
+
     @SubscribeEvent
     static void register(RegisterDataMapTypesEvent event) {
+        event.register(BONDABLE);
         event.register(LEY_RESONANCE);
         event.register(LEY_ESSENCE);
         event.register(LEY_WEAVES);
