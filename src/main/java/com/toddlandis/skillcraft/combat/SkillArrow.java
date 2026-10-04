@@ -35,6 +35,10 @@ public class SkillArrow extends AbstractArrow {
         public DamageStyle style() {
             return style;
         }
+
+        public double baseDamage() {
+            return baseDamage;
+        }
     }
 
     public SkillArrow(EntityType<? extends SkillArrow> type, Level level) {

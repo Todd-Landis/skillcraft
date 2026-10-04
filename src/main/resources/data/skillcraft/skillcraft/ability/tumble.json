@@ -1,0 +1,22 @@
+{
+  "category": "ranged",
+  "class": "basic",
+  "requires": {
+    "skill": "ranged",
+    "level": 15,
+    "weapon": "skillcraft:weapon_class/ranged"
+  },
+  "cooldown": 160,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:leap",
+    "distance": 4,
+    "backward": true,
+    "lift": 0.35,
+    "next_shot": {
+      "window": 60,
+      "damage": 1.2
+    }
+  },
+  "icon": "skillcraft:ability/tumble"
+}

@@ -100,6 +100,36 @@ public final class Showcase {
         player.teleport(new TeleportTransition(player.level(), at, Vec3.ZERO, yaw, pitch, TeleportTransition.DO_NOTHING));
     }
 
+    // -Pshowcase=abilities: a combat-ready player (Melee/Ranged/Defence 50, a full bar, 70 Momentum,
+    // diamond sword) facing a training dummy, for HUD and Ability Book screenshots
+    public static void abilityScene(ServerPlayer player) {
+        ServerLevel level = player.level();
+        for (com.toddlandis.skillcraft.skill.Skill skill : new com.toddlandis.skillcraft.skill.Skill[]{com.toddlandis.skillcraft.skill.Skill.MELEE,
+                com.toddlandis.skillcraft.skill.Skill.RANGED, com.toddlandis.skillcraft.skill.Skill.DEFENCE, com.toddlandis.skillcraft.skill.Skill.CONSTITUTION}) {
+            com.toddlandis.skillcraft.skill.SkillManager.setXp(player, skill, com.toddlandis.skillcraft.skill.XpTable.xpForLevel(50));
+        }
+        player.getInventory().setItem(0, new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD));
+        player.getInventory().setItem(1, new ItemStack(ModItems.WARHAMMERS.get("diamond").get()));
+        player.getInventory().setItem(2, new ItemStack(net.minecraft.world.item.Items.BOW));
+        player.getInventory().setItem(3, com.toddlandis.skillcraft.ability.CodexItem.of(net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, "forgequake")));
+        player.getInventory().setSelectedSlot(0);
+        var data = com.toddlandis.skillcraft.ability.AbilityService.data(player);
+        data.learn(net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, "forgequake"));
+        data.setMomentum(70);
+        com.toddlandis.skillcraft.ability.AbilityService.save(player, data);
+        String[][] bars = {{"lunge", "sweeping_arc", "battle_trance", "brace"}, {"concussive_blow", "earthbreaker", "riposte", "second_wind"}, {"quick_draw", "volley", "tumble", "deadeye"}};
+        String[] names = {"Sword", "Hammer", "Bow"};
+        for (int l = 0; l < bars.length; l++) {
+            net.minecraft.resources.Identifier[] ids = new net.minecraft.resources.Identifier[bars[l].length];
+            for (int i = 0; i < ids.length; i++) ids[i] = net.minecraft.resources.Identifier.fromNamespaceAndPath(SkillCraft.MODID, bars[l][i]);
+            com.toddlandis.skillcraft.ability.AbilityService.setLoadout(player, l, ids, names[l], l == 0);
+        }
+        Vec3 at = Vec3.atBottomCenterOf(player.blockPosition());
+        player.teleport(new TeleportTransition(level, at, Vec3.ZERO, 180f, 10f, TeleportTransition.DO_NOTHING));
+        Mob target = dummy(level, at.add(0, 0, -3), net.minecraft.world.item.Items.IRON_SWORD);
+        target.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.IRON_HELMET));
+    }
+
     private static Mob dummy(ServerLevel level, Vec3 pos, ItemLike held) {
         Mob mob = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
         mob.snapTo(pos.x, pos.y, pos.z, 0f, 0f);

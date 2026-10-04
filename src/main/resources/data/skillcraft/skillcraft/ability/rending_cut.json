@@ -1,0 +1,21 @@
+{
+  "category": "melee",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 12,
+    "weapon": "skillcraft:weapon_class/melee",
+    "weapon_style": "slash"
+  },
+  "cooldown": 180,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 0.8,
+    "bleed": 0.6,
+    "bleed_duration": 80
+  },
+  "icon": "skillcraft:ability/rending_cut"
+}

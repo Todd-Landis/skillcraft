@@ -3,6 +3,8 @@ package com.toddlandis.skillcraft.registry;
 import java.util.function.Supplier;
 
 import com.toddlandis.skillcraft.SkillCraft;
+import com.toddlandis.skillcraft.ability.AbilityData;
+import com.toddlandis.skillcraft.ability.AbilityRuntime;
 import com.toddlandis.skillcraft.arena.ArenaReturn;
 import com.toddlandis.skillcraft.bank.PlayerBank;
 import com.toddlandis.skillcraft.combat.AttackStyle;
@@ -55,4 +57,17 @@ public class ModAttachments {
                     .serialize(ArenaReturn.CODEC)
                     .copyOnDeath()
                     .build());
+
+    // Ability bars, learned Codex abilities and Momentum (see ability/AbilityData). Kept through death;
+    // synced to its owner for the HUD and the Ability Book.
+    public static final Supplier<AttachmentType<AbilityData>> ABILITIES = ATTACHMENT_TYPES.register("abilities",
+            () -> AttachmentType.builder(AbilityData::new)
+                    .serialize(AbilityData.CODEC)
+                    .copyOnDeath()
+                    .sync((holder, to) -> holder == to, AbilityData.STREAM_CODEC)
+                    .build());
+
+    // Cooldowns and short-lived ability states (server-side only, never saved)
+    public static final Supplier<AttachmentType<AbilityRuntime>> ABILITY_RUNTIME = ATTACHMENT_TYPES.register("ability_runtime",
+            () -> AttachmentType.builder(AbilityRuntime::new).build());
 }

@@ -15,6 +15,7 @@ import com.toddlandis.skillcraft.combat.DamageStyle;
 import com.toddlandis.skillcraft.combat.PlayerDamageTracker;
 import com.toddlandis.skillcraft.combat.StyleVulnerable;
 import com.toddlandis.skillcraft.registry.ModDataMaps;
+import com.toddlandis.skillcraft.registry.ModEffects;
 import com.toddlandis.skillcraft.registry.ModSounds;
 
 import net.minecraft.ChatFormatting;
@@ -61,7 +62,7 @@ import net.minecraft.world.phys.Vec3;
 // synced so clients play the matching keyframe animation. Health thresholds change phase, which
 // changes the attack rotation; the boss vents after each rotation (a vulnerability window).
 // Balance values come from the boss_tuning data map.
-public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerDamageTracker {
+public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerDamageTracker, com.toddlandis.skillcraft.combat.BossCrowdControl {
     private static final EntityDataAccessor<Integer> DATA_ACTION = SynchedEntityData.defineId(SlagheartEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_PHASE = SynchedEntityData.defineId(SlagheartEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_SPEED = SynchedEntityData.defineId(SlagheartEntity.class, EntityDataSerializers.FLOAT);
@@ -91,6 +92,9 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
     private float timeScale = 1f;
     private int rotationIndex;
     private int cooldown = 20;
+    // Daze from stun abilities (spec 2.6): delays the next attack, never cuts a windup short
+    private long lastDazeTick = Long.MIN_VALUE / 2;
+    private int pendingDaze;
     private int fightTicks;
     private int enrageStacks;
     private boolean hammerSecondSlam;
@@ -265,8 +269,11 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
 
     @Override
     public boolean addEffect(MobEffectInstance effect, Entity source) {
-        // Immune to crowd control; only Sundered (a damage debuff) sticks
-        return effect.is(com.toddlandis.skillcraft.registry.ModEffects.SUNDERED) && super.addEffect(effect, source);
+        // Immune to real crowd control. What sticks: Sundered, and the softened versions abilities
+        // give bosses (spec 2.6): Slowed up to III (-30%), Dazed, and Bleeding
+        boolean allowed = effect.is(ModEffects.SUNDERED) || effect.is(ModEffects.DAZED) || effect.is(ModEffects.BLEEDING)
+                || (effect.is(ModEffects.SLOWED) && effect.getAmplifier() < com.toddlandis.skillcraft.ability.CrowdControl.BOSS_SLOW_LEVELS);
+        return allowed && super.addEffect(effect, source);
     }
 
     // --- main loop ---
@@ -400,6 +407,23 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
         entityData.set(DATA_SERIAL, entityData.get(DATA_SERIAL) + 1);
     }
 
+    // A stun ability landed. Between attacks the next one comes later; mid-attack (windup or strike)
+    // the delay is added once the attack has finished. At most once per DAZE_LOCKOUT ticks.
+    @Override
+    public boolean daze(int extraTicks) {
+        long now = level().getGameTime();
+        if (now - lastDazeTick < com.toddlandis.skillcraft.ability.CrowdControl.DAZE_LOCKOUT) return false;
+        lastDazeTick = now;
+        if (action() == SlagheartAction.NONE) cooldown += extraTicks;
+        else pendingDaze += extraTicks;
+        return true;
+    }
+
+    // Ticks until the next attack starts (for GameTests)
+    public int attackCooldown() {
+        return cooldown;
+    }
+
     // Dev showcase only (dev/Showcase): plays an action's animation without its gameplay. Use with AI off.
     public void showcasePose(SlagheartAction action) {
         entityData.set(DATA_ACTION, action.ordinal());
@@ -411,6 +435,8 @@ public class SlagheartEntity extends Monster implements StyleVulnerable, PlayerD
         timeScale = 1f;
         restartAnimation(1f);
         cooldown = phase() >= 3 ? 10 : 15;
+        cooldown += pendingDaze;
+        pendingDaze = 0;
     }
 
     private void clearAttackState() {

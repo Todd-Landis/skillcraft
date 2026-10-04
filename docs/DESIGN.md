@@ -204,7 +204,13 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - stab/slash/crush and ammo weights with monster weaknesses
   - typed armour, warhammers, light/heavy arrows, padded armour
   - Slagheart in an instanced arena dimension with phases, telegraphs, a unique drop and a resource table
-- [ ] **Phase 6 – More combat content:** higher-tier weapon/ammo/armour families, special attacks, more mid-tier bosses with niche uniques
+- [x] **Phase 6 – Combat abilities:** (see [ABILITIES_SPEC.md](ABILITIES_SPEC.md))
+  - a 4-slot ability bar with Momentum, cooldowns and a global cooldown
+  - 27 abilities (Melee, Ranged, Defence, Weapon Arts including off-hand arts, Utility), unlocked by level or Codex
+  - the Ability Book (J) with 3 saved bars
+  - boss crowd-control rules (Daze, capped slows, no knockback)
+  - a framework ready for Spells (item costs) and Prayers (toggles with drain)
+- [ ] **Phase 6.5 – More combat content:** higher-tier weapon/ammo/armour families, the remaining abilities (Undertow), more mid-tier bosses with niche uniques and Codices
 - [ ] **Phase 7 – World generation:** new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
 - [ ] **Phase 8+:** Fishing, Farming, Firemaking, Construction, Agility, Sailing, more bosses
 

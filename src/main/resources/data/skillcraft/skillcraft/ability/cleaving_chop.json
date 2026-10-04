@@ -1,0 +1,20 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 15,
+    "weapon": "skillcraft:weapon_class/axe"
+  },
+  "cooldown": 160,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 1.4,
+    "style": "slash",
+    "disable_shield": 60
+  },
+  "icon": "skillcraft:ability/cleaving_chop"
+}

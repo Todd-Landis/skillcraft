@@ -20,6 +20,10 @@ public class ModDataComponents {
     public static final Supplier<DataComponentType<String>> CRAFTED_BY = COMPONENTS.registerComponentType("crafted_by",
             builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
+    // Which ability a Codex teaches (see ability/CodexItem)
+    public static final Supplier<DataComponentType<net.minecraft.resources.Identifier>> CODEX_ABILITY = COMPONENTS.registerComponentType("codex_ability",
+            builder -> builder.persistent(net.minecraft.resources.Identifier.CODEC).networkSynchronized(net.minecraft.resources.Identifier.STREAM_CODEC));
+
     // Boss and player for gear won from a boss, e.g. the Emberfall Maul (see loot/EarnedBy)
     public static final Supplier<DataComponentType<EarnedBy>> EARNED_BY = COMPONENTS.registerComponentType("earned_by",
             builder -> builder.persistent(EarnedBy.CODEC).networkSynchronized(EarnedBy.STREAM_CODEC));

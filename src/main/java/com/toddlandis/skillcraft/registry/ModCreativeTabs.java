@@ -31,6 +31,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.PADDED_LEGGINGS.get());
                 output.accept(ModItems.PADDED_BOOTS.get());
                 output.accept(ModItems.EMBERFALL_MAUL.get());
+                output.accept(com.toddlandis.skillcraft.ability.CodexItem.of(net.minecraft.resources.Identifier.fromNamespaceAndPath(com.toddlandis.skillcraft.SkillCraft.MODID, "forgequake")));
                 ModItems.NODES.values().forEach(item -> output.accept(item.get()));
             })
             .build());

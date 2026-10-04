@@ -38,6 +38,15 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("combat_xp", () -> CombatTests::combatXp);
         TEST_FUNCTIONS.register("constitution", () -> CombatTests::constitution);
         TEST_FUNCTIONS.register("loot_rates", () -> LootRateTests::lootRates);
+        TEST_FUNCTIONS.register("ability_validation", () -> AbilityTests::validation);
+        TEST_FUNCTIONS.register("ability_momentum", () -> AbilityTests::momentum);
+        TEST_FUNCTIONS.register("ability_pipeline", () -> AbilityTests::pipeline);
+        TEST_FUNCTIONS.register("ability_boss_daze", () -> AbilityTests::bossDaze);
+        TEST_FUNCTIONS.register("ability_wall", () -> AbilityTests::wall);
+        TEST_FUNCTIONS.register("ability_loadout", () -> AbilityTests::loadout);
+        TEST_FUNCTIONS.register("ability_future", () -> AbilityTests::future);
+        TEST_FUNCTIONS.register("ability_offhand", () -> AbilityTests::offhand);
+        TEST_FUNCTIONS.register("ability_dps", () -> AbilityTests::dps);
     }
 
     private ModGameTests() {}
@@ -46,7 +55,7 @@ public final class ModGameTests {
     static void register(RegisterGameTestsEvent event) {
         test(event, "arena_dimension", 20);
         test(event, "arena_protection", 100);
-        test(event, "arena_enter_exit", 400);
+        test(event, "arena_enter_exit", 500);
         test(event, "arena_death_and_logout", 100);
         test(event, "boss_phases", 400);
         test(event, "boss_stances", 100);
@@ -54,6 +63,15 @@ public final class ModGameTests {
         test(event, "combat_xp", 40);
         test(event, "constitution", 40);
         test(event, "loot_rates", 40);
+        test(event, "ability_validation", 40);
+        test(event, "ability_momentum", 100);
+        test(event, "ability_pipeline", 40);
+        test(event, "ability_boss_daze", 40);
+        test(event, "ability_wall", 40);
+        test(event, "ability_loadout", 40);
+        test(event, "ability_future", 120);
+        test(event, "ability_offhand", 40);
+        test(event, "ability_dps", AbilityTests.HARNESS_TICKS + 100);
     }
 
     private static void test(RegisterGameTestsEvent event, String name, int maxTicks) {

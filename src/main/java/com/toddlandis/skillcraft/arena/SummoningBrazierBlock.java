@@ -1,6 +1,7 @@
 package com.toddlandis.skillcraft.arena;
 
 import com.mojang.serialization.MapCodec;
+import com.toddlandis.skillcraft.Config;
 import com.toddlandis.skillcraft.registry.ModItems;
 
 import net.minecraft.ChatFormatting;
@@ -23,9 +24,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-// The overworld entrance to Slagheart's arena. Right-click it with an Ember Sigil: the sigil is
-// used up (each player pays their own) and you are taken to the arena's lobby, where groups
-// gather before walking into the fight.
+// The overworld entrance to Slagheart's arena. Right-click it with an Ember Sigil to be taken to the
+// arena's lobby, where groups gather before walking into the fight. Each player needs their own
+// sigil; it is a reusable key unless the consumeEmberSigil config is on.
 public class SummoningBrazierBlock extends Block {
     public static final MapCodec<SummoningBrazierBlock> CODEC = simpleCodec(SummoningBrazierBlock::new);
     private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 14, 14);
@@ -52,14 +53,14 @@ public class SummoningBrazierBlock extends Block {
         ArenaManager manager = ArenaManager.get(serverLevel.getServer());
         if (manager.isInInstance(owner)) return InteractionResult.FAIL;
 
-        // Each player pays their own sigil to enter; groups gather in the lobby
+        // Each player needs their own sigil to enter; groups gather in the lobby
         level.playSound(null, pos, SoundEvents.BLAZE_SHOOT, SoundSource.BLOCKS, 1f, 0.6f);
         serverLevel.sendParticles(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 40, 0.3, 0.5, 0.3, 0.05);
         if (!manager.enter(owner, ArenaManager.SLAGHEART)) {
             owner.sendOverlayMessage(Component.translatable("message.skillcraft.arena_unavailable").withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }
-        if (!player.isCreative()) stack.shrink(1);
+        if (!player.isCreative() && Config.CONSUME_EMBER_SIGIL.get()) stack.shrink(1);
         return InteractionResult.SUCCESS;
     }
 

@@ -1,0 +1,19 @@
+{
+  "category": "melee",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 1,
+    "weapon": "skillcraft:weapon_class/melee"
+  },
+  "cooldown": 140,
+  "momentum": {
+    "generate": 8
+  },
+  "behavior": {
+    "type": "skillcraft:dash_strike",
+    "distance": 3,
+    "damage": 1.1
+  },
+  "icon": "skillcraft:ability/lunge"
+}

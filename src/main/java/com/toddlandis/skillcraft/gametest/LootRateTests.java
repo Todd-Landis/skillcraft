@@ -38,7 +38,7 @@ public final class LootRateTests {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         Vec3 origin = helper.absoluteVec(new Vec3(8, 1, 8));
         Map<String, Long> totals = new TreeMap<>();
-        int uniques = 0, sigils = 0;
+        int uniques = 0, sigils = 0, codices = 0;
         for (int i = 0; i < ROLLS; i++) {
             List<ItemStack> items = SlagheartRewards.roll(helper.getLevel(), player, origin);
             for (ItemStack stack : items) {
@@ -49,6 +49,10 @@ public final class LootRateTests {
                     helper.assertTrue(stack.has(ModDataComponents.EARNED_BY.get()), "the unique was not stamped as earned");
                 }
                 if (stack.is(ModItems.EMBER_SIGIL.get())) sigils++;
+                if (stack.is(ModItems.CODEX.get())) {
+                    codices++;
+                    helper.assertTrue(com.toddlandis.skillcraft.ability.CodexItem.ability(stack) != null, "a Codex dropped without an ability");
+                }
                 totals.merge(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), (long) stack.getCount(), Long::sum);
             }
         }
@@ -64,10 +68,13 @@ public final class LootRateTests {
         }
         SkillCraft.LOGGER.info("[loot_rates] unique: {} in {} = 1/{} (target 1/120)", uniques, ROLLS, uniques == 0 ? "inf" : String.format("%.1f", ROLLS / (double) uniques));
         SkillCraft.LOGGER.info("[loot_rates] sigil refund: {} in {} = 1/{} (target 1/20)", sigils, ROLLS, sigils == 0 ? "inf" : String.format("%.1f", ROLLS / (double) sigils));
+        SkillCraft.LOGGER.info("[loot_rates] codex of the forgequake: {} in {} = 1/{} (target 1/60)", codices, ROLLS, codices == 0 ? "inf" : String.format("%.1f", ROLLS / (double) codices));
         SkillCraft.LOGGER.info("[loot_rates] one kill = {} gathering-minutes of resources", String.format("%.2f", gatherMinutes));
 
         // 20000 rolls at 1/120 -> expect ~167 (sd ~13); allow a wide band
         helper.assertTrue(uniques >= 110 && uniques <= 230, "unique rate off target: " + uniques + " in " + ROLLS);
+        // 1/60 -> expect ~333 (sd ~18)
+        helper.assertTrue(codices >= 260 && codices <= 410, "codex rate off target: " + codices + " in " + ROLLS);
         helper.assertTrue(sigils >= 800 && sigils <= 1200, "sigil refund rate off target: " + sigils + " in " + ROLLS);
         // Design target is 7-8 gathering-minutes per kill (docs/BOSS_SLAGHEART.md); fail if the table drifts
         helper.assertTrue(gatherMinutes >= 6.5 && gatherMinutes <= 9.0, "kill value off target: " + String.format("%.2f", gatherMinutes) + " gathering-minutes");

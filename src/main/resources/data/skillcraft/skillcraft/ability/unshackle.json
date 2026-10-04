@@ -1,0 +1,15 @@
+{
+  "category": "defence",
+  "class": "basic",
+  "requires": {
+    "skill": "defence",
+    "level": 15
+  },
+  "cooldown": 360,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:cleanse",
+    "immunity": 60
+  },
+  "icon": "skillcraft:ability/unshackle"
+}

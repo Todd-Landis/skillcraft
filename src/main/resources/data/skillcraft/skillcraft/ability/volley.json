@@ -1,0 +1,19 @@
+{
+  "category": "ranged",
+  "class": "surge",
+  "requires": {
+    "skill": "ranged",
+    "level": 22,
+    "weapon": "skillcraft:weapon_class/bow"
+  },
+  "cooldown": 240,
+  "windup": 6,
+  "behavior": {
+    "type": "skillcraft:volley",
+    "arrows": 5,
+    "spread": 30,
+    "damage": 0.7,
+    "max_ammo": 3
+  },
+  "icon": "skillcraft:ability/volley"
+}

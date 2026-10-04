@@ -1,0 +1,20 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 10,
+    "weapon": "skillcraft:weapon_class/hammer"
+  },
+  "cooldown": 200,
+  "momentum": {
+    "generate": 5
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 1.3,
+    "style": "crush",
+    "stun": 30
+  },
+  "icon": "skillcraft:ability/concussive_blow"
+}

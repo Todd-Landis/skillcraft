@@ -5,7 +5,13 @@ name: Client smoke
 # and missing models/textures/animations that the server-side Build job can't see.
 # Manual only (Actions tab -> Client smoke -> Run workflow): software rendering is slow, and the
 # showcase is quicker to run locally with ./gradlew runClient -Pshowcase -Pworld=showcase.
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      scene:
+        description: "Showcase scene: empty for the boss, or builds / abilities"
+        required: false
+        default: ""
 
 concurrency:
   group: client-smoke-${{ github.ref }}
@@ -37,7 +43,7 @@ jobs:
         run: bash scripts/ci/client_smoke.sh world
 
       - name: Run the client showcase
-        run: bash scripts/ci/client_smoke.sh client
+        run: SCENE="${{ inputs.scene }}" bash scripts/ci/client_smoke.sh client
 
       - name: Check the client log and screenshots
         run: bash scripts/ci/client_smoke.sh check

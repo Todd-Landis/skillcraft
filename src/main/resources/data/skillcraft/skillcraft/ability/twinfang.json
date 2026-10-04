@@ -1,0 +1,20 @@
+{
+  "category": "weapon_art",
+  "class": "basic",
+  "requires": {
+    "skill": "melee",
+    "level": 20,
+    "weapon": "skillcraft:weapon_class/melee",
+    "offhand": "skillcraft:weapon_class/sidearm"
+  },
+  "cooldown": 120,
+  "momentum": {
+    "generate": 8
+  },
+  "behavior": {
+    "type": "skillcraft:melee_strike",
+    "damage": 1.0,
+    "off_hand": true
+  },
+  "icon": "skillcraft:ability/twinfang"
+}

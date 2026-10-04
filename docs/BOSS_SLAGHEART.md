@@ -123,7 +123,7 @@ In melee, Slagheart only uses Hammerfall and Tong Sweep. It never punches withou
 - **Entry:**
   1. Craft a **Summoning Brazier** (crafting table) and place it anywhere outside the arena.
   2. Forge an **Ember Sigil** at the Forging Anvil (Smithing 20: 3 iron ingots, 1 gold ingot, 6 coal, 4 redstone dust).
-  3. Right-click the brazier with the sigil. The sigil is used up, and **you plus up to 3 players standing within 5 blocks of the brazier** are taken into a fresh instance.
+  3. Right-click the brazier with the sigil. You are taken to the shared arena's lobby. **The sigil is a reusable key for now** (it is kept; set `consumeEmberSigil = true` in `skillcraft-common.toml` to make each entry cost one). Each player needs their own sigil.
   4. Slagheart rises over 3 seconds (an awaken animation). The fight starts after that.
 - **Ownership:** each instance belongs to the player who used the sigil. Only its party can be in it. There's no way to walk into someone else's plot (1,024 blocks apart and walled with barriers), and the arena dimension can't be reached any other way (no portals; only ops can `/tp` there).
 - **Exit rules:**
@@ -170,6 +170,22 @@ Measured with the loot-rate GameTest (`gametest/LootRateTests`, 20,000 rolls), w
 
 ### Combat XP
 There's no separate kill bonus. Damage XP through the normal system works out to about **2,000 Melee/Ranged/Defence + 667 Constitution per solo kill**. That's roughly one level per kill around level 35, which is comparable to an OSRS mid-boss.
+
+### Combat abilities against Slagheart (Phase 6)
+- **Stuns become Daze.** Concussive Blow and Shield Bash daze Slagheart instead of stunning it:
+  - its next attack comes 1 s later
+  - at most once every 20 s
+  - an attack that is already winding up always finishes, so abilities can't trivialise the telegraphs
+- **Roots and slows** become Slowed III (−30%) for half the time.
+- **Knockback and pulls** do nothing.
+- **What sticks:** Bleed (Rending Cut) and Sundered (the maul, and Forgequake) work normally.
+- **Burst window:** **Vent** (stab ×1.5) is where to spend Momentum. Stab Weapon Arts (Skewer) and Surges or Ultimates timed for the vent pay off most.
+- **Codex of the Forgequake** (1/60 per eligible kill) teaches **Forgequake**, the Emberfall Maul's Ultimate:
+  - a radius-4 slam for 200% crush that Sunders everything it hits
+  - needs Melee 35 and the maul in hand
+  - measured 329 in 20,000 rolls = 1/60.8
+  - It's tradeable. The other drop rates are unchanged.
+- **Kill time:** the DPS harness puts a good sword rotation at ×1.22 sustained damage, which works out to roughly 18% shorter kills. That's inside the spec's 15–20% target. Vent bursts may add a little.
 
 ## Expected kill time and death risk (solo, at the target level)
 - **Combat 30, diamond warhammer** (9 damage, 1.0/s):

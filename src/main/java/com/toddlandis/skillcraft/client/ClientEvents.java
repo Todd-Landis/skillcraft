@@ -64,6 +64,7 @@ public class ClientEvents {
         event.registerCategory(CATEGORY);
         event.register(OPEN_SKILLS);
         event.register(ATTACK_STYLE);
+        com.toddlandis.skillcraft.client.ability.AbilityKeys.register(event);
     }
 
     @SubscribeEvent
@@ -89,6 +90,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     static void registerGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "ability_bar"), com.toddlandis.skillcraft.client.ability.AbilityHud::render);
         event.registerAboveAll(Identifier.fromNamespaceAndPath(SkillCraft.MODID, "xp_drops"), XpDropOverlay::render);
     }
 
@@ -101,6 +103,10 @@ public class ClientEvents {
             }
         });
         event.register(BankSyncPayload.TYPE, (payload, context) -> ClientBank.apply(payload));
+        event.register(com.toddlandis.skillcraft.network.AbilityDefinitionsPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.apply(payload));
+        event.register(com.toddlandis.skillcraft.network.AbilityCooldownPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.apply(payload));
+        event.register(com.toddlandis.skillcraft.network.AbilityDeniedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.denied());
+        event.register(com.toddlandis.skillcraft.network.AbilityUnlockedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.unlocked(payload));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
                 Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
     }
@@ -114,6 +120,8 @@ public class ClientEvents {
         while (ATTACK_STYLE.consumeClick()) {
             if (mc.player != null && mc.gui.screen() == null) ClientPacketDistributor.sendToServer(new CycleAttackStylePayload());
         }
+        com.toddlandis.skillcraft.client.ability.AbilityKeys.handle(mc);
+        com.toddlandis.skillcraft.client.ability.ClientAbilities.tick();
     }
 
     // Adds "Requires Mining 30" lines to gated items, and gathering info to resource blocks
@@ -122,6 +130,7 @@ public class ClientEvents {
         Player player = event.getEntity();
         if (player == null) return;
         List<Component> tooltip = event.getToolTip();
+        com.toddlandis.skillcraft.client.ability.CodexTooltip.add(event.getItemStack(), player, tooltip);
 
         SkillRequirements req = SkillManager.requirements(event.getItemStack());
         if (req != null) {

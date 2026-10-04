@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#skillcraft:weapon_class/warhammer",
+    "#skillcraft:weapon_class/mace",
+    "#skillcraft:weapon_class/maul"
+  ]
+}

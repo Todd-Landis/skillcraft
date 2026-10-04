@@ -1,0 +1,19 @@
+{
+  "category": "melee",
+  "class": "surge",
+  "requires": {
+    "skill": "melee",
+    "level": 18,
+    "weapon": "skillcraft:weapon_class/melee",
+    "weapon_style": "slash"
+  },
+  "cooldown": 220,
+  "windup": 4,
+  "behavior": {
+    "type": "skillcraft:cleave",
+    "radius": 3.5,
+    "arc": 150,
+    "damage": 1.2
+  },
+  "icon": "skillcraft:ability/sweeping_arc"
+}

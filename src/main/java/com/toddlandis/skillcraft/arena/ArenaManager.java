@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 
 // Runs the boss arenas. Every boss has ONE permanent arena in the arena dimension, shared by
 // everyone, at a fixed spot far from the others (so no arena can be reached from another):
-//   - The Summoning Brazier takes you to the arena's lobby (the Ember Sigil is the entry fee).
+//   - The Summoning Brazier takes you to the arena's lobby (holding an Ember Sigil; it is only used up if consumeEmberSigil is on).
 //   - The boss wakes as soon as anyone steps onto the arena floor; everyone on the floor fights it.
 //   - After a kill the reward chest appears and the boss reforms RESPAWN_SECONDS later.
 //   - If nobody has been on the floor for RESET_SECONDS, the boss is removed and its hazards
@@ -41,6 +41,7 @@ public final class ArenaManager {
     public static final int ARENA_Y = 64;
     public static final int RESPAWN_SECONDS = 60;
     public static final int RESET_SECONDS = 10;
+    private static final int BOSS_LOST_TICKS = 40;
 
     // Arena ids. Future bosses get their own entry and spot (2048 blocks apart along X).
     public static final int SLAGHEART = 0;
@@ -146,7 +147,17 @@ public final class ArenaManager {
                         else if (now - arena.emptySince() >= RESET_SECONDS * 20L) reset(level, arena, boss);
                     } else {
                         arena.setEmptySince(-1);
-                        if (boss == null || !boss.isAlive()) reset(level, arena, boss); // lost track of it: start over
+                        // While the arena's chunk is still loading its entities the boss can't be looked
+                        // up yet; that isn't "lost" (a busy server can take longer than the grace period)
+                        boolean entitiesLoaded = level.areEntitiesActuallyLoadedAndTicking(
+                                net.minecraft.world.level.ChunkPos.containing(BlockPos.containing(arena.bossSpawn())));
+                        if ((boss != null && boss.isAlive()) || !entitiesLoaded) {
+                            arena.setBossMissingSince(-1);
+                        } else if (arena.bossMissingSince() < 0) {
+                            arena.setBossMissingSince(now);
+                        } else if (now - arena.bossMissingSince() >= BOSS_LOST_TICKS) {
+                            reset(level, arena, boss); // lost track of it for a while: start over
+                        }
                     }
                 }
                 case VICTORY -> {
@@ -163,6 +174,12 @@ public final class ArenaManager {
                 }
             }
             if (now % 10 == 0) keepMobsInArena(level, arena);
+            // Keep the arena simulated (boss and adds ticking) while anyone is here or a fight is on.
+            // The ticket expires by itself (15 s) once this stops renewing it.
+            if (now % 20 == 0) {
+                level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.PORTAL,
+                        net.minecraft.world.level.ChunkPos.containing(arena.center()), 3);
+            }
         }
     }
 
@@ -181,11 +198,18 @@ public final class ArenaManager {
         if (boss == null) return;
         Vec3 spawn = arena.bossSpawn();
         boss.snapTo(spawn.x, spawn.y, spawn.z, 0f, 0f);
+        level.getChunkAt(BlockPos.containing(spawn)); // make sure the boss lands in a loaded chunk
+        level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.PORTAL,
+                net.minecraft.world.level.ChunkPos.containing(arena.center()), 3); // ...that is simulated
         boss.setup(arena.id(), spawn, partySize);
-        level.addFreshEntity(boss);
+        if (!level.addFreshEntity(boss)) {
+            SkillCraft.LOGGER.warn("Arena {}: the boss could not be spawned", arena.name());
+            return;
+        }
         arena.setBoss(boss.getUUID());
         arena.setPartySize(partySize);
         arena.setEmptySince(-1);
+        arena.setBossMissingSince(-1);
         arena.setState(ArenaInstance.State.FIGHTING);
         SkillCraft.LOGGER.info("Arena {}: boss awakened for {} player(s)", arena.name(), partySize);
     }
@@ -195,6 +219,7 @@ public final class ArenaManager {
         if (boss != null) boss.discard(); // the boss restores its hazard tiles and removes its adds when discarded
         arena.setBoss(null);
         arena.setEmptySince(-1);
+        arena.setBossMissingSince(-1);
         arena.setState(ArenaInstance.State.DORMANT);
         SkillCraft.LOGGER.info("Arena {}: reset", arena.name());
     }

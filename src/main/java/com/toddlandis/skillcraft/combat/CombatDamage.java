@@ -57,6 +57,11 @@ public final class CombatDamage {
         }
     }
 
+    // The damage type of a hit being processed right now (a scripted style if one is set)
+    public static DamageStyle currentStyle(DamageSource source) {
+        return pendingStyle != null ? pendingStyle : DamageStyles.of(source);
+    }
+
     @SubscribeEvent
     static void onIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity target = event.getEntity();

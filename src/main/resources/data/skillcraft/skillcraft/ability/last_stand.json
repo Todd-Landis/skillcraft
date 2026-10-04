@@ -1,0 +1,16 @@
+{
+  "category": "defence",
+  "class": "ultimate",
+  "requires": {
+    "skill": "defence",
+    "level": 40
+  },
+  "cooldown": 1200,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:last_stand",
+    "duration": 120
+  },
+  "icon": "skillcraft:ability/last_stand"
+}

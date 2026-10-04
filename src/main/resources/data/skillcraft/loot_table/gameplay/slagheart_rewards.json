@@ -320,6 +320,29 @@
           "name": "skillcraft:emberfall_maul"
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.016667
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "skillcraft:codex",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "skillcraft:codex_ability": "skillcraft:forgequake"
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "random_sequence": "skillcraft:gameplay/slagheart_rewards"

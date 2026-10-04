@@ -43,6 +43,7 @@ public final class SkillManager {
         boolean leveledUp = newLevel > oldLevel;
         PacketDistributor.sendToPlayer(player, new XpGainPayload(skill, (float) amount, leveledUp ? newLevel : 0));
         if (leveledUp && skill == Skill.CONSTITUTION) Constitution.apply(player);
+        if (leveledUp) com.toddlandis.skillcraft.ability.AbilityService.onLevelUp(player, skill, oldLevel, newLevel);
         if (leveledUp) {
             player.sendSystemMessage(Component.translatable("message.skillcraft.level_up", skill.displayName(), newLevel)
                     .withStyle(ChatFormatting.GOLD));

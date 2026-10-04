@@ -1,0 +1,16 @@
+{
+  "category": "defence",
+  "class": "basic",
+  "requires": {
+    "skill": "defence",
+    "level": 1
+  },
+  "cooldown": 300,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:buff",
+    "effect": "skillcraft:braced",
+    "duration": 60
+  },
+  "icon": "skillcraft:ability/brace"
+}
