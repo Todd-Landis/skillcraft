@@ -42,7 +42,7 @@ import net.minecraft.world.phys.Vec3;
 //     Momentum, PvP rules), and it can burst (radius), ignite, apply effects and chain
 // Its settings aren't saved: a bolt that gets unloaded mid-flight just disappears.
 public class SpellBolt extends ThrowableItemProjectile {
-    private static final int LIFETIME = 40;
+    private static final int LIFETIME = 16; // about 30-45 blocks, depending on the speed
 
     // What the bolt does when it lands (immutable; built by the caster)
     public record Payload(DamageStyle element, float damage, boolean ability, float radius, int ignite, List<EffectSpec> effects,

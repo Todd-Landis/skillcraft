@@ -65,16 +65,28 @@ A focus is any item listed in `data_maps/item/magic_focus.json`:
 | Focus | Kind | Element | Power | Bolt every | Magic req. | Made at (Crafting) | Materials |
 |---|---|---|---|---|---|---|---|
 | **Apprentice Wand** | wand | arcane | 4 | 0.8 s | 1 | Crafting Bench 5 | stick, 2 amethyst shards |
-| **Ember Staff** | staff | fire | 7 | 1.2 s | 10 | Crafting Bench 12 | 2 sticks, 2 amethyst, 6 coal |
-| **Rime Staff** | staff | frost | 7 | 1.2 s | 15 | Crafting Bench 16 | 2 sticks, 2 amethyst, 4 snow blocks |
-| **Tempest Staff** | staff | storm | 7.5 | 1.2 s | 20 | Crafting Bench 22 | 2 sticks, 3 amethyst, a lightning rod |
+| **Ember Staff** | staff | fire | 8 | 1.2 s | 10 | Crafting Bench 12 | 2 sticks, 2 amethyst, 6 coal |
+| **Rime Staff** | staff | frost | 8 | 1.2 s | 15 | Crafting Bench 16 | 2 sticks, 2 amethyst, 4 snow blocks |
+| **Tempest Staff** | staff | storm | 8.5 | 1.2 s | 20 | Crafting Bench 22 | 2 sticks, 3 amethyst, a lightning rod |
 | **Arcanist's Wand** | wand | arcane | 6.5 | 0.7 s | 30 | Crafting Bench 30 | blaze rod, 4 amethyst, 6 lapis, 2 gold ingots |
-| **Starseer Staff** | staff | arcane | 11 | 1.1 s | 40 | Crafting Bench 40 | 2 blaze rods, 6 amethyst, 2 diamonds, an eye of ender |
+| **Starseer Staff** | staff | arcane | 11 | 1.0 s | 40 | Crafting Bench 40 | 2 blaze rods, 6 amethyst, 2 diamonds, an eye of ender |
 
 - **Wands** are quick and one-handed, so the off hand stays free for a shield or a torch.
 - **Staves** hit harder per cast and **supply their element**: an Ember Staff makes fire spells and fire bolts cost no Ember Motes.
 - **Gear rules:** foci are stamped `crafted_by` like all station gear, and the Magic level gate sits in `skill_requirements.json`.
-- **Speed check:** at the same tier, a focus's damage per second sits a little under melee and close to bows. Apprentice Wand is about 5 DPS (a wooden sword is about 6). Starseer Staff is about 10 at Magic 40 (a diamond sword is about 11). Magic trades a little damage for range, elements and area spells.
+- **Speed check:** bolt damage per second at the focus's own level, on the Aggressive style, against a neutral target:
+
+  | Focus | Level | DPS |
+  |---|---|---|
+  | Apprentice Wand | Magic 1 | 5.3 |
+  | Ember Staff | Magic 10 | 7.2 |
+  | Rime Staff | Magic 15 | 7.2 |
+  | Tempest Staff | Magic 20 | 7.8 |
+  | Arcanist's Wand | Magic 30 | 10.5 (it costs a mote per bolt) |
+  | Starseer Staff | Magic 40 | 12.7 |
+
+  - For comparison, an iron sword is about 9.6 DPS and a bow about 6–9. A diamond sword at Melee 40 measured 14.8 in the ability_dps harness.
+  - Magic trades some damage for range, elements and area spells; elemental matchups can swing it a lot.
 
 ### 2.2 Motes (the spell reagents)
 Motes are crafted at the Crafting Bench, 16 per craft. They're in the `skillcraft:consumables` tag, so they're never stamped as gear.

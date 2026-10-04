@@ -97,7 +97,7 @@ public final class Phase7Tests {
         helper.assertTrue(MagicCasting.castBolt(staff, staff.getMainHandItem()), "the Ember Staff should fire with no Ember Motes (it supplies them)");
 
         double expectedWand = 4.0 * DamageStyles.modifier(pig, DamageStyle.ARCANE) * levelBonus(1) * styleBonus(wand);
-        double expectedStaff = 7.0 * DamageStyles.modifier(pig2, DamageStyle.FIRE) * levelBonus(10) * styleBonus(staff);
+        double expectedStaff = 8.0 * DamageStyles.modifier(pig2, DamageStyle.FIRE) * levelBonus(10) * styleBonus(staff);
         helper.runAfterDelay(20, () -> {
             float dealt = pigBefore - pig.getHealth(), dealt2 = pig2Before - pig2.getHealth();
             double xp = SkillManager.get(wand).getXp(Skill.MAGIC) - xpBefore;
@@ -105,7 +105,7 @@ public final class Phase7Tests {
             helper.assertTrue(Math.abs(dealt2 - expectedStaff) < 0.05, "staff bolt should deal " + expectedStaff + ", dealt " + dealt2);
             helper.assertTrue(Math.abs(xp - dealt * 4.0) < 0.05, "a bolt should pay 4 Magic XP per damage, got " + xp + " for " + dealt);
             helper.assertTrue(SkillManager.get(wand).getXp(Skill.RANGED) == rangedBefore, "magic damage must not pay Ranged XP");
-            SkillCraft.LOGGER.info("[magic] bolts: Apprentice Wand {} (arcane, Magic 1) = 4.00 x {}; Ember Staff {} (fire, Magic 10, no motes needed) = 7.00 x {}; {} Magic XP",
+            SkillCraft.LOGGER.info("[magic] bolts: Apprentice Wand {} (arcane, Magic 1) = 4.00 x {}; Ember Staff {} (fire, Magic 10, no motes needed) = 8.00 x {}; {} Magic XP",
                     String.format("%.2f", dealt), String.format("%.4f", levelBonus(1) * styleBonus(wand)), String.format("%.2f", dealt2),
                     String.format("%.4f", levelBonus(10) * styleBonus(staff)), String.format("%.1f", xp));
             helper.succeed();
@@ -120,8 +120,8 @@ public final class Phase7Tests {
         AbilityTests.hold(frost, new ItemStack(ModItems.RIME_STAFF.get()));
         frost.getInventory().add(new ItemStack(ModItems.ARCANE_MOTE.get(), 1));
         AbilityTests.setMomentum(frost, 100);
-        LivingEntity a = helper.spawnWithNoFreeWill(EntityTypes.PIG, new Vec3(6.5, 1, 4));
-        LivingEntity b = helper.spawnWithNoFreeWill(EntityTypes.PIG, new Vec3(4, 1, 6.5));
+        LivingEntity a = helper.spawnWithNoFreeWill(EntityTypes.IRON_GOLEM, new Vec3(7, 1, 4));
+        LivingEntity b = helper.spawnWithNoFreeWill(EntityTypes.IRON_GOLEM, new Vec3(4, 1, 7));
         float aBefore = a.getHealth(), bBefore = b.getHealth();
 
         ServerPlayer storm = player(helper, "skillcraft_magic_chain", new Vec3(1.5, 1, 11.5), -90f);
@@ -142,12 +142,12 @@ public final class Phase7Tests {
         helper.assertTrue(count(storm, ModItems.ARCANE_MOTE.get()) == 0, "Chain Lightning should spend its arcane mote (storm motes come from the staff)");
         helper.onEachTick(() -> AbilityService.tick(frost));
 
-        double nova = 7.0 * 1.2 * levelBonus(28) * styleBonus(frost);
-        double chain = 7.5 * 1.5 * levelBonus(22) * styleBonus(storm);
+        double nova = 8.0 * 1.2 * levelBonus(28) * styleBonus(frost);
+        double chain = 8.5 * 1.5 * levelBonus(22) * styleBonus(storm);
         helper.runAfterDelay(25, () -> {
             float dealtA = aBefore - a.getHealth(), dealtB = bBefore - b.getHealth();
             helper.assertTrue(Math.abs(dealtA - nova * DamageStyles.modifier(a, DamageStyle.FROST)) < 0.05 && Math.abs(dealtB - nova * DamageStyles.modifier(b, DamageStyle.FROST)) < 0.05,
-                    "Frost Nova should deal " + nova + " to both pigs, dealt " + dealtA + " and " + dealtB);
+                    "Frost Nova should deal " + nova + " (before matchups) to both golems, dealt " + dealtA + " and " + dealtB);
             helper.assertTrue(a.hasEffect(ModEffects.SLOWED) && b.hasEffect(ModEffects.SLOWED), "Frost Nova should slow what it hits");
             helper.assertTrue(count(frost, ModItems.ARCANE_MOTE.get()) == 0, "Frost Nova should spend its arcane mote");
             double matchup = DamageStyles.modifier(golems[0], DamageStyle.STORM);
@@ -158,7 +158,7 @@ public final class Phase7Tests {
                 helper.assertTrue(Math.abs(d - expected) < 0.06, "Chain Lightning jump " + i + " should deal " + expected + ", dealt " + d);
                 dealt.append(String.format(i == 0 ? "%.2f" : " -> %.2f", d));
             }
-            SkillCraft.LOGGER.info("[magic] spells: Frost Nova {} each (Rime Staff 7 x 1.2 x level {}), Chain Lightning {} (Tempest Staff 7.5 x 1.5, storm x{} on golems, -25% per jump)",
+            SkillCraft.LOGGER.info("[magic] spells: Frost Nova {} each (Rime Staff 8 x 1.2 x level {}, frost x0.8 on golems), Chain Lightning {} (Tempest Staff 8.5 x 1.5, storm x{} on golems, -25% per jump)",
                     String.format("%.2f", dealtA), String.format("%.4f", levelBonus(28)), dealt, matchup);
             helper.succeed();
         });
@@ -228,7 +228,7 @@ public final class Phase7Tests {
         float drained = start - PrayerService.points(player);
         helper.assertTrue(Math.abs(drained - 0.7f) < 0.02f, "two blessings should drain 0.70 Faith in 2 s, drained " + drained);
         SkillCraft.LOGGER.info("[prayer] Faith max {} at Prayer 45; Ward of Steel x{} vs crush, Battle Fervor x{} on melee; drain {} in 2 s; 10 bones offered {} XP, 1 buried {} XP; Saving Grace left {} health",
-                max, ward, boost, String.format("%.2f", drained), offered, buried, player.getMaxHealth() * 0.25f);
+                max, String.format("%.2f", ward), String.format("%.2f", boost), String.format("%.2f", drained), offered, buried, player.getMaxHealth() * 0.25f);
         helper.succeed();
     }
 

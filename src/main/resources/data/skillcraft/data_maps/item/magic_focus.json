@@ -8,19 +8,19 @@
     },
     "skillcraft:ember_staff": {
       "kind": "staff",
-      "power": 7,
+      "power": 8,
       "element": "fire",
       "cast_cooldown": 24
     },
     "skillcraft:rime_staff": {
       "kind": "staff",
-      "power": 7,
+      "power": 8,
       "element": "frost",
       "cast_cooldown": 24
     },
     "skillcraft:tempest_staff": {
       "kind": "staff",
-      "power": 7.5,
+      "power": 8.5,
       "element": "storm",
       "cast_cooldown": 24
     },
@@ -34,7 +34,7 @@
       "kind": "staff",
       "power": 11,
       "element": "arcane",
-      "cast_cooldown": 22
+      "cast_cooldown": 20
     }
   }
 }
