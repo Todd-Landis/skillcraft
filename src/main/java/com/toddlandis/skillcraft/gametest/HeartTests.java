@@ -44,9 +44,10 @@ public final class HeartTests {
         helper.assertTrue(max == 9_775_823L, "level 99 should need 9,775,823 XP (75% of 13,034,431), needs " + max);
         double half = XpTable.xpForLevel(92) / (double) max;
         helper.assertTrue(Math.abs(half - 0.5) < 0.001, "level 92 should still be halfway to 99, is " + half);
-        for (int level = 20; level <= 92; level++) {
+        // Same shape as OSRS: x2.7 at 10, x2.18 at 20, then settles to x2.00 from about 40
+        for (int level = 30; level <= 92; level++) {
             double ratio = XpTable.xpForLevel(level + 7) / (double) XpTable.xpForLevel(level);
-            helper.assertTrue(ratio > 1.9 && ratio < 2.15, "XP should about double every 7 levels; " + level + " -> " + (level + 7) + " is x" + ratio);
+            helper.assertTrue(ratio > 1.95 && ratio < 2.1,"XP should about double every 7 levels; " + level + " -> " + (level + 7) + " is x" + ratio);
         }
         helper.assertTrue(XpTable.levelForXp(max) == 99 && XpTable.levelForXp(max - 1) == 98, "levelForXp should match the table at 99");
         SkillCraft.LOGGER.info("[xp] curve: 99 = {} XP (was 13,034,431), 92 = {} ({}% of 99), 50 = {}, 10 = {}",

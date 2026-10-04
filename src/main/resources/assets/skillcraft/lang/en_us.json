@@ -138,7 +138,7 @@
   "message.skillcraft.altar_busy": "This altar is already attuning a %s.",
   "message.skillcraft.altar_progress": "%s: %s/%s %s",
   "message.skillcraft.altar_ready": "The altar hums with energy. Use an empty hand to begin attunement.",
-  "message.skillcraft.altar_withdrawn": "You take the materials back.",
+  "message.skillcraft.altar_withdrawn": "You take the heart back.",
   "message.skillcraft.attune_success": "You attuned a %s!",
   "message.skillcraft.attune_fail": "The attunement failed, but the heart held together.",
   "message.skillcraft.attune_cracked": "The attunement failed and the heart cracked apart.",
