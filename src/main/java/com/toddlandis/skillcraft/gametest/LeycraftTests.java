@@ -138,7 +138,9 @@ public final class LeycraftTests {
                 "a weave whose element no longer matches must use nothing");
         altar.clear();
 
-        // Amethyst is half an essence
+        // Amethyst is half an essence (back to exactly Leycraft 5: the weaves above may have levelled
+        // the player, and any level over Ember's adds a fractional bonus)
+        AbilityTests.level(player, Skill.LEYCRAFT, 5);
         altar.deposit(player, Items.AMETHYST_SHARD, 6);
         int fromAmethyst = LeyWeaving.quickWeave(player, pos);
         helper.assertTrue(fromAmethyst == 24, "6 amethyst shards at 100% fire should give 6 x 0.5 x 4 x 2 = 24, gave " + fromAmethyst);

@@ -94,27 +94,37 @@ public final class ArenaTests {
         });
         helper.runAfterDelay(10, () -> helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING && instance.boss() != null,
                 "boss did not wake when a player stepped onto the floor"));
-        // The entity itself can take a while to become findable on a slow (CI) server, so look for
-        // it on every tick until tick 160 instead of at one exact tick
-        boolean[] bossSeen = {false};
+        // The boss joins a chunk that's still loading in the background, and the test server runs
+        // ticks far faster than real time, so a fixed tick isn't a fair deadline: wait (in real time)
+        // until the boss can be looked up, then send the player back to the lobby and time the reset
+        // in ticks, which is what the reset itself counts.
+        long[] phase = {0, 0, 0}; // phase, real-time deadline, tick the lobby move happened
+        int[] ticks = {0};
         helper.onEachTick(() -> {
-            if (!bossSeen[0] && instance.boss() != null && arena.getEntity(instance.boss()) instanceof SlagheartEntity) bossSeen[0] = true;
-        });
-        helper.runAfterDelay(160, () -> {
-            helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING, "the fight stopped right after the boss woke");
-            helper.assertTrue(bossSeen[0], "boss entity never became findable");
-            // Back to the lobby: after RESET_SECONDS with nobody on the floor the boss resets
-            Vec3 lobby = instance.lobbySpawn();
-            player.teleportTo(arena, lobby.x, lobby.y, lobby.z, java.util.Set.of(), 180f, 0f, false);
-        });
-        helper.runAfterDelay(165 + ArenaManager.RESET_SECONDS * 20, () -> {
-            helper.assertTrue(instance.state() == ArenaInstance.State.DORMANT, "boss did not reset after the arena emptied");
-            helper.assertTrue(instance.boss() == null, "reset left a boss behind");
-            manager.leave(player, ArenaManager.LeaveReason.EXIT);
-            helper.assertTrue(player.level() == helper.getLevel(), "player was not sent back home");
-            helper.assertTrue(player.position().distanceTo(start) < 2, "player did not return to where they entered");
-            helper.assertFalse(manager.isInInstance(player), "player still listed as a visitor after leaving");
-            helper.succeed();
+            ticks[0]++;
+            if (ticks[0] < 12) return; // the wake-up checks above run first
+            if (phase[0] == 0) {
+                if (phase[1] == 0) phase[1] = System.currentTimeMillis() + 20_000;
+                if (instance.boss() != null && arena.getEntity(instance.boss()) instanceof SlagheartEntity) {
+                    helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING, "the fight stopped right after the boss woke");
+                    // Back to the lobby: after RESET_SECONDS with nobody on the floor the boss resets
+                    Vec3 lobby = instance.lobbySpawn();
+                    player.teleportTo(arena, lobby.x, lobby.y, lobby.z, java.util.Set.of(), 180f, 0f, false);
+                    phase[0] = 1;
+                    phase[2] = ticks[0];
+                } else if (System.currentTimeMillis() > phase[1]) {
+                    helper.assertTrue(false, "boss entity never became findable within 20 s");
+                }
+            } else if (phase[0] == 1 && ticks[0] - phase[2] >= 5 + ArenaManager.RESET_SECONDS * 20) {
+                phase[0] = 2;
+                helper.assertTrue(instance.state() == ArenaInstance.State.DORMANT, "boss did not reset after the arena emptied");
+                helper.assertTrue(instance.boss() == null, "reset left a boss behind");
+                manager.leave(player, ArenaManager.LeaveReason.EXIT);
+                helper.assertTrue(player.level() == helper.getLevel(), "player was not sent back home");
+                helper.assertTrue(player.position().distanceTo(start) < 2, "player did not return to where they entered");
+                helper.assertFalse(manager.isInInstance(player), "player still listed as a visitor after leaving");
+                helper.succeed();
+            }
         });
     }
 
