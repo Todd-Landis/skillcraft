@@ -297,6 +297,9 @@ public class ClientEvents {
             tooltip.add(Component.translatable("tooltip.skillcraft.ley_weave", Skill.LEYCRAFT.displayName(), weave.level(), XpTable.format(weave.xp()))
                     .withStyle(met ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.RED));
         }
+        if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.LEY_TUNER.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.ley_tuner").withStyle(ChatFormatting.GRAY));
+        }
         if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.LEY_ALTAR.get())) {
             tooltip.add(Component.translatable("tooltip.skillcraft.ley_altar").withStyle(ChatFormatting.GRAY));
         }

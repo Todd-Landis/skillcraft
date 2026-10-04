@@ -48,6 +48,7 @@ SkillCraft is an OSRS-inspired RPG mod for Minecraft Java. The owner, Todd, is n
 - **Leycraft** (`leycraft/`, `docs/LEYCRAFT.md`): Ley Shards from the Ley Stone node are woven into motes at a Ley Altar. The element comes from the surroundings (`Resonance`).
   - Data maps: `block/ley_resonance.json`, `item/ley_essence.json`, `item/ley_weaves.json`. Biome tags: `ley_resonance/<element>`.
   - Weave numbers (radius, biome and weather bonuses, careful-weave multipliers) are server config.
+  - The Ley Tuner (`LeyTuning`) finds the nearest strong source of an element. It scans only loaded chunk sections, using the palette check `maybeHas` to skip most of them, and falls back to `findClosestBiome3d`.
   - Careful weaves use the `STEADY_THE_CURRENT` minigame through `LeyWeaving`, with the same seeded replay as attunement. `Minigames.ReplayResult` carries the miss count.
 - **Agility, Magic and Prayer:** design and numbers in `docs/AGILITY_MAGIC_PRAYER.md`.
   - Foci: `item/magic_focus.json`. Offerings: `item/prayer_offerings.json`.
@@ -90,7 +91,7 @@ SkillCraft is an OSRS-inspired RPG mod for Minecraft Java. The owner, Todd, is n
 - **DPS harness:** `ability_dps` runs a 60 s simulation. The first build targeted ×1.15–1.25; after the playtest pacing pass it sits at about ×1.39 (the test allows ×1.05–1.55; see ABILITIES_SPEC §8.8).
 - **Fishing and cooking:** `FishingTests.pond(...)` builds a stone-rimmed pond for water tests. Drive fishing with `FishingSessions.tick(player)` (fake players aren't ticked). `fishing_session` waits for the 20 s cod resurface.
 - **Hearts and XP curve** (`HeartTests`): `xp_curve` pins 99 = 9,775,823 and the doubling every 7 levels; `elemental_hearts` posts `BlockDropsEvent` directly (2,000 diamond-ore breaks) to check the rate and the placed-block rule.
-- **Leycraft** (`LeycraftTests`): `ley_resonance` places magma, ice and lightning rods; `ley_weaving` checks exact yields through `quickWeave`/`completeCareful` (call those directly; fake players can't play the minigame); `steady_the_current` wins the minigame with an autopilot and checks the server replay agrees.
+- **Leycraft** (`LeycraftTests`): `ley_resonance` places magma, ice and lightning rods; `ley_weaving` checks exact yields through `quickWeave`/`completeCareful` (call those directly; fake players can't play the minigame); `steady_the_current` wins the minigame with an autopilot and checks the server replay agrees; `ley_tuner` checks the source search and compass directions from the centre of its area (neighbouring test areas may hold leftover blocks).
 - **Loot balance:** `LootRateTests` rolls the boss table 20,000 times. It fails if the unique rate, the sigil rate or the per-kill value (6.5–9 gathering-minutes) drifts.
 
 ## NeoForge 26.2 API notes (checked against the real classes)

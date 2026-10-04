@@ -128,5 +128,21 @@ public class Config {
             .comment("Extra motes at Leycraft 99, rising from 0 at the mote's level (0.5 = +50%).")
             .defineInRange("leyLevelBonus", 0.5, 0.0, 10.0);
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+public static final ModConfigSpec.IntValue LEY_TUNER_RADIUS = BUILDER
+        .comment("Blocks a Ley Tuner searches for a strong source at Leycraft 0; it adds half the player's Leycraft level.")
+        .defineInRange("leyTunerRadius", 32, 8, 128);
+
+public static final ModConfigSpec.DoubleValue LEY_TUNER_MIN_POINTS = BUILDER
+        .comment("Resonance points (ley_resonance.json) a block needs to count as a strong source for the Ley Tuner.")
+        .defineInRange("leyTunerMinPoints", 3.0, 0.0, 1000.0);
+
+public static final ModConfigSpec.IntValue LEY_TUNER_BIOME_RADIUS = BUILDER
+        .comment("Blocks a Ley Tuner searches for a biome of its element when no source block is near.")
+        .defineInRange("leyTunerBiomeRadius", 1600, 0, 6400);
+
+public static final ModConfigSpec.IntValue LEY_TUNER_COOLDOWN = BUILDER
+        .comment("Ticks between rings of a Ley Tuner.")
+        .defineInRange("leyTunerCooldown", 60, 0, 1200);
+
+static final ModConfigSpec SPEC = BUILDER.build();
 }

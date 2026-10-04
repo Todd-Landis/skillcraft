@@ -109,7 +109,25 @@ A one-button minigame, server-verified like every altar minigame (seeded, inputs
 - **Pulses don't count until your first press,** so closing it untouched is free, the same as the other minigames.
 - **Harder for higher motes:** the band is narrower and drifts faster (tier = the mote's level tier).
 
-## 7. Decisions
+## 7. Finding sources: the Ley Tuner
+Hunting for lava, a glacier or a geode shouldn't be a chore, so Leycraft comes with a finder.
+
+- **Ley Tuner** (crafting table): 2 amethyst shards and 3 copper ingots in a fork shape.
+- **Use:** it rings and points to the **nearest strong source** of its element:
+  - **Fire:** lava, magma, fire, campfires.
+  - **Frost:** blue ice, packed ice, ice, powder snow.
+  - **Storm:** lightning rods, oxidized copper.
+  - **Arcane:** enchanting tables, **budding amethyst** (so it leads to geodes, where Ley Hearts drop), amethyst blocks, crying obsidian.
+  - A source is any block in `ley_resonance.json` worth at least 3 points.
+- **The answer:** the action bar names the block, the distance, a compass direction and the height ("Fire: Magma Block, 23 blocks north-east (6 below)"). A short trail of the element's particles leads off toward it, and the chime **rises in pitch the closer it is**.
+- **Range:** 32 blocks plus half your Leycraft level (81 at 99). It only searches loaded chunks, so it never generates terrain.
+- **Fallback:** if no source block is in range, it looks for the nearest **biome** of that element, up to 1,600 blocks away (like `/locate biome`). If you're already standing in one, it says an altar here gets the biome bonus.
+- **Sneak + use** retunes it: Arcane → Fire → Frost → Storm. Each tuner remembers its element, and its name shows it ("Ley Tuner (Fire)").
+- **Cooldown:** 3 seconds between rings.
+- All of this is server config (`leyTuner*`).
+- **Why a tool, not an ability:** it's available from Leycraft 1 with no unlock, it works without a free ability slot, and it scales with level through its range.
+
+## 8. Decisions
 - **New skill: Leycraft (Artisan),** rather than folding it into Magic or Crafting. Rune-making is its own skill in the games this draws on, and an Artisan skill that feeds a combat skill is the healthy shape.
 - **No recipe menu: the surroundings decide the element.** This is the novel part, and it needs no new screen.
 - **Amethyst still works, at half value,** so Magic never stalls behind a node a player hasn't found yet.
@@ -117,7 +135,7 @@ A one-button minigame, server-verified like every altar minigame (seeded, inputs
 - **Weaving doesn't use fatigue.** The essence is already limited by gathering fatigue at the node.
 - **Bench mote recipes removed.** Keeping them would have made the skill pointless.
 
-## 8. Later
+## 9. Later
 - More motes for tier VI–X spells (e.g. a void or tide element), each with its own resonance blocks.
 - Ley rifts generated in the world (rare natural Ley Stone), when world generation arrives.
 - A **ley pouch** that carries extra essence, unlocked by level.
