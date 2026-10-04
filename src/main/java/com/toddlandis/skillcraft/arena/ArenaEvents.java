@@ -64,6 +64,13 @@ public final class ArenaEvents {
         }
     }
 
+    // Nothing in the arena dimension despawns. Vanilla removes every monster on Peaceful (even
+    // persistent ones), which would make the boss and its adds vanish as soon as they spawn.
+    @SubscribeEvent
+    static void onDespawn(net.neoforged.neoforge.event.entity.living.MobDespawnEvent event) {
+        if (ArenaDimension.is(event.getEntity().level())) event.setResult(net.neoforged.neoforge.event.entity.living.MobDespawnEvent.Result.DENY);
+    }
+
     @SubscribeEvent
     static void onDrops(LivingDropsEvent event) {
         if (event.getEntity() instanceof Mob mob && mob.entityTags().contains(SlagheartEntity.MITE_TAG)) event.setCanceled(true);

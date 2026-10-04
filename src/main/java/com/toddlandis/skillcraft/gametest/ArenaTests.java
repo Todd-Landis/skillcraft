@@ -92,14 +92,17 @@ public final class ArenaTests {
             player.teleportTo(arena, instance.center().getX() + 0.5, instance.center().getY(), instance.center().getZ() + 6.5,
                     java.util.Set.of(), 180f, 0f, false);
         });
-        helper.runAfterDelay(10, () -> {
-            helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING, "boss did not wake when a player stepped onto the floor");
+        helper.runAfterDelay(10, () -> helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING && instance.boss() != null,
+                "boss did not wake when a player stepped onto the floor"));
+        // The entity itself can take a few ticks to become findable on a slow (CI) server
+        helper.runAfterDelay(35, () -> {
+            helper.assertTrue(instance.state() == ArenaInstance.State.FIGHTING, "the fight stopped right after the boss woke");
             helper.assertTrue(arena.getEntity(instance.boss()) instanceof SlagheartEntity, "boss entity missing");
             // Back to the lobby: after RESET_SECONDS with nobody on the floor the boss resets
             Vec3 lobby = instance.lobbySpawn();
             player.teleportTo(arena, lobby.x, lobby.y, lobby.z, java.util.Set.of(), 180f, 0f, false);
         });
-        helper.runAfterDelay(15 + ArenaManager.RESET_SECONDS * 20, () -> {
+        helper.runAfterDelay(40 + ArenaManager.RESET_SECONDS * 20, () -> {
             helper.assertTrue(instance.state() == ArenaInstance.State.DORMANT, "boss did not reset after the arena emptied");
             helper.assertTrue(instance.boss() == null, "reset left a boss behind");
             manager.leave(player, ArenaManager.LeaveReason.EXIT);

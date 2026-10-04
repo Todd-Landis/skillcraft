@@ -82,6 +82,12 @@ public final class ArenaInstance {
     long emptySince() { return emptySince; }
     void setEmptySince(long tick) { emptySince = tick; }
 
+    // When the boss entity was last found missing (-1 = it's there). A freshly spawned boss can
+    // take a few ticks to become findable on a busy server, so it only counts as lost after a while.
+    private long bossMissingSince = -1;
+    long bossMissingSince() { return bossMissingSince; }
+    void setBossMissingSince(long tick) { bossMissingSince = tick; }
+
     boolean built() { return built; }
     void setBuilt(boolean built) { this.built = built; }
 
