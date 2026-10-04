@@ -214,6 +214,22 @@ Details are in `docs/DESIGN.md` ("Elemental Hearts" and "XP curve"). Hearts are 
 - [ ] **XP curve:** open the Skills screen (**K**). An existing save's levels should be a little higher than before (XP is kept, levels need 25% less). `/skill set @s woodcutting 99` should show 9,775,823 XP.
 - [ ] **Feel:** does finding hearts feel rewarding but not common? The rates are in `data/skillcraft/data_maps/block/elemental_hearts.json` and `item/elemental_hearts.json`; edit them and `/reload`.
 
+### G. Leycraft
+Details are in `docs/LEYCRAFT.md`. Take a **Ley Altar**, a **Ley Stone** node (or a Ley Heart) and a stack of **Ley Shards** from the creative tab. Then switch to survival.
+
+- [ ] **Bare altar:** place it on open grass. Use it with an empty hand: it says Arcane 0% and shows the other elements. Purple glyphs drift up from it.
+- [ ] **Quick weave:** load 64 ley shards (use with the stack), then sneak + use with an empty hand. You should get 256 Arcane Motes and 384 Leycraft XP at level 1.
+- [ ] **Careful weave:** load again and use with an empty hand. *Steady the Current* opens: hold Space or the mouse to push the bright line right, let go and it drifts back.
+  - Keep it in the band when the pulse bar under the channel fills.
+  - A clean win says "A steady weave" and gives about 1.5× the motes. A loss gives 0.8×.
+- [ ] **Fire altar:** put about 10 magma blocks, or a lava pool, within 4 blocks. The particles turn to flames and the altar names Fire.
+  - At Leycraft 1 it refuses ("You need Leycraft 5"). After `/skill set @s leycraft 5` it weaves Ember Motes, twice as many per shard.
+- [ ] **Frost and Storm:** packed ice around an altar gives Frost (Leycraft 12). Lightning rods, or a mountaintop in a thunderstorm, give Storm (Leycraft 20).
+- [ ] **Amethyst:** amethyst shards work as essence at half value.
+- [ ] **Ownership:** a second player can't weave from or break your loaded altar. Breaking your own gives the shards back.
+- [ ] **Ley Stone:** place the node and mine it with a pickaxe: 2 Ley Shards per success and Mining XP. Breaking natural amethyst clusters in a geode sometimes drops a Ley Heart.
+- [ ] **Feel:** is *Steady the Current* fun and fair at Arcane, Frost and Storm? Are mote yields generous enough for wand combat? The numbers are in `ley_weaves.json`, `ley_resonance.json` and the server config.
+
 ### C. Things only a person can judge
 These matter most:
 - **Slagheart model and animations:** proportions, whether every attack reads clearly, and whether windups are long enough to react to.

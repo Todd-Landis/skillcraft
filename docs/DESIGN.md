@@ -29,10 +29,11 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 | Cooking | Artisan | Cooking Range | Raw food cooks over time; burn chance falls with level until a stop-burn level |
 | Firemaking | Artisan | Fire | Log tiers burn for XP; campfires used for cooking and buffs |
 | Construction | Artisan | Building | Blueprint-based furniture and utility blocks (bank chest, altars, teleports) built from planks and bars |
+| Leycraft | Artisan | Amethyst and the world around you | Mine ley shards, weave them into Magic's motes at a Ley Altar whose element comes from its surroundings (lava, ice, lightning rods, amethyst); quick or careful (minigame) weaves ([LEYCRAFT.md](LEYCRAFT.md)) |
 | Agility | Support | Parkour | XP for climbing, gap jumps and high dives (once per spot); movement abilities (Sidestep, Grapple Line, Shadowstep...) and perks (safe falls, faster sprint); courses with obstacles later |
 | Sailing | Support | Boats | Upgradeable ships, sea regions and island content |
 
-Planned for later: Herblore, Fletching, Thieving, Slayer, Hunter, Runecrafting (renamed equivalents).
+Planned for later: Herblore, Fletching, Thieving, Slayer, Hunter (renamed equivalents). The rune-making skill arrived as Leycraft.
 
 ## XP curve
 The OSRS formula scaled by **0.75** (`XpTable.CURVE_SCALE`): every level needs 25% less XP, so maxing a skill takes about 25% less time.
@@ -119,6 +120,7 @@ Nodes aren't made from the resources they give. Instead, the normal Minecraft wo
   | Diamond ore | 4% | 25 ores |
   | Emerald ore | 6% | 17 ores |
   | Ancient debris | 8% | 12–13 blocks |
+  | Amethyst cluster (Ley Heart, for Leycraft) | 3% | 33 clusters (one or two geodes) |
   | Cod / salmon / pufferfish / tropical fish | 2.5% / 5% / 5% / 40% | ~67 / 80 / 125 / 154 fish |
 
   Fish chances are balanced against how often each fish is caught, since vanilla fishing gives cod far more often than tropical fish. All of these are rough first numbers to tune by feel.
@@ -310,6 +312,7 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - a framework ready for Spells (item costs) and Prayers (toggles with drain)
 - [x] **Phase 6.6 – Fishing & Cooking:** fishing spots on open water (cod, salmon, reef fish, pufferfish) with the Set the Hook minigame, shoals that swim off and resurface instead of stumps, vanilla fishing gated by level; the Cooking skill and the Cooking Range with burn chance; vanilla food cooking switched off
 - [x] **Phase 6.7 – Elemental Hearts:** nodes and shoals are attuned from hearts found by felling grown trees, mining ores and rod fishing in the vanilla world (placed blocks never drop one); one heart per attunement, cracking 25% of the time on a failure; XP curve ×0.75 (99 = 9,775,823)
+- [x] **Phase 6.8 – Leycraft:** a rune-making skill. Ley shards from a Ley Stone node are woven into motes at a Ley Altar; the altar weaves whichever element its surroundings resonate with (blocks, biome, weather, height). Quick weaves, or careful weaves with the Steady the Current minigame for up to ×1.5. Bench mote recipes removed ([LEYCRAFT.md](LEYCRAFT.md))
 - [ ] **Phase 6.5 – More combat content:** higher-tier weapon/ammo/armour families, the remaining abilities (Undertow), more mid-tier bosses with niche uniques and Codices
 - [x] **Phase 7 – Agility, Magic and Prayer:** (see [AGILITY_MAGIC_PRAYER.md](AGILITY_MAGIC_PRAYER.md))
   - Magic: wands and staves, elemental damage types, motes, bolts and 8 spells

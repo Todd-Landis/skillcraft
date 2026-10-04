@@ -7,7 +7,7 @@ Three skills plug into the Phase 6 ability bar:
 - **Agility** unlocks movement abilities and passive perks. You train it by moving well: climbing, gap jumps and high dives.
 - **Magic** adds a third combat style next to melee and ranged.
   - **Wands** and **staves** fire bolts and cast **spells**: elemental damage, area attacks, crowd control, and utility like Blink, a ward and a home teleport.
-  - Spells cost **motes**, crafted consumables. An elemental staff supplies its own element for free.
+  - Spells cost **motes**, consumables woven by the Leycraft skill (docs/LEYCRAFT.md). An elemental staff supplies its own element for free.
 - **Prayer** adds **blessings**: toggles that drain a new resource, **Faith**, while they are on. You train it by burying bones, or by offering them at a **Votive Shrine** for more XP. The shrine also refills Faith.
 
 All names, art and text are original. OSRS was a reference for mechanics only: elemental staves supplying their element, prayer points draining while prayers are on, and bones at an altar.
@@ -89,14 +89,16 @@ A focus is any item listed in `data_maps/item/magic_focus.json`:
   - Magic trades some damage for range, elements and area spells; elemental matchups can swing it a lot.
 
 ### 2.2 Motes (the spell reagents)
-Motes are crafted at the Crafting Bench, 16 per craft. They're in the `skillcraft:consumables` tag, so they're never stamped as gear.
+Motes are woven from ley shards (or amethyst shards) at a **Ley Altar** by the **Leycraft** skill: see [LEYCRAFT.md](LEYCRAFT.md). Which mote an altar makes depends on what surrounds it. They're in the `skillcraft:consumables` tag, so they're never stamped as gear.
 
-| Mote | Materials | Crafting level |
+| Mote | Leycraft level | Where to weave it |
 |---|---|---|
-| **Arcane Mote** | amethyst shard + lapis lazuli | 1 |
-| **Ember Mote** | amethyst shard + 2 coal | 5 |
-| **Frost Mote** | amethyst shard + 4 snowballs | 5 |
-| **Storm Mote** | amethyst shard + 2 redstone | 8 |
+| **Arcane Mote** | 1 | Any altar with no stronger resonance; amethyst, bookshelves, an enchanting table |
+| **Ember Mote** | 5 | Lava, magma, fire; the Nether |
+| **Frost Mote** | 12 | Ice, packed ice, snow; snowy biomes |
+| **Storm Mote** | 20 | Lightning rods, aged copper; thunderstorms, mountaintops |
+
+*Before Leycraft, motes were a Crafting Bench recipe (16 per amethyst shard plus a catalyst). That stand-in was removed.*
 
 ### 2.3 Bolts (the basic attack)
 - **Right-click** with a focus to fire a bolt of its element. It costs 1 mote of that element, which is free on a matching staff.
@@ -249,5 +251,5 @@ These come from `./gradlew runGameTestServer` in CI. **All 24 GameTests pass**: 
 
 ## 6. Later
 - **Agility courses:** start, checkpoint and finish markers, with XP for completed laps.
-- **Runecrafting-style mote altars** (motes are crafted at the bench for now).
+- ~~Runecrafting-style mote altars~~: done as Leycraft (docs/LEYCRAFT.md).
 - **More:** robes with magic defence, magic-using bosses, prayer potions, and spells at levels 51–99 with custom tiers.

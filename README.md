@@ -37,6 +37,7 @@ src/main/java/com/toddlandis/skillcraft/
   gathering/               level gates for breaking world blocks
   node/                    skilling nodes, NodeType stats, auto-gathering sessions, Elemental Hearts (drops from the vanilla world)
   altar/                   Attunement Altar (turns Elemental Hearts into nodes)
+  leycraft/                Leycraft: Ley Altar, resonance, weaving motes (docs/LEYCRAFT.md)
   magic/                   wands and staves (MagicFocus), motes, bolts (SpellBolt), casting
   prayer/                  Faith, blessings in combat, Votive Shrine, bone offerings
   agility/                 parkour XP, safe falls and sprint perks, recent movement for Sidestep

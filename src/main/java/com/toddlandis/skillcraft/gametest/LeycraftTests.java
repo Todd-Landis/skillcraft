@@ -65,7 +65,8 @@ public final class LeycraftTests {
         helper.assertTrue(frost.dominant() == LeyElement.FROST, "more frost than fire should weave Frost, got " + frost.levels());
 
         // 8 lightning rods = 64 points: storm caps at 100%
-        place(helper, Blocks.LIGHTNING_ROD, 8, 2);
+        // (Blocks.LIGHTNING_ROD is a set of copper stages in 26.2; take the plain rod by id)
+        place(helper, net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(net.minecraft.resources.Identifier.withDefaultNamespace("lightning_rod")), 8, 2);
         Resonance.Reading storm = Resonance.read(level, altar);
         helper.assertTrue(storm.dominant() == LeyElement.STORM && storm.strength() == 1.0, "8 lightning rods should cap Storm at 100%, got " + storm.levels());
 
