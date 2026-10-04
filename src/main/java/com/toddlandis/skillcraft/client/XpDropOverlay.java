@@ -50,7 +50,9 @@ public final class XpDropOverlay {
             }
             int alpha = (int) (255 * Math.min(1f, (1f - progress) * 2f)); // fade during the second half
             if (alpha < 8) continue;
-            int x = graphics.guiWidth() - font.width(drop.text()) - 6;
+            // Keep clear of the ability bar when it runs down the right edge
+            int rightMargin = com.toddlandis.skillcraft.client.ClientConfig.barOnRightEdge() ? com.toddlandis.skillcraft.client.ability.AbilityHud.RIGHT_EDGE_WIDTH : 6;
+            int x = graphics.guiWidth() - font.width(drop.text()) - rightMargin;
             int y = baseY - (int) (progress * RISE_PIXELS);
             graphics.text(font, drop.text(), x, y, ARGB.color(alpha, drop.color()), true);
         }

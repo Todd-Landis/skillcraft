@@ -6,7 +6,7 @@
     "level": 20,
     "weapon": "skillcraft:weapon_class/crossbow"
   },
-  "cooldown": 360,
+  "cooldown": 220,
   "behavior": {
     "type": "skillcraft:next_shot",
     "window": 100,

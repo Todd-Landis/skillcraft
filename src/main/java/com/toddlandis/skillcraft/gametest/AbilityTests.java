@@ -191,31 +191,32 @@ public final class AbilityTests {
         helper.succeed();
     }
 
-    // --- Momentum: +6 per full melee hit, +5 per projectile hit, +2 per hit taken, none from abilities, decay ---
+    // --- Momentum: per melee hit, per projectile hit, per hit taken (Config values), none from abilities, decay ---
 
     static void momentum(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ServerPlayer player = player(helper, "skillcraft_ability_momentum", new Vec3(4, 1, 8), -90f);
         level(player, Skill.MELEE, 30);
+        double melee = com.toddlandis.skillcraft.Config.MOMENTUM_PER_MELEE_HIT.get(), ranged = com.toddlandis.skillcraft.Config.MOMENTUM_PER_PROJECTILE_HIT.get(), taken = com.toddlandis.skillcraft.Config.MOMENTUM_PER_HIT_TAKEN.get();
         Zombie zombie = helper.spawnWithNoFreeWill(EntityTypes.ZOMBIE, new Vec3(6, 1, 8));
 
         zombie.hurtServer(level, level.damageSources().playerAttack(player), 3f);
-        helper.assertTrue(Math.abs(momentum(player) - 6) < 0.01, "a full-strength melee hit should give 6 Momentum, have " + momentum(player));
+        helper.assertTrue(Math.abs(momentum(player) - melee) < 0.01, "a full-strength melee hit should give " + melee + " Momentum, have " + momentum(player));
         zombie.invulnerableTime = 0;
         Arrow arrow = new Arrow(level, player, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
         zombie.hurtServer(level, level.damageSources().arrow(arrow, player), 2f);
-        helper.assertTrue(Math.abs(momentum(player) - 11) < 0.01, "a projectile hit should give 5 Momentum, have " + momentum(player));
+        helper.assertTrue(Math.abs(momentum(player) - (melee + ranged)) < 0.01, "a projectile hit should give " + ranged + " Momentum, have " + momentum(player));
         // A fake player can never be hurt (its client never "loads"), so post the event a real hit fires
         float hpBefore = player.getHealth();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post(player,
                 new net.neoforged.neoforge.common.damagesource.DamageContainer(level.damageSources().mobAttack(zombie), 1f)));
         boolean took = true;
-        helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "a hit taken should give 2 Momentum, have " + momentum(player)
+        helper.assertTrue(Math.abs(momentum(player) - (melee + ranged + taken)) < 0.01, "a hit taken should give " + taken + " Momentum, have " + momentum(player)
                 + " (hurt=" + took + ", health " + hpBefore + " -> " + player.getHealth() + ", mode " + player.gameMode() + ", invulnerable " + player.isInvulnerable() + ")");
         // Ability damage builds no Momentum by itself
         zombie.invulnerableTime = 0;
         com.toddlandis.skillcraft.ability.AbilityDamage.strike(player, zombie, 0.5, null);
-        helper.assertTrue(Math.abs(momentum(player) - 13) < 0.01, "ability damage must not build Momentum, have " + momentum(player));
+        helper.assertTrue(Math.abs(momentum(player) - (melee + ranged + taken)) < 0.01, "ability damage must not build Momentum, have " + momentum(player));
         helper.assertTrue(AbilityService.data(player).inCombat(level.getGameTime()), "hitting a mob should put you in combat");
 
         // Decay: once out of combat for the delay, it drains 5 per second
@@ -227,7 +228,7 @@ public final class AbilityTests {
         helper.runAfterDelay(45, () -> {
             float now = momentum(player);
             helper.assertTrue(now <= start - 9.99 && now >= start - 15.01, "Momentum should drain 10-15 in ~2 s out of combat: " + start + " -> " + now);
-            SkillCraft.LOGGER.info("[abilities] momentum: melee +6, projectile +5, hit taken +2, ability hits +0; decay {} -> {} in 45 ticks", start, now);
+            SkillCraft.LOGGER.info("[abilities] momentum: melee +{}, projectile +{}, hit taken +{}, ability hits +0; decay {} -> {} in 45 ticks", melee, ranged, taken, start, now);
             helper.succeed();
         });
     }
@@ -513,10 +514,10 @@ public final class AbilityTests {
             SkillCraft.LOGGER.info("[dps] auto-attacks only: {} damage = {} DPS", String.format("%.1f", dealt[0]), String.format("%.2f", dealt[0] / seconds));
             SkillCraft.LOGGER.info("[dps] with rotation:     {} damage = {} DPS (Battle Trance x{}, Sweeping Arc x{}, Rending Cut x{}, Lunge x{})",
                     String.format("%.1f", dealt[1]), String.format("%.2f", dealt[1] / seconds), uses[0], uses[1], uses[2], uses[3]);
-            SkillCraft.LOGGER.info("[dps] ratio: {} (spec target 1.15-1.25)", String.format("%.3f", ratio));
+            SkillCraft.LOGGER.info("[dps] ratio: {} (first-build target 1.15-1.25; ~1.39 after the playtest pacing pass)", String.format("%.3f", ratio));
             helper.assertTrue(dealt[0] > 0, "the auto-attack player dealt no damage");
             if (ratio < 1.05) SkillCraft.LOGGER.info("[dps] targeting: {}", targetDebug(rotation, dummies[1]));
-            helper.assertTrue(ratio >= 1.05 && ratio <= 1.40, "rotation DPS gain out of bounds: x" + String.format("%.3f", ratio));
+            helper.assertTrue(ratio >= 1.05 && ratio <= 1.55, "rotation DPS gain out of bounds: x" + String.format("%.3f", ratio));
             helper.succeed();
         });
     }

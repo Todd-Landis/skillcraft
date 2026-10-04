@@ -13,5 +13,7 @@ public class SkillCraftClient {
     public SkillCraftClient(ModContainer container) {
         // Adds a config button for this mod on the Mods screen.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        // Display settings (ability bar position)
+        container.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, com.toddlandis.skillcraft.client.ClientConfig.SPEC);
     }
 }

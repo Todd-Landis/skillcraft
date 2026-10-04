@@ -6,7 +6,7 @@
     "level": 15,
     "weapon": "skillcraft:weapon_class/ranged"
   },
-  "cooldown": 280,
+  "cooldown": 160,
   "off_gcd": true,
   "behavior": {
     "type": "skillcraft:leap",

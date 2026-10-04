@@ -6,7 +6,7 @@
     "level": 15,
     "weapon": "skillcraft:weapon_class/axe"
   },
-  "cooldown": 280,
+  "cooldown": 160,
   "momentum": {
     "generate": 5
   },

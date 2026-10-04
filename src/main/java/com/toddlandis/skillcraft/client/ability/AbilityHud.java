@@ -14,7 +14,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 
-// The 4-slot ability bar and Momentum bar on the HUD (spec 2.1). It sits right of the hotbar,
+// The 4-slot ability bar and Momentum bar on the HUD (spec 2.1). By default it is a vertical column
+// on the right edge (client config abilityBarPosition); the HOTBAR option puts it right of the hotbar,
 // clear of the offhand slot and attack indicator; on narrow screens it becomes a 2x2 grid, and if
 // even that doesn't fit, a row above the hunger/air bars. Each slot shows the icon, its key, a
 // cooldown sweep, the global cooldown, a windup bar, and is dimmed when it can't be used now.
@@ -37,7 +38,15 @@ public final class AbilityHud {
 
     private AbilityHud() {}
 
+    // Space the right-edge column takes up (slots, Momentum bar and margins), for other HUD bits to avoid
+    public static final int RIGHT_EDGE_WIDTH = SLOT + MOMENTUM_H + 10;
+
     public static Layout layout(Minecraft mc, int width, int height) {
+        if (com.toddlandis.skillcraft.client.ClientConfig.barOnRightEdge()) {
+            // A vertical column on the right edge, centred vertically (the Momentum bar runs beside it)
+            int columnHeight = AbilityData.SLOTS * SLOT + (AbilityData.SLOTS - 1) * GAP;
+            return new Layout(width - SLOT - 4, (height - columnHeight) / 2, 1);
+        }
         int hotbarRight = width / 2 + 91;
         int reserve = 4;
         Player player = mc.player;
@@ -63,14 +72,26 @@ public final class AbilityHud {
     }
 
     static void draw(GuiGraphicsExtractor g, Minecraft mc, Player player, AbilityData data, Layout layout) {
-        // Momentum: a thin bar over the slots, with a notch at 50 (Surge) and gold when full (Ultimate)
-        int barY = layout.y() - MOMENTUM_H - 2;
-        int barW = layout.width();
+        // Momentum: a thin bar beside the slots, with a notch at 50 (Surge) and gold when full (Ultimate).
+        // Over a horizontal row it runs left to right; beside the vertical column it fills bottom to top.
         float momentum = data.momentum();
-        g.fill(layout.x() - 1, barY - 1, layout.x() + barW + 1, barY + MOMENTUM_H + 1, 0xC0101014);
-        int filled = Math.round(barW * momentum / AbilityData.MAX_MOMENTUM);
-        g.fill(layout.x(), barY, layout.x() + filled, barY + MOMENTUM_H, momentum >= AbilityData.MAX_MOMENTUM ? 0xFFFFD34A : 0xFFE0782A);
-        g.fill(layout.x() + barW / 2, barY, layout.x() + barW / 2 + 1, barY + MOMENTUM_H, 0xFF000000);
+        int color = momentum >= AbilityData.MAX_MOMENTUM ? 0xFFFFD34A : 0xFFE0782A;
+        if (layout.columns() == 1) {
+            int barX = layout.x() - MOMENTUM_H - 3;
+            int barH = AbilityData.SLOTS * SLOT + (AbilityData.SLOTS - 1) * GAP;
+            int top = layout.y(), bottom = top + barH;
+            g.fill(barX - 1, top - 1, barX + MOMENTUM_H + 1, bottom + 1, 0xC0101014);
+            int filled = Math.round(barH * momentum / AbilityData.MAX_MOMENTUM);
+            g.fill(barX, bottom - filled, barX + MOMENTUM_H, bottom, color);
+            g.fill(barX, top + barH / 2, barX + MOMENTUM_H, top + barH / 2 + 1, 0xFF000000);
+        } else {
+            int barY = layout.y() - MOMENTUM_H - 2;
+            int barW = layout.width();
+            g.fill(layout.x() - 1, barY - 1, layout.x() + barW + 1, barY + MOMENTUM_H + 1, 0xC0101014);
+            int filled = Math.round(barW * momentum / AbilityData.MAX_MOMENTUM);
+            g.fill(layout.x(), barY, layout.x() + filled, barY + MOMENTUM_H, color);
+            g.fill(layout.x() + barW / 2, barY, layout.x() + barW / 2 + 1, barY + MOMENTUM_H, 0xFF000000);
+        }
 
         for (int slot = 0; slot < AbilityData.SLOTS; slot++) {
             Identifier id = data.activeSlot(slot);

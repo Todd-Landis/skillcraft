@@ -6,7 +6,7 @@
     "level": 25,
     "weapon": "skillcraft:weapon_class/heavy_blunt"
   },
-  "cooldown": 440,
+  "cooldown": 260,
   "windup": 8,
   "behavior": {
     "type": "skillcraft:ground_slam",

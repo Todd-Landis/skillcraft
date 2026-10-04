@@ -5,7 +5,7 @@
     "skill": "constitution",
     "level": 10
   },
-  "cooldown": 600,
+  "cooldown": 360,
   "off_gcd": true,
   "behavior": {
     "type": "skillcraft:buff",

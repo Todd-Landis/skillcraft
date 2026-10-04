@@ -6,7 +6,7 @@
     "level": 10,
     "weapon": "skillcraft:weapon_class/ranged"
   },
-  "cooldown": 360,
+  "cooldown": 220,
   "momentum": {
     "generate": 5
   },

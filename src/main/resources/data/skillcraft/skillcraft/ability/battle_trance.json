@@ -6,7 +6,7 @@
     "level": 35,
     "weapon": "skillcraft:weapon_class/melee"
   },
-  "cooldown": 1800,
+  "cooldown": 900,
   "behavior": {
     "type": "skillcraft:buff",
     "effect": "skillcraft:battle_trance",

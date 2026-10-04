@@ -6,7 +6,7 @@
     "level": 20,
     "weapon": "skillcraft:weapon_class/polearm"
   },
-  "cooldown": 360,
+  "cooldown": 220,
   "behavior": {
     "type": "skillcraft:line_thrust",
     "length": 5,

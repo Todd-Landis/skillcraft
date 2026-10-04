@@ -6,7 +6,7 @@
     "level": 12,
     "weapon": "skillcraft:weapon_class/spear"
   },
-  "cooldown": 280,
+  "cooldown": 160,
   "off_gcd": true,
   "behavior": {
     "type": "skillcraft:leap",

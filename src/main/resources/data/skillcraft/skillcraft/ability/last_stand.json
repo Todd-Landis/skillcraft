@@ -5,7 +5,7 @@
     "skill": "defence",
     "level": 40
   },
-  "cooldown": 2400,
+  "cooldown": 1200,
   "off_gcd": true,
   "behavior": {
     "type": "skillcraft:buff",

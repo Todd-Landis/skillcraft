@@ -6,7 +6,7 @@
     "level": 1,
     "weapon": "skillcraft:weapon_class/bow"
   },
-  "cooldown": 200,
+  "cooldown": 120,
   "momentum": {
     "generate": 6
   },

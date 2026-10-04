@@ -5,7 +5,7 @@
     "skill": "defence",
     "level": 15
   },
-  "cooldown": 600,
+  "cooldown": 360,
   "off_gcd": true,
   "behavior": {
     "type": "skillcraft:cleanse",

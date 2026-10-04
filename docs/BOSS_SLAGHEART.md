@@ -123,7 +123,7 @@ In melee, Slagheart only uses Hammerfall and Tong Sweep. It never punches withou
 - **Entry:**
   1. Craft a **Summoning Brazier** (crafting table) and place it anywhere outside the arena.
   2. Forge an **Ember Sigil** at the Forging Anvil (Smithing 20: 3 iron ingots, 1 gold ingot, 6 coal, 4 redstone dust).
-  3. Right-click the brazier with the sigil. The sigil is used up, and **you plus up to 3 players standing within 5 blocks of the brazier** are taken into a fresh instance.
+  3. Right-click the brazier with the sigil. You are taken to the shared arena's lobby. **The sigil is a reusable key for now** (it is kept; set `consumeEmberSigil = true` in `skillcraft-common.toml` to make each entry cost one). Each player needs their own sigil.
   4. Slagheart rises over 3 seconds (an awaken animation). The fight starts after that.
 - **Ownership:** each instance belongs to the player who used the sigil. Only its party can be in it. There's no way to walk into someone else's plot (1,024 blocks apart and walled with barriers), and the arena dimension can't be reached any other way (no portals; only ops can `/tp` there).
 - **Exit rules:**

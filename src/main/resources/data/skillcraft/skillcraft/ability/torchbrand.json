@@ -6,7 +6,7 @@
     "level": 5,
     "offhand": "skillcraft:weapon_class/torch"
   },
-  "cooldown": 240,
+  "cooldown": 140,
   "momentum": {
     "generate": 5
   },

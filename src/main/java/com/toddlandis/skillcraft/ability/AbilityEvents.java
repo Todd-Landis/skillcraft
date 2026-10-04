@@ -47,7 +47,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 // Where abilities meet the rest of combat (all server-side):
-//   Momentum: +6 x strength^2 per melee hit, +5 per projectile hit, +2 per hit taken (Config);
+//   Momentum: +10 x strength^2 per melee hit, +9 per projectile hit, +4 per hit taken (Config);
 //             ability damage itself builds none (abilities generate their own fixed amount)
 //   Combat state for loadout locks; Riposte parries and counters; Battle Trance, Brace,
 //   Bulwark and Last Stand; next-shot bonuses and Deadeye on projectiles; manual arrow piercing;

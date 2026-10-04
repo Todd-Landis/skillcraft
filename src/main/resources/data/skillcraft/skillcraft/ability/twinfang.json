@@ -7,7 +7,7 @@
     "weapon": "skillcraft:weapon_class/melee",
     "offhand": "skillcraft:weapon_class/sidearm"
   },
-  "cooldown": 200,
+  "cooldown": 120,
   "momentum": {
     "generate": 8
   },

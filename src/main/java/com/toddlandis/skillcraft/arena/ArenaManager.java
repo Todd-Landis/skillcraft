@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 
 // Runs the boss arenas. Every boss has ONE permanent arena in the arena dimension, shared by
 // everyone, at a fixed spot far from the others (so no arena can be reached from another):
-//   - The Summoning Brazier takes you to the arena's lobby (the Ember Sigil is the entry fee).
+//   - The Summoning Brazier takes you to the arena's lobby (holding an Ember Sigil; it is only used up if consumeEmberSigil is on).
 //   - The boss wakes as soon as anyone steps onto the arena floor; everyone on the floor fights it.
 //   - After a kill the reward chest appears and the boss reforms RESPAWN_SECONDS later.
 //   - If nobody has been on the floor for RESET_SECONDS, the boss is removed and its hazards

@@ -6,7 +6,7 @@
     "level": 8,
     "weapon": "skillcraft:weapon_class/melee"
   },
-  "cooldown": 300,
+  "cooldown": 180,
   "momentum": {
     "generate": 5
   },

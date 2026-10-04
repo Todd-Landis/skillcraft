@@ -7,7 +7,7 @@
     "weapon": "skillcraft:weapon_class/maul",
     "codex": true
   },
-  "cooldown": 1800,
+  "cooldown": 900,
   "windup": 12,
   "behavior": {
     "type": "skillcraft:ground_slam",

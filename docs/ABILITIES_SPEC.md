@@ -351,3 +351,10 @@ Todd pointed out after the first build that the off hand can carry an ability to
 - **Ideas for later:**
   - off-hand items other than weapons: a lantern, a totem, or a spellbook that holds Spells
   - a parry art for an off-hand dagger
+
+### 8.8 First playtest pass (Todd's feedback)
+- **Bar position:** the ability bar is now a **vertical column on the right edge** by default, with the Momentum bar beside it filling bottom to top (notch at 50). The old row beside the hotbar is still available: client config `abilityBarPosition = HOTBAR` (Mods > SkillCraft > Config). XP drops shift left to stay clear of the column.
+- **Momentum builds faster:** gains raised from +6 / +5 / +2 to **+10 / +9 / +4** (melee hit, projectile hit, hit taken). Decay is unchanged.
+- **Shorter cooldowns:** Basic and Surge cooldowns cut to 60%, Ultimates to 50% (whole seconds, 5 s minimum). For example Lunge 12 s → 7 s, Brace 25 s → 15 s, Battle Trance 90 s → 45 s, Last Stand 120 s → 60 s.
+- **Balance cost:** the `ability_dps` rotation now gets Battle Trance ×2, Sweeping Arc ×6, Rending Cut ×7, Lunge ×9 in 60 s, for **1230.7 damage = 20.51 DPS**, a ratio of **×1.389** (was ×1.217). That's above the §6 +15–25% guardrail, accepted on purpose because the slower pacing felt bad. The test's failure band was widened to ×1.05–1.55. If boss kills feel too quick, trim per-use damage rather than bringing the long cooldowns back.
+- **Ember Sigil is reusable for now:** config `consumeEmberSigil` (default false) keeps the sigil when entering the arena.

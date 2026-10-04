@@ -6,7 +6,7 @@
     "level": 40,
     "weapon": "skillcraft:weapon_class/ranged"
   },
-  "cooldown": 2000,
+  "cooldown": 1000,
   "behavior": {
     "type": "skillcraft:buff",
     "effect": "skillcraft:deadeye",
