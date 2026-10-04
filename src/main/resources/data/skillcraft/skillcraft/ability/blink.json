@@ -1,0 +1,23 @@
+{
+  "category": "spell",
+  "class": "basic",
+  "requires": {
+    "skill": "magic",
+    "level": 18,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 200,
+  "off_gcd": true,
+  "item_costs": [
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 1
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:dash",
+    "mode": "look_3d",
+    "distance": 8
+  },
+  "icon": "skillcraft:ability/blink"
+}

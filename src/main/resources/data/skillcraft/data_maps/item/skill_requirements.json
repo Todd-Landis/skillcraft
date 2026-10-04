@@ -182,6 +182,24 @@
     },
     "minecraft:turtle_helmet": {
       "defence": 15
+    },
+    "skillcraft:apprentice_wand": {
+      "magic": 1
+    },
+    "skillcraft:ember_staff": {
+      "magic": 10
+    },
+    "skillcraft:rime_staff": {
+      "magic": 15
+    },
+    "skillcraft:tempest_staff": {
+      "magic": 20
+    },
+    "skillcraft:arcanist_wand": {
+      "magic": 30
+    },
+    "skillcraft:starseer_staff": {
+      "magic": 40
     }
   }
 }

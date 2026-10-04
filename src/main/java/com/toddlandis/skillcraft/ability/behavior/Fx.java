@@ -31,8 +31,20 @@ final class Fx {
     }
 
     static Component damage(float share, java.util.Optional<DamageStyle> style) {
-        return style.map(s -> Component.translatable("ability.skillcraft.detail.damage_typed", Math.round(share * 100), s.displayName()))
+        return style.map(s -> Component.translatable(s.isMagic() ? "ability.skillcraft.detail.damage_spell" : "ability.skillcraft.detail.damage_typed",
+                        Math.round(share * 100), s.displayName()))
                 .orElse(Component.translatable("ability.skillcraft.detail.damage", Math.round(share * 100)));
+    }
+
+    // The particle an element's effects use (null for non-magic types)
+    static ParticleOptions element(DamageStyle style) {
+        if (style == null || !style.isMagic()) return null;
+        return switch (style) {
+            case FIRE -> net.minecraft.core.particles.ParticleTypes.FLAME;
+            case FROST -> net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
+            case STORM -> net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK;
+            default -> net.minecraft.core.particles.ParticleTypes.WITCH;
+        };
     }
 
     static Component blocks(String key, float value) {

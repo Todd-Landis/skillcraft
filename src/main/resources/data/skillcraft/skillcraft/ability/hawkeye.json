@@ -1,0 +1,22 @@
+{
+  "category": "prayer",
+  "class": "basic",
+  "requires": {
+    "skill": "prayer",
+    "level": 23
+  },
+  "cooldown": 20,
+  "off_gcd": true,
+  "toggle": {
+    "drain_per_second": 0.1,
+    "resource": "faith",
+    "group": "ranged"
+  },
+  "behavior": {
+    "type": "skillcraft:blessing",
+    "damage_dealt": {
+      "ranged": 0.1
+    }
+  },
+  "icon": "skillcraft:ability/hawkeye"
+}

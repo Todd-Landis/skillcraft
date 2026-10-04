@@ -146,6 +146,7 @@ public class AbilityBookScreen extends Screen {
         tabRects.clear();
         int x = catX + PAD, y = catY + 16, right = catX + catW - PAD;
         for (AbilityCategory category : AbilityCategory.values()) {
+            if (!shown(category)) continue;
             int w = font.width(category.displayName()) + 10;
             if (x + w > right && x > catX + PAD) {
                 x = catX + PAD;
@@ -154,6 +155,11 @@ public class AbilityBookScreen extends Screen {
             tabRects.add(new int[]{x, y, w, category.ordinal()});
             x += w + 2;
         }
+    }
+
+    // Tabs with nothing in them are hidden (Utility is empty since Sprint Burst moved to Agility)
+    private static boolean shown(AbilityCategory category) {
+        return category.comingLater() || ClientAbilities.definitions.values().stream().anyMatch(def -> def.category() == category);
     }
 
     private int tabRows() {
@@ -295,7 +301,13 @@ public class AbilityBookScreen extends Screen {
             }
         }
         g.text(font, Component.translatable("screen.skillcraft.ability_momentum", Math.round(data.momentum())), barX + PAD, barY + 74, GRAY, false);
-        g.textWithWordWrap(font, Component.translatable("screen.skillcraft.ability_hint"), barX + PAD, barY + 83, BAR_W - PAD * 2, 0xFF6A6A78, false);
+        com.toddlandis.skillcraft.prayer.PlayerFaith faith = com.toddlandis.skillcraft.prayer.PrayerService.faith(player);
+        Component faithText = Component.translatable("screen.skillcraft.faith", Math.round(faith.points()), Math.round(faith.max()));
+        if (tab == AbilityCategory.PRAYER) {
+            g.text(font, faithText, barX + BAR_W - PAD - font.width(faithText), barY + 74, 0xFFE8D27A, false);
+        }
+        g.textWithWordWrap(font, Component.translatable(tab == AbilityCategory.PRAYER ? "screen.skillcraft.blessing_hint" : "screen.skillcraft.ability_hint"),
+                barX + PAD, barY + 83, BAR_W - PAD * 2, 0xFF6A6A78, false);
 
         // Dragged card follows the mouse
         if (dragging && pressed != null) {
@@ -323,6 +335,13 @@ public class AbilityBookScreen extends Screen {
                 ? Component.translatable("screen.skillcraft.ability_card", def.abilityClass().displayName(), seconds(def.cooldown()))
                 : lockText(player, id, def);
         g.text(font, font.substrByWidth(info, CARD_W - 30).getString(), x + 26, y + 17, unlocked ? classColor(def.abilityClass()) : RED, false);
+        if (unlocked && def.isToggle() && ClientAbilities.isToggled(id)) {
+            // an active blessing (or other toggle): a green "On" badge
+            Component on = Component.translatable("screen.skillcraft.blessing_on");
+            int bw = font.width(on) + 4;
+            g.fill(x + CARD_W - bw - 2, y + 2, x + CARD_W - 2, y + 12, 0xFF2E6A2E);
+            g.text(font, on, x + CARD_W - bw, y + 3, GREEN, false);
+        }
         if (!unlocked) {
             // a small padlock in the corner
             int lx = x + CARD_W - 9, ly = y + 3;
@@ -382,9 +401,14 @@ public class AbilityBookScreen extends Screen {
             lines.add(Component.translatable(def.abilityClass() == AbilityClass.ULTIMATE ? "screen.skillcraft.ability_momentum_all" : "screen.skillcraft.ability_momentum_cost",
                     Math.round(def.momentumRequired(level)), Math.round(def.momentumCost(level))).withStyle(ChatFormatting.GOLD));
         }
-        def.toggle().ifPresent(toggle -> lines.add(Component.translatable("screen.skillcraft.ability_toggle", String.format("%.1f", toggle.drainPerSecond())).withStyle(ChatFormatting.GOLD)));
+        def.toggle().ifPresent(toggle -> lines.add(Component.translatable(def.drainsFaith() ? "ability.skillcraft.detail.drain_faith" : "screen.skillcraft.ability_toggle",
+                String.format("%.2f", toggle.drainPerSecond())).withStyle(ChatFormatting.GOLD)));
         for (AbilityDefinition.ItemCost cost : def.itemCosts()) {
-            lines.add(Component.translatable("screen.skillcraft.ability_item_cost", cost.count(), cost.item().getDefaultInstance().getHoverName()).withStyle(ChatFormatting.GOLD));
+            net.minecraft.network.chat.MutableComponent line = Component.translatable("screen.skillcraft.ability_item_cost", cost.count(), cost.item().getDefaultInstance().getHoverName());
+            if (com.toddlandis.skillcraft.magic.MagicFocus.supplies(player, cost.item())) {
+                line.append(" ").append(Component.translatable("ability.skillcraft.detail.supplied", cost.item().getDefaultInstance().getHoverName()));
+            }
+            lines.add(line.withStyle(ChatFormatting.GOLD));
         }
         for (Component detail : def.behavior().details()) lines.add(detail.copy().withStyle(ChatFormatting.GRAY));
         lines.add(AbilityDefinition.description(id).copy().withStyle(ChatFormatting.WHITE));
@@ -459,6 +483,14 @@ public class AbilityBookScreen extends Screen {
             return true;
         }
         Identifier card = cardAt(mx, my);
+        if (card != null && right) {
+            // Blessings switch on and off straight from the book
+            AbilityDefinition def = ClientAbilities.get(card);
+            if (def != null && def.category() == AbilityCategory.PRAYER && def.isToggle() && ClientAbilities.unlocked(player, card, def)) {
+                ClientPacketDistributor.sendToServer(new com.toddlandis.skillcraft.network.ToggleBlessingPayload(card));
+            }
+            return true;
+        }
         if (card != null && !right) {
             AbilityDefinition def = ClientAbilities.get(card);
             if (def != null && ClientAbilities.unlocked(player, card, def)) {

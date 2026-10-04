@@ -1,0 +1,32 @@
+{
+  "category": "spell",
+  "class": "surge",
+  "requires": {
+    "skill": "magic",
+    "level": 22,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 240,
+  "item_costs": [
+    {
+      "item": "skillcraft:storm_mote",
+      "count": 3
+    },
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 1
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:spell_bolt",
+    "damage": 1.5,
+    "style": "storm",
+    "speed": 3,
+    "chain": {
+      "count": 3,
+      "range": 5,
+      "falloff": 0.25
+    }
+  },
+  "icon": "skillcraft:ability/chain_lightning"
+}

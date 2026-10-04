@@ -78,6 +78,16 @@ public class ModBlocks {
                     .sound(SoundType.TUFF_BRICKS)
                     .lightLevel(state -> 7));
 
+    // Prayer: offer bones for XP, refill Faith (docs/AGILITY_MAGIC_PRAYER.md)
+    public static final DeferredBlock<com.toddlandis.skillcraft.prayer.VotiveShrineBlock> VOTIVE_SHRINE = BLOCKS.registerBlock("votive_shrine",
+            com.toddlandis.skillcraft.prayer.VotiveShrineBlock::new, p -> p
+                    .strength(3.0f, 6.0f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.STONE)
+                    .sound(SoundType.STONE_BRICKS)
+                    .noOcclusion()
+                    .lightLevel(state -> 9));
+
     // Boss arena entrance (overworld), reward chest and exit (arena only; unbreakable)
     public static final DeferredBlock<SummoningBrazierBlock> SUMMONING_BRAZIER = BLOCKS.registerBlock("summoning_brazier",
             SummoningBrazierBlock::new, p -> p

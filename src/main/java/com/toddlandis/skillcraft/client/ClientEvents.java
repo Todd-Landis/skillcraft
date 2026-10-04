@@ -71,6 +71,7 @@ public class ClientEvents {
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.SLAGHEART.get(), SlagheartRenderer::new);
         event.registerEntityRenderer(ModEntities.SLAG_GLOB.get(), context -> new ThrownItemRenderer<>(context, 1.4f, true));
+        event.registerEntityRenderer(ModEntities.SPELL_BOLT.get(), context -> new ThrownItemRenderer<>(context, 0.9f, true));
         event.registerEntityRenderer(ModEntities.LIGHT_ARROW.get(), SkillArrowRenderer::new);
         event.registerEntityRenderer(ModEntities.HEAVY_ARROW.get(), SkillArrowRenderer::new);
     }
@@ -109,6 +110,12 @@ public class ClientEvents {
         event.register(com.toddlandis.skillcraft.network.AbilityUnlockedPayload.TYPE, (payload, context) -> com.toddlandis.skillcraft.client.ability.ClientAbilities.unlocked(payload));
         event.register(OpenAttunementPayload.TYPE, (payload, context) ->
                 Minecraft.getInstance().gui.setScreen(new AttunementScreen(payload)));
+    }
+
+    // Cooldowns and toggles from another world or server mean nothing here
+    @SubscribeEvent
+    static void onLoggingIn(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingIn event) {
+        com.toddlandis.skillcraft.client.ability.ClientAbilities.clear();
     }
 
     @SubscribeEvent
@@ -170,6 +177,30 @@ public class ClientEvents {
             tooltip.add(Component.translatable("tooltip.skillcraft.ember_sigil").withStyle(ChatFormatting.GOLD));
         } else if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.SUMMONING_BRAZIER.get())) {
             tooltip.add(Component.translatable("tooltip.skillcraft.summoning_brazier").withStyle(ChatFormatting.GRAY));
+        } else if (event.getItemStack().is(com.toddlandis.skillcraft.registry.ModItems.VOTIVE_SHRINE.get())) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.shrine").withStyle(ChatFormatting.GRAY));
+        }
+
+        // Wands and staves: kind, power, speed, element and what a bolt costs
+        com.toddlandis.skillcraft.magic.MagicFocus focus = com.toddlandis.skillcraft.magic.MagicFocus.of(event.getItemStack());
+        if (focus != null) {
+            DamageStyle element = focus.elementOrArcane();
+            Component mote = com.toddlandis.skillcraft.magic.Motes.of(element).getDefaultInstance().getHoverName();
+            tooltip.add(Component.translatable("tooltip.skillcraft.focus",
+                    Component.translatable(focus.kind() == com.toddlandis.skillcraft.magic.MagicFocus.Kind.STAFF ? "tooltip.skillcraft.focus_staff" : "tooltip.skillcraft.focus_wand"),
+                    XpTable.format(focus.power()), String.format("%.1f", focus.castCooldown() / 20.0)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.skillcraft.focus_use", element.displayName(), mote).withStyle(ChatFormatting.GRAY));
+            if (focus.kind() == com.toddlandis.skillcraft.magic.MagicFocus.Kind.STAFF && focus.element().isPresent()) {
+                tooltip.add(Component.translatable("tooltip.skillcraft.focus_supplies", mote).withStyle(ChatFormatting.AQUA));
+            }
+        }
+
+        // Bones and skulls: Prayer XP for burying or offering them
+        com.toddlandis.skillcraft.prayer.PrayerOffering offering = com.toddlandis.skillcraft.prayer.PrayerService.offering(event.getItemStack());
+        if (offering != null) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.offering", XpTable.format(offering.xp()),
+                    XpTable.format(offering.xp() * com.toddlandis.skillcraft.Config.SHRINE_XP_MULTIPLIER.get())).withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.translatable("tooltip.skillcraft.offering_use").withStyle(ChatFormatting.GRAY));
         }
 
         EarnedBy earned = event.getItemStack().get(ModDataComponents.EARNED_BY.get());

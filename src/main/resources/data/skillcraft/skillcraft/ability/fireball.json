@@ -1,0 +1,28 @@
+{
+  "category": "spell",
+  "class": "basic",
+  "requires": {
+    "skill": "magic",
+    "level": 5,
+    "weapon": "skillcraft:weapon_class/magic_focus"
+  },
+  "cooldown": 160,
+  "momentum": {
+    "generate": 8
+  },
+  "item_costs": [
+    {
+      "item": "skillcraft:ember_mote",
+      "count": 2
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:spell_bolt",
+    "damage": 1.2,
+    "style": "fire",
+    "speed": 1.8,
+    "radius": 2.5,
+    "ignite": 60
+  },
+  "icon": "skillcraft:ability/fireball"
+}

@@ -1,0 +1,16 @@
+{
+  "category": "agility",
+  "class": "basic",
+  "requires": {
+    "skill": "agility",
+    "level": 18
+  },
+  "cooldown": 200,
+  "off_gcd": true,
+  "behavior": {
+    "type": "skillcraft:leap",
+    "distance": 1.5,
+    "lift": 0.8
+  },
+  "icon": "skillcraft:ability/updraft"
+}

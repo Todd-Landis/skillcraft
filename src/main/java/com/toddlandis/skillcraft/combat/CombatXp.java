@@ -21,7 +21,7 @@ import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 // OSRS-style combat XP, paid per point of health actually removed from a mob:
-//   4 XP per damage point to Melee/Ranged and/or Defence (split by attack style)
+//   4 XP per damage point to Melee/Ranged/Magic (by the hit's discipline) and/or Defence (split by attack style)
 //   + 1.33 XP per damage point to Constitution
 // Anti-farming: no XP for players, armour stands, babies, tamed animals or creative players;
 // mobs from mob spawners give half. See docs/COMBAT.md.
@@ -58,14 +58,14 @@ public final class CombatXp {
         if (dealt <= 0) return;
 
         if (target instanceof PlayerDamageTracker tracker) tracker.recordPlayerDamage(player, dealt);
-        DamageStyle style = DamageStyles.of(event.getSource());
-        award(player, dealt, style != null && style.isRanged(), target.entityTags().contains(SPAWNER_TAG) ? SPAWNER_FACTOR : 1.0);
+        DamageStyle style = CombatDamage.currentStyle(event.getSource());
+        award(player, dealt, style != null ? style.discipline() : Discipline.MELEE, target.entityTags().contains(SPAWNER_TAG) ? SPAWNER_FACTOR : 1.0);
     }
 
-    public static void award(ServerPlayer player, double damage, boolean ranged, double factor) {
+    public static void award(ServerPlayer player, double damage, Discipline discipline, double factor) {
         AttackStyle style = player.getData(ModAttachments.ATTACK_STYLE);
         double xp = damage * XP_PER_DAMAGE * factor;
-        if (style.offenceShare() > 0) SkillManager.awardXp(player, ranged ? Skill.RANGED : Skill.MELEE, xp * style.offenceShare());
+        if (style.offenceShare() > 0) SkillManager.awardXp(player, discipline.skill(), xp * style.offenceShare());
         if (style.defenceShare() > 0) SkillManager.awardXp(player, Skill.DEFENCE, xp * style.defenceShare());
         SkillManager.awardXp(player, Skill.CONSTITUTION, damage * CONSTITUTION_XP_PER_DAMAGE * factor);
     }

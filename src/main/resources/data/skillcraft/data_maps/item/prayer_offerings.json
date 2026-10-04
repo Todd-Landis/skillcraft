@@ -1,0 +1,13 @@
+{
+  "values": {
+    "minecraft:bone": {
+      "xp": 5
+    },
+    "minecraft:skeleton_skull": {
+      "xp": 30
+    },
+    "minecraft:wither_skeleton_skull": {
+      "xp": 100
+    }
+  }
+}

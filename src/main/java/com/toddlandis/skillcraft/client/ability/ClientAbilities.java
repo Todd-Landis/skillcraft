@@ -113,6 +113,10 @@ public final class ClientAbilities {
         return Math.clamp((now() - windup.start()) / (float) span, 0f, 1f);
     }
 
+    public static java.util.Set<Identifier> toggled() {
+        return java.util.Collections.unmodifiableSet(TOGGLED);
+    }
+
     public static boolean isToggled(Identifier id) {
         return TOGGLED.contains(id);
     }
@@ -155,6 +159,12 @@ public final class ClientAbilities {
         if (!unlocked(player, id, def)) return false;
         if (!def.requires().weaponMatches(player.getMainHandItem(), player.getOffhandItem())) return false;
         if (isToggled(id)) return true;
+        if (def.drainsFaith() && com.toddlandis.skillcraft.prayer.PrayerService.faith(player).points() <= 0) return false;
+        if (!player.isCreative()) {
+            for (AbilityDefinition.ItemCost cost : def.itemCosts()) {
+                if (!com.toddlandis.skillcraft.magic.MagicFocus.supplies(player, cost.item()) && AbilityService.countItem(player, cost.item()) < cost.count()) return false;
+            }
+        }
         return data(player).momentum() + 1.0E-4f >= def.momentumRequired(AbilityService.skillLevel(player, def));
     }
 

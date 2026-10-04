@@ -1,0 +1,20 @@
+{
+  "category": "spell",
+  "class": "basic",
+  "requires": {
+    "skill": "magic",
+    "level": 8
+  },
+  "cooldown": 6000,
+  "windup": 100,
+  "item_costs": [
+    {
+      "item": "skillcraft:arcane_mote",
+      "count": 2
+    }
+  ],
+  "behavior": {
+    "type": "skillcraft:recall"
+  },
+  "icon": "skillcraft:ability/hearthward"
+}
