@@ -130,6 +130,56 @@ public final class Showcase {
         target.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.IRON_HELMET));
     }
 
+    // -Pshowcase=fishing: a 9x9 pond north of the player with cod, salmon and reef fish spots, and a
+    // lit Cooking Range on the bank. Returns the cod spot (the one the player fishes).
+    public static com.toddlandis.skillcraft.fishing.FishingSpotEntity fishingScene(ServerPlayer player) {
+        ServerLevel level = player.level();
+        net.minecraft.core.BlockPos base = player.blockPosition();
+        int surface = base.getY() - 1;
+        var stone = net.minecraft.world.level.block.Blocks.STONE.defaultBlockState();
+        var water = net.minecraft.world.level.block.Blocks.WATER.defaultBlockState();
+        var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        for (int dx = -6; dx <= 6; dx++) {
+            for (int dz = -16; dz <= -3; dz++) {
+                boolean pond = Math.abs(dx) <= 4 && dz <= -6 && dz >= -14;
+                for (int y = surface - 3; y <= surface + 3; y++) {
+                    net.minecraft.core.BlockPos pos = new net.minecraft.core.BlockPos(base.getX() + dx, y, base.getZ() + dz);
+                    var state = y > surface ? air : pond && y >= surface - 1 ? water : y == surface ? net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState() : stone;
+                    level.setBlock(pos, state, 2);
+                }
+            }
+        }
+        com.toddlandis.skillcraft.fishing.FishingSpotEntity cod = null;
+        Object[][] spots = {{com.toddlandis.skillcraft.node.NodeType.COD, 0, -8}, {com.toddlandis.skillcraft.node.NodeType.SALMON, -2, -11},
+                {com.toddlandis.skillcraft.node.NodeType.TROPICAL_FISH, 2, -12}};
+        for (Object[] spot : spots) {
+            var entity = com.toddlandis.skillcraft.fishing.FishingSpotEntity.create(level, (com.toddlandis.skillcraft.node.NodeType) spot[0],
+                    new net.minecraft.core.BlockPos(base.getX() + (int) spot[1], surface, base.getZ() + (int) spot[2]));
+            level.addFreshEntity(entity);
+            if (cod == null) cod = entity;
+        }
+
+        net.minecraft.core.BlockPos rangePos = base.offset(3, 0, -4);
+        level.setBlock(rangePos, ModBlocks.COOKING_RANGE.get().defaultBlockState()
+                .setValue(com.toddlandis.skillcraft.cooking.CookingRangeBlock.FACING, net.minecraft.core.Direction.WEST), 3);
+        if (level.getBlockEntity(rangePos) instanceof com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity range) {
+            range.setItem(com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity.SLOT_INPUT, new ItemStack(net.minecraft.world.item.Items.COD, 32));
+            range.setItem(com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity.SLOT_FUEL, new ItemStack(net.minecraft.world.item.Items.COAL, 8));
+            range.setCook(player);
+        }
+
+        com.toddlandis.skillcraft.skill.SkillManager.setXp(player, com.toddlandis.skillcraft.skill.Skill.FISHING, com.toddlandis.skillcraft.skill.XpTable.xpForLevel(30));
+        player.getInventory().setItem(0, new ItemStack(net.minecraft.world.item.Items.FISHING_ROD));
+        player.getInventory().setItem(1, new ItemStack(ModItems.NODES.get(com.toddlandis.skillcraft.node.NodeType.COD).get()));
+        player.getInventory().setItem(2, new ItemStack(ModItems.NODES.get(com.toddlandis.skillcraft.node.NodeType.PUFFERFISH).get()));
+        player.getInventory().setItem(3, new ItemStack(ModItems.COOKING_RANGE.get()));
+        player.getInventory().setItem(4, new ItemStack(ModItems.SEARED_REEF_FISH.get()));
+        player.getInventory().setItem(5, new ItemStack(ModItems.PREPARED_PUFFERFISH.get()));
+        player.getInventory().setItem(6, new ItemStack(ModItems.BURNT_FOOD.get()));
+        player.getInventory().setSelectedSlot(0);
+        return cod;
+    }
+
     private static Mob dummy(ServerLevel level, Vec3 pos, ItemLike held) {
         Mob mob = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
         mob.snapTo(pos.x, pos.y, pos.z, 0f, 0f);

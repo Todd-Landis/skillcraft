@@ -110,6 +110,31 @@
       "minecraft:block/amethyst/resonate4"
     ]
   },
+  "shoal.deplete": {
+    "subtitle": "subtitles.skillcraft.shoal.deplete",
+    "sounds": [
+      { "name": "minecraft:entity.generic.splash", "type": "event", "volume": 0.8, "pitch": 0.8 },
+      { "name": "minecraft:entity.fish.swim", "type": "event", "pitch": 0.7 }
+    ]
+  },
+  "shoal.resurface": {
+    "subtitle": "subtitles.skillcraft.shoal.resurface",
+    "sounds": [
+      { "name": "minecraft:block.bubble_column.upwards_inside", "type": "event", "volume": 0.9 }
+    ]
+  },
+  "range.sizzle": {
+    "subtitle": "subtitles.skillcraft.range.sizzle",
+    "sounds": [
+      { "name": "minecraft:block.campfire.crackle", "type": "event", "volume": 0.8 }
+    ]
+  },
+  "range.burn": {
+    "subtitle": "subtitles.skillcraft.range.burn",
+    "sounds": [
+      { "name": "minecraft:block.fire.extinguish", "type": "event", "volume": 0.5, "pitch": 0.8 }
+    ]
+  },
   "slagheart.awaken": {
     "subtitle": "subtitles.skillcraft.slagheart.awaken",
     "sounds": [

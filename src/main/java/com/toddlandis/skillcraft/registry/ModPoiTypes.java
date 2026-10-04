@@ -22,6 +22,7 @@ public class ModPoiTypes {
 
     static {
         for (NodeType type : NodeType.values()) {
+            if (type.isSpot()) continue;
             NODES.put(type, POI_TYPES.register(type.blockName(), () -> new PoiType(
                     Set.copyOf(ModBlocks.NODES.get(type).get().getStateDefinition().getPossibleStates()), 0, 1)));
         }

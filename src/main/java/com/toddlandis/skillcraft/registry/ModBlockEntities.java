@@ -20,6 +20,9 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<SmelterBlockEntity>> SMELTER = BLOCK_ENTITIES.register("smelter",
             () -> new BlockEntityType<>(SmelterBlockEntity::new, ModBlocks.SMELTER.get()));
 
+    public static final Supplier<BlockEntityType<com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity>> COOKING_RANGE = BLOCK_ENTITIES.register("cooking_range",
+            () -> new BlockEntityType<>(com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity::new, ModBlocks.COOKING_RANGE.get()));
+
     // Shared by the Forging Anvil and Crafting Bench
     public static final Supplier<BlockEntityType<BenchBlockEntity>> BENCH = BLOCK_ENTITIES.register("bench",
             () -> new BlockEntityType<>(BenchBlockEntity::new, ModBlocks.FORGING_ANVIL.get(), ModBlocks.CRAFTING_BENCH.get()));

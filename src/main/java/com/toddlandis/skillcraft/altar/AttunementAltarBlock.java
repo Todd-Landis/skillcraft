@@ -128,6 +128,6 @@ public class AttunementAltarBlock extends Block implements EntityBlock {
     }
 
     public static Component nodeName(NodeType type) {
-        return Component.translatable("block.skillcraft." + type.blockName());
+        return Component.translatable(type.translationKey());
     }
 }

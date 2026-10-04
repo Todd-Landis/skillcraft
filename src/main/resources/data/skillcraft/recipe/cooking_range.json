@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:brick",
+    "F": "minecraft:furnace",
+    "C": "#minecraft:stone_crafting_materials"
+  },
+  "pattern": [
+    "BBB",
+    "CFC",
+    "CCC"
+  ],
+  "result": {
+    "id": "skillcraft:cooking_range"
+  }
+}

@@ -20,16 +20,17 @@ Bring the long-term progression of Old School RuneScape into Minecraft without l
 | Constitution | Combat | Health | Max HP scales with level; XP comes from dealing damage |
 | Mining | Gathering | Ores | Level-gated ores, ore veins that deplete and respawn, pickaxe tiers, rare gems |
 | Woodcutting | Gathering | Trees | Level-gated tree types (oak → willow → maple → yew → magic-style equivalents), stumps that regrow, success chance per swing |
-| Fishing | Gathering | Fishing rod | Fishing spots that move, method/bait per fish, level-gated catches |
+| Fishing | Gathering | Fishing rod | Fishing spots (churning water on real ponds) that swim off and resurface elsewhere; level-gated catches; bait and methods later |
 | Farming | Gathering | Crops | Growth stages, disease and protection, herb/tree patches, compost tiers |
 | Smithing | Artisan | Furnace/anvil | Smelt bars → forge items at a custom anvil, quality affected by level |
 | Crafting | Artisan | Crafting table | Leather, jewellery, glass; level-gated recipes |
+| Cooking | Artisan | Cooking Range | Raw food cooks over time; burn chance falls with level until a stop-burn level |
 | Firemaking | Artisan | Fire | Log tiers burn for XP; campfires used for cooking and buffs |
 | Construction | Artisan | Building | Blueprint-based furniture and utility blocks (bank chest, altars, teleports) built from planks and bars |
 | Agility | Support | Parkour | Agility courses with obstacles; unlocks shortcuts and movement perks |
 | Sailing | Support | Boats | Upgradeable ships, sea regions and island content |
 
-Planned for later: Magic, Prayer, Cooking, Herblore, Fletching, Thieving, Slayer, Hunter, Runecrafting (renamed equivalents).
+Planned for later: Magic, Prayer, Herblore, Fletching, Thieving, Slayer, Hunter, Runecrafting (renamed equivalents).
 
 ## XP curve
 OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config multiplier (`xpMultiplier`) scales all gains. Implemented in `skill/XpTable.java`.
@@ -37,14 +38,14 @@ OSRS formula. Level 99 = 13,034,431 XP. XP is capped at 200M. A server config mu
 ## Tiers
 Content is grouped into 10-level tiers: **I** = 1, **II** = 10, **III** = 20 … **X** = 90. **Vanilla content tops out around level 50 (tiers I–V).** Tiers VI–X are reserved for custom woods, ores, metals and gear.
 
-| Tier | Level | Woodcutting | Mining | Gear |
-|---|---|---|---|---|
-| I | 1 | Oak, birch, spruce | Coal, copper | Wood, stone, copper |
-| II | 10 | Jungle, acacia, mangrove | Iron, quartz | Iron |
-| III | 20 | Cherry, dark oak | Redstone, gold, lapis | Gold |
-| IV | 30 | Pale oak | Diamond | Diamond |
-| V | 40 | Crimson, warped | Emerald, ancient debris | Netherite (vanilla gear caps ~50) |
-| VI–X | 50–90 | *custom* | *custom* | *custom* |
+| Tier | Level | Woodcutting | Mining | Fishing | Gear |
+|---|---|---|---|---|---|
+| I | 1 | Oak, birch, spruce | Coal, copper | Cod | Wood, stone, copper |
+| II | 10 | Jungle, acacia, mangrove | Iron, quartz | Salmon | Iron |
+| III | 20 | Cherry, dark oak | Redstone, gold, lapis | Reef (tropical) fish | Gold |
+| IV | 30 | Pale oak | Diamond | Pufferfish | Diamond |
+| V | 40 | Crimson, warped | Emerald, ancient debris | — | Netherite (vanilla gear caps ~50) |
+| VI–X | 50–90 | *custom* | *custom* | *custom* | *custom* |
 
 ## Gathering: world vs. nodes
 - **World blocks give no XP.** Breaking logs and ores in the world is purely for materials, and higher-tier blocks still need the level to break.
@@ -105,22 +106,76 @@ Current minigames:
 - **Strike the Grain** (woodcutting): tap when the sweeping marker is in the zone. 5 hits needed, 2 misses allowed.
 - **Temper the Vein** (mining): hold to build heat and release in the gold band. Overheating cracks it. 4 hits needed, 2 misses allowed.
 
-Higher tiers make every minigame faster and tighter.
+- **Set the Hook** (fishing): watch the float and strike when a fish pulls it under. Striking at a nibble (a small twitch) or at still water is a miss, and so is letting a bite get away. Bites that pass before your first strike don't count, so closing the game without playing costs nothing. 5 hits needed, 2 misses allowed.
 
-## Smithing & Crafting stations
+Higher tiers make every minigame faster and tighter (for Set the Hook: shorter bites and more nibbles).
+
+## Fishing (spots on open water)
+Fishing works like the other gathering skills, but a fishing spot is **not a block**. It's a patch of churning water (foam, ripples, bubbles and the odd fish breaking the surface) floating on a real pond, like the fishing spots in classic MMOs. You don't see a block outline when you look at it, and it can't be broken.
+
+- **Getting spots:** attune raw fish at the Attunement Altar (32 cod → a **Cod Shoal**). Use the shoal on open water to release it as a spot. The Relocator picks a spot back up as a shoal.
+- **Water rules** (`fishing/FishingWater`). A bucket of water in a hole is not a fishing spot:
+  - The tile must be a still water source with open air above it.
+  - The water must be at least **2 blocks deep** under the spot.
+  - At least **5 of the 8 tiles around it** must be open water, so spots can't sit in a 1-wide channel.
+  - The pond must have enough connected open-water tiles (counted up to 8 blocks out): **12 + 6 per tier**, so cod needs 12, salmon 18, reef fish 24 and pufferfish 30.
+  - Every 2 seconds the spot checks its water. If the pond is drained or built over, the shoal moves to another valid tile of the same pond, or pops back out as an item.
+- **Fishing:** right-click the spot with a fishing rod. The player casts a line (the real bobber and line, landing on the spot) and keeps fishing automatically while they stay within about 6 blocks and hold the rod. Clicking the spot again, or using the rod (reeling in), stops.
+  - An attempt every **1.5s**, 0.1s faster per rod tier, never faster than 0.8s. Each attempt rolls the same success curve as nodes. On a bite the bobber dips, the fish goes to your inventory, and you get full XP.
+  - **Rods:** the vanilla fishing rod is tier 0, power ×1.0 (`gathering_tools.json`). **Lure** adds one tier per level (faster attempts) and **Luck of the Sea** adds +0.05 power per level (more bites). The rod is a Crafting Bench recipe at Crafting **1**, so anyone can start fishing.
+  - Depletion and fatigue follow the node rules (`NodeType`). Depleting a spot doesn't leave a stump: **the shoal swims off** (it disappears) and **resurfaces on another tile of the same pond** that can be reached from the bank, after the tier's regrow time.
+  - Spacing works like nodes (e.g. at most 6 cod spots within 8 blocks), counted with an entity search instead of the POI index.
+
+| Spot | Level | XP | Shoal cost | Smallest pond | Resurfaces after |
+|---|---|---|---|---|---|
+| Cod | 1 | 20 | 32 cod | 12 tiles | 20s |
+| Salmon | 10 | 45 | 32 salmon | 18 tiles | 45s |
+| Reef fish (tropical) | 20 | 80 | 48 tropical fish | 24 tiles | 2m |
+| Pufferfish | 30 | 120 | 48 pufferfish | 30 tiles | 5m |
+
+- **Vanilla fishing** (casting anywhere) still gives materials but **no Fishing XP**, the same as breaking world blocks. Fish above your Fishing level slip off the hook, and its treasure no longer includes gear such as bows and rods (`loot/StripCraftedGearModifier`). Tested by rolling the vanilla fishing table 400 times at levels 1 and 99: no salmon, reef fish or pufferfish at level 1, all of them at 99.
+- **Code:** `fishing/` holds `FishingSpotEntity` (the spot), `ShoalItem` (placing it), `FishingWater` (water rules), `FishingSessions` (auto-fishing) and `FishingLine` (the bobber, a vanilla hook with the vanilla bite logic turned off). The drawing is in `client/fishing/FishingSpotRenderer`, and the ripple and foam textures come from `scripts/textures/GenFishingCookingTextures.java`.
+- **Later:** bait and methods (nets, harpoons), spots that drift on their own every few minutes, sea and river spots generated with the world, custom fish for tiers V–X.
+
+## Smithing, Cooking & Crafting stations
 Modeled on survival games like RuneScape: Dragonwilds, Valheim and Enshrouded. There are **processing stations** (load materials, walk away) and **recipe benches** (pick from a recipe list, queue, the bench works over time). The vanilla crafting table stays for building materials. **Gear** can only be made at the new stations, and the matching vanilla recipes are switched off by `neoforge:never` overrides in `data/minecraft/recipe/`. The mod loads after NeoForge so these overrides beat NeoForge's own recipe copies.
 
 ### Smelter (Smithing, processing station)
 Ore plus coal or charcoal makes ingots, one at a time. It runs on its own while the chunk is loaded. Coal is used when each ingot finishes. XP builds up and is collected with the ingots. The ore slot only accepts ores you have the level for. Vanilla furnaces can no longer smelt metal ores.
 
 | Ore | Smithing level | Coal | XP | Time |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | Copper | 1 | 1 | 6.25 | 5s |
 | Iron | 10 | 2 | 12.5 | 7s |
 | Gold | 20 | 3 | 22.5 | 9s |
 | Ancient debris → netherite scrap | 40 | 8 | 50 | 15s |
 
 Data: `data/skillcraft/data_maps/item/smelting.json`.
+
+### Cooking Range (Cooking, processing station)
+Raw food plus any furnace fuel makes cooked food, one at a time, while the chunk is loaded. It works like the Smelter, with one difference: **food can burn**.
+- **Burn chance** falls in a straight line from **50%** at the food's required level to **0%** at its **stop-burn level**. It's rolled when each item finishes, using the Cooking level of whoever loaded the food. Burnt food goes to its own slot, gives no XP and can't be eaten.
+- Cooking XP builds up and is collected with the cooked food. The raw-food slot only accepts food you have the level for. Raw food tooltips show your current burn chance.
+- **Vanilla furnaces, smokers and campfires no longer cook food.** Their food recipes are switched off with `neoforge:never` overrides, the same as metal ores. Villagers still sell some cooked food; cheap food isn't what Cooking is for, so those trades stay.
+- Crafted from 3 bricks, a furnace and 5 cobblestone (`data/skillcraft/recipe/cooking_range.json`).
+
+| Raw food | Cooks into | Cooking level | XP | Never burns at | Time |
+|---|---|---|---|---|---|
+| Kelp | Dried kelp | 1 | 5 | 10 | 2s |
+| Potato | Baked potato | 1 | 10 | 20 | 3s |
+| Cod | Cooked cod | 1 | 30 | 30 | 4s |
+| Chicken | Cooked chicken | 5 | 35 | 35 | 4s |
+| Rabbit | Cooked rabbit | 8 | 40 | 38 | 4s |
+| Salmon | Cooked salmon | 10 | 50 | 40 | 4s |
+| Mutton | Cooked mutton | 12 | 55 | 42 | 4s |
+| Porkchop | Cooked porkchop | 15 | 60 | 45 | 4.5s |
+| Beef | Steak | 20 | 70 | 50 | 4.5s |
+| Tropical fish | **Seared Reef Fish** (new, 7 hunger) | 25 | 90 | 58 | 5s |
+| Pufferfish | **Prepared Pufferfish** (new, 8 hunger, no poison) | 35 | 120 | 68 | 5.5s |
+
+Data: `data/skillcraft/data_maps/item/cooking.json`. Code: `cooking/`. Tested in `gametest/CookingTests`: with 4 cod each, a level 1 cook burns some and a level 99 cook burns none, XP is paid only for unburnt food, and vanilla cooking recipes are gone.
+
+**Later:** multi-ingredient dishes (stews, pies) at the range, cooking on Firemaking fires, cooking gauntlets, food that heals Constitution HP directly.
 
 ### Forging Anvil (Smithing) and Crafting Bench (Crafting): recipe benches
 - The screen has a recipe grid (locked recipes dimmed), a details panel showing level, XP, time and ingredients (have/need), Make ×1 / ×5 / ×10 / All, and a queue with a progress bar and Cancel.
@@ -129,7 +184,7 @@ Data: `data/skillcraft/data_maps/item/smelting.json`.
 - **XP goes to whoever queued the job.** If they're offline, it's paid the next time they open the bench.
 - Effects: anvil clinks and sparks, bench woodworking sounds.
 - **Anvil:** within each metal, items unlock in this order: shovel, sword, hoe, axe, pickaxe, boots, helmet, leggings, chestplate. Copper 1–9, iron 10–18, gold 20–28, diamond 30–38. Netherite ingot at 40. Netherite upgrades at 41–49 (diamond item + ingot + template), and they keep enchantments.
-- **Crafting Bench:** wooden and stone tools at level 1, so nobody is stuck without a pickaxe. Leather armor 5–11, fishing rod 5, bow 10, shield 15, crossbow 25.
+- **Crafting Bench:** wooden and stone tools at level 1, so nobody is stuck without a pickaxe. Leather armor 5–11, fishing rod 1, bow 10, shield 15, crossbow 25.
 - Data: `data/skillcraft/data_maps/item/bench_recipes.json`, generated by `scripts/gen_bench_recipes.sh`. That script also writes the vanilla recipe overrides.
 
 ### Gear only comes from players
@@ -210,9 +265,10 @@ Tunable without code in `src/main/resources/data/skillcraft/data_maps/`:
   - the Ability Book (J) with 3 saved bars
   - boss crowd-control rules (Daze, capped slows, no knockback)
   - a framework ready for Spells (item costs) and Prayers (toggles with drain)
+- [x] **Phase 6.6 – Fishing & Cooking:** fishing spots on open water (cod, salmon, reef fish, pufferfish) with the Set the Hook minigame, shoals that swim off and resurface instead of stumps, vanilla fishing gated by level; the Cooking skill and the Cooking Range with burn chance; vanilla food cooking switched off
 - [ ] **Phase 6.5 – More combat content:** higher-tier weapon/ammo/armour families, the remaining abilities (Undertow), more mid-tier bosses with niche uniques and Codices
 - [ ] **Phase 7 – World generation:** new ores, tree types, structures and regions tied to skills; rare natural skilling nodes
-- [ ] **Phase 8+:** Fishing, Farming, Firemaking, Construction, Agility, Sailing, more bosses
+- [ ] **Phase 8+:** Farming, Firemaking, Construction, Agility, Sailing, more bosses
 
 ## IP guidelines
 - Mechanics and formulas may be inspired by OSRS.

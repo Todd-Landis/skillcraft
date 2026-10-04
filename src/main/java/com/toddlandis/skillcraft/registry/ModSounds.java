@@ -23,6 +23,10 @@ public class ModSounds {
     public static final Supplier<SoundEvent> NODE_DEPLETE_WOOD = register("node.deplete_wood");
     public static final Supplier<SoundEvent> NODE_DEPLETE_ORE = register("node.deplete_ore");
     public static final Supplier<SoundEvent> NODE_REGROW = register("node.regrow");
+    public static final Supplier<SoundEvent> SHOAL_DEPLETE = register("shoal.deplete");
+    public static final Supplier<SoundEvent> SHOAL_RESURFACE = register("shoal.resurface");
+    public static final Supplier<SoundEvent> RANGE_SIZZLE = register("range.sizzle");
+    public static final Supplier<SoundEvent> RANGE_BURN = register("range.burn");
 
     public static final Supplier<SoundEvent> SLAGHEART_AWAKEN = register("slagheart.awaken");
     public static final Supplier<SoundEvent> SLAGHEART_STEP = register("slagheart.step");

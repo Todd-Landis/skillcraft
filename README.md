@@ -49,10 +49,13 @@ src/main/java/com/toddlandis/skillcraft/
   client/                  Skills screen, XP drop HUD, key binding, tooltips
   altar/minigame/          attunement minigame rules (shared with the server for verification)
   smithing/                Smelter (processing station)
+  cooking/                 Cooking Range (processing station with burn chance), cooking recipes
+  fishing/                 fishing spots (entities on open water), shoals, water rules, auto-fishing, line
   bench/                   Forging Anvil + Crafting Bench (recipe benches, queue)
   loot/                    keeps generated chests and mob drops free of crafted gear
   bank/                    OSRS-style player bank (Bank Chest)
   client/minigame/         minigame drawing
+  client/fishing/          fishing spot renderer (ripples and foam)
   client/boss/             Slagheart model, renderer and glow layer
   client/ability/          ability HUD bar, Ability Book screen, ability keys
   gametest/                GameTests (./gradlew runGameTestServer, also run in CI)

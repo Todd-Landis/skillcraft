@@ -47,7 +47,16 @@ public enum NodeType implements StringRepresentable {
     LAPIS(Skill.MINING, 20, 62.5, () -> Items.LAPIS_LAZULI, 2, 48),
     DIAMOND(Skill.MINING, 30, 100, () -> Items.DIAMOND, 1, 16),
     EMERALD(Skill.MINING, 40, 140, () -> Items.EMERALD, 1, 16),
-    ANCIENT_DEBRIS(Skill.MINING, 40, 175, () -> Items.ANCIENT_DEBRIS, 1, 8);
+    ANCIENT_DEBRIS(Skill.MINING, 40, 175, () -> Items.ANCIENT_DEBRIS, 1, 8),
+
+    // --- Fishing ---
+    // Fishing spots aren't blocks: they are patches of churning water (fishing/FishingSpotEntity)
+    // placed on open water from a "shoal" item. Depleting one makes the shoal swim off and
+    // resurface somewhere else in the same pond after the regrow time.
+    COD(Skill.FISHING, 1, 20, () -> Items.COD, 1, 32),
+    SALMON(Skill.FISHING, 10, 45, () -> Items.SALMON, 1, 32),
+    TROPICAL_FISH(Skill.FISHING, 20, 80, () -> Items.TROPICAL_FISH, 1, 48),
+    PUFFERFISH(Skill.FISHING, 30, 120, () -> Items.PUFFERFISH, 1, 48);
 
     public static final Codec<NodeType> CODEC = StringRepresentable.fromEnum(NodeType::values);
 
@@ -82,8 +91,18 @@ public enum NodeType implements StringRepresentable {
     public int tierIndex() { return XpTable.tierIndex(level); }
     // Change per node here if a specific node should use a different minigame
     public MinigameKind minigame() {
-        return skill == Skill.MINING ? MinigameKind.TEMPER_THE_VEIN : MinigameKind.STRIKE_THE_GRAIN;
+        return switch (skill) {
+            case MINING -> MinigameKind.TEMPER_THE_VEIN;
+            case FISHING -> MinigameKind.SET_THE_HOOK;
+            default -> MinigameKind.STRIKE_THE_GRAIN;
+        };
     }
+
+    // Fishing spots live on water as entities instead of being placed as blocks
+    public boolean isSpot() { return skill == Skill.FISHING; }
+
+    // Smallest pond (connected open-water tiles) a spot of this tier can sit in: 12, 18, 24, 30...
+    public int minWaterArea() { return 12 + 6 * tierIndex(); }
     public String tierName() { return XpTable.tierName(level); }
 
     // Success chance per attempt: grows with level, multiplied by tool power (see GatheringSessions)
@@ -142,8 +161,15 @@ public enum NodeType implements StringRepresentable {
         return Math.clamp((playerLevel - level) / (double) Math.max(1, XpTable.MAX_LEVEL - level), 0, 1);
     }
 
+    // Registry name of the node block (and its item), e.g. "oak_node", or of a fishing spot's
+    // shoal item, e.g. "cod_shoal"
     public String blockName() {
-        return getSerializedName() + "_node";
+        return getSerializedName() + (isSpot() ? "_shoal" : "_node");
+    }
+
+    // Lang key for the node's name
+    public String translationKey() {
+        return (isSpot() ? "item.skillcraft." : "block.skillcraft.") + blockName();
     }
 
     @Override

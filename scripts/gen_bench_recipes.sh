@@ -109,7 +109,7 @@ done
 recipe skillcraft:light_arrow crafting_bench 1 4 30 "$(part minecraft:stick 1), $(part minecraft:feather 2)" - 6
 recipe skillcraft:heavy_arrow crafting_bench 15 12 50 "$(part minecraft:stick 1), $(part minecraft:feather 1), $(part minecraft:iron_nugget 3)" - 4
 
-recipe fishing_rod crafting_bench 5 15 60 "$(part minecraft:stick 3), $(part minecraft:string 2)"
+recipe fishing_rod crafting_bench 1 15 60 "$(part minecraft:stick 3), $(part minecraft:string 2)"
 recipe bow crafting_bench 10 25 60 "$(part minecraft:stick 3), $(part minecraft:string 3)"
 recipe shield crafting_bench 15 40 80 "$(part '#minecraft:planks' 6), $(part minecraft:iron_ingot 1)"
 recipe crossbow crafting_bench 25 60 120 "$(part minecraft:stick 3), $(part minecraft:string 2), $(part minecraft:iron_ingot 1), $(part minecraft:tripwire_hook 1)"

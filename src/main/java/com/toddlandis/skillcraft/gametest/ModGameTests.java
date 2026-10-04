@@ -47,6 +47,11 @@ public final class ModGameTests {
         TEST_FUNCTIONS.register("ability_future", () -> AbilityTests::future);
         TEST_FUNCTIONS.register("ability_offhand", () -> AbilityTests::offhand);
         TEST_FUNCTIONS.register("ability_dps", () -> AbilityTests::dps);
+        TEST_FUNCTIONS.register("fishing_water", () -> FishingTests::water);
+        TEST_FUNCTIONS.register("fishing_session", () -> FishingTests::session);
+        TEST_FUNCTIONS.register("fishing_vanilla_catches", () -> FishingTests::vanillaCatches);
+        TEST_FUNCTIONS.register("fishing_hook_minigame", () -> FishingTests::hookMinigame);
+        TEST_FUNCTIONS.register("cooking_range", () -> CookingTests::range);
     }
 
     private ModGameTests() {}
@@ -55,7 +60,7 @@ public final class ModGameTests {
     static void register(RegisterGameTestsEvent event) {
         test(event, "arena_dimension", 20);
         test(event, "arena_protection", 100);
-        test(event, "arena_enter_exit", 400);
+        test(event, "arena_enter_exit", 500);
         test(event, "arena_death_and_logout", 100);
         test(event, "boss_phases", 400);
         test(event, "boss_stances", 100);
@@ -72,6 +77,11 @@ public final class ModGameTests {
         test(event, "ability_future", 120);
         test(event, "ability_offhand", 40);
         test(event, "ability_dps", AbilityTests.HARNESS_TICKS + 100);
+        test(event, "fishing_water", 40);
+        test(event, "fishing_session", 1200);
+        test(event, "fishing_vanilla_catches", 40);
+        test(event, "fishing_hook_minigame", 40);
+        test(event, "cooking_range", 500);
     }
 
     private static void test(RegisterGameTestsEvent event, String name, int maxTicks) {

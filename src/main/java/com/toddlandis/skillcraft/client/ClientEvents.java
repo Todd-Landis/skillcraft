@@ -67,12 +67,22 @@ public class ClientEvents {
         com.toddlandis.skillcraft.client.ability.AbilityKeys.register(event);
     }
 
+    // FishingHookRenderer is typed for FishingHook; FishingLine is one, so the cast is safe
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static net.minecraft.client.renderer.entity.EntityRenderer<com.toddlandis.skillcraft.fishing.FishingLine, ?> fishingLineRenderer(
+            net.minecraft.client.renderer.entity.EntityRendererProvider.Context context) {
+        return (net.minecraft.client.renderer.entity.EntityRenderer) new net.minecraft.client.renderer.entity.FishingHookRenderer(context);
+    }
+
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.SLAGHEART.get(), SlagheartRenderer::new);
         event.registerEntityRenderer(ModEntities.SLAG_GLOB.get(), context -> new ThrownItemRenderer<>(context, 1.4f, true));
         event.registerEntityRenderer(ModEntities.LIGHT_ARROW.get(), SkillArrowRenderer::new);
         event.registerEntityRenderer(ModEntities.HEAVY_ARROW.get(), SkillArrowRenderer::new);
+        event.registerEntityRenderer(ModEntities.FISHING_SPOT.get(), com.toddlandis.skillcraft.client.fishing.FishingSpotRenderer::new);
+        // The fishing line is a vanilla hook underneath, so the vanilla bobber-and-line renderer draws it
+        event.registerEntityRenderer(ModEntities.FISHING_LINE.get(), ClientEvents::fishingLineRenderer);
     }
 
     @SubscribeEvent
@@ -83,6 +93,7 @@ public class ClientEvents {
     @SubscribeEvent
     static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.SMELTER.get(), SmelterScreen::new);
+        event.register(ModMenuTypes.COOKING_RANGE.get(), CookingRangeScreen::new);
         event.register(ModMenuTypes.FORGING_ANVIL.get(), BenchScreen::new);
         event.register(ModMenuTypes.CRAFTING_BENCH.get(), BenchScreen::new);
         event.register(ModMenuTypes.BANK.get(), BankScreen::new);
@@ -143,9 +154,20 @@ public class ClientEvents {
 
         GatheringTool tool = event.getItemStack().typeHolder().getData(ModDataMaps.GATHERING_TOOLS);
         if (tool != null) {
-            double swingSeconds = Math.max(8, 15 - tool.tier()) / 20.0;
-            tooltip.add(Component.translatable("tooltip.skillcraft.gathering_tool", XpTable.format(swingSeconds), XpTable.format(tool.power()))
-                    .withStyle(ChatFormatting.DARK_AQUA));
+            if (event.getItemStack().canPerformAction(net.neoforged.neoforge.common.ItemAbilities.FISHING_ROD_CAST)) {
+                double castSeconds = com.toddlandis.skillcraft.fishing.FishingSessions.attemptTicks(tool.tier()) / 20.0;
+                tooltip.add(Component.translatable("tooltip.skillcraft.fishing_tool", XpTable.format(castSeconds), XpTable.format(tool.power()))
+                        .withStyle(ChatFormatting.DARK_AQUA));
+            } else {
+                double swingSeconds = Math.max(8, 15 - tool.tier()) / 20.0;
+                tooltip.add(Component.translatable("tooltip.skillcraft.gathering_tool", XpTable.format(swingSeconds), XpTable.format(tool.power()))
+                        .withStyle(ChatFormatting.DARK_AQUA));
+            }
+        }
+
+        if (event.getItemStack().getItem() instanceof com.toddlandis.skillcraft.fishing.ShoalItem shoal) {
+            addNodeTooltip(tooltip, player, shoal.type());
+            return;
         }
 
         if (event.getItemStack().getItem() instanceof BlockItem blockItem) {
@@ -202,6 +224,20 @@ public class ClientEvents {
                     .withStyle(met ? ChatFormatting.GOLD : ChatFormatting.RED));
         }
 
+        // Raw food the Cooking Range can cook, with this player's burn chance
+        com.toddlandis.skillcraft.cooking.CookingRecipe cooking = com.toddlandis.skillcraft.cooking.CookingRecipe.get(event.getItemStack());
+        if (cooking != null) {
+            int cookingLevel = SkillManager.level(player, Skill.COOKING);
+            boolean met = cookingLevel >= cooking.level();
+            tooltip.add(Component.translatable("tooltip.skillcraft.cookable", cooking.result().getDefaultInstance().getHoverName(),
+                    Skill.COOKING.displayName(), cooking.level(), XpTable.format(cooking.xp()))
+                    .withStyle(met ? ChatFormatting.GOLD : ChatFormatting.RED));
+            if (met) {
+                tooltip.add(Component.translatable("tooltip.skillcraft.burn_chance", (int) Math.round(100 * cooking.burnChance(cookingLevel)), cooking.stopBurn())
+                        .withStyle(ChatFormatting.GRAY));
+            }
+        }
+
         // Resource items that can be attuned into a node at the altar
         NodeType attunable = NodeType.byInput(event.getItemStack().getItem());
         if (attunable != null) {
@@ -255,6 +291,11 @@ public class ClientEvents {
             tooltip.add(Component.translatable("tooltip.skillcraft.node_fatigue",
                     (int) Math.round(type.fatiguePerHour(playerLevel)), (int) Math.floor(type.fatigueCapacity(playerLevel)))
                     .withStyle(ChatFormatting.GRAY));
+        }
+        if (type.isSpot()) {
+            tooltip.add(Component.translatable("tooltip.skillcraft.shoal_water", type.minWaterArea()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.skillcraft.node_use_rod").withStyle(ChatFormatting.DARK_GRAY));
+            return;
         }
         tooltip.add(Component.translatable(type.skill() == Skill.WOODCUTTING ? "tooltip.skillcraft.node_use_axe" : "tooltip.skillcraft.node_use_pickaxe")
                 .withStyle(ChatFormatting.DARK_GRAY));

@@ -20,6 +20,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -34,11 +35,16 @@ public class ModItems {
     public static final Identifier KNOCKBACK_ID = Identifier.fromNamespaceAndPath(SkillCraft.MODID, "weapon_knockback");
     public static final Identifier WEIGHT_ID = Identifier.fromNamespaceAndPath(SkillCraft.MODID, "weapon_weight");
 
-    public static final Map<NodeType, DeferredItem<BlockItem>> NODES = new EnumMap<>(NodeType.class);
+    // One item per node: a block item for woodcutting/mining nodes, a shoal for fishing spots
+    public static final Map<NodeType, DeferredItem<? extends Item>> NODES = new EnumMap<>(NodeType.class);
 
     static {
         for (NodeType type : NodeType.values()) {
-            NODES.put(type, ITEMS.registerSimpleBlockItem(type.blockName(), ModBlocks.NODES.get(type), p -> p.stacksTo(16)));
+            if (type.isSpot()) {
+                NODES.put(type, ITEMS.registerItem(type.blockName(), p -> new com.toddlandis.skillcraft.fishing.ShoalItem(type, p), p -> p.stacksTo(16)));
+            } else {
+                NODES.put(type, ITEMS.registerSimpleBlockItem(type.blockName(), ModBlocks.NODES.get(type), p -> p.stacksTo(16)));
+            }
         }
     }
 
@@ -46,7 +52,17 @@ public class ModItems {
 
     public static final DeferredItem<BlockItem> SMELTER = ITEMS.registerSimpleBlockItem("smelter", ModBlocks.SMELTER);
 
-    public static final DeferredItem<BlockItem> FORGING_ANVIL = ITEMS.registerSimpleBlockItem("forging_anvil", ModBlocks.FORGING_ANVIL);
+    // --- Cooking ---
+    public static final DeferredItem<BlockItem> COOKING_RANGE = ITEMS.registerSimpleBlockItem("cooking_range", ModBlocks.COOKING_RANGE);
+    // What a failed cook leaves behind: not edible
+    public static final DeferredItem<Item> BURNT_FOOD = ITEMS.registerSimpleItem("burnt_food");
+    // Cooked fish that vanilla can't cook (Fishing tiers III and IV)
+    public static final DeferredItem<Item> SEARED_REEF_FISH = ITEMS.registerSimpleItem("seared_reef_fish",
+            p -> p.food(new FoodProperties.Builder().nutrition(7).saturationModifier(0.7f).build()));
+    public static final DeferredItem<Item> PREPARED_PUFFERFISH = ITEMS.registerSimpleItem("prepared_pufferfish",
+            p -> p.food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.9f).build()));
+
+    public static final DeferredItem<BlockItem> FORGING_ANVIL =ITEMS.registerSimpleBlockItem("forging_anvil", ModBlocks.FORGING_ANVIL);
     public static final DeferredItem<BlockItem> CRAFTING_BENCH = ITEMS.registerSimpleBlockItem("crafting_bench", ModBlocks.CRAFTING_BENCH);
 
     public static final DeferredItem<BlockItem> BANK_CHEST = ITEMS.registerSimpleBlockItem("bank_chest", ModBlocks.BANK_CHEST);

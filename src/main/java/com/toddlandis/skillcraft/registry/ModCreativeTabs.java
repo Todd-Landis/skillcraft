@@ -18,6 +18,10 @@ public class ModCreativeTabs {
                 output.accept(ModItems.ATTUNEMENT_ALTAR.get());
                 output.accept(ModItems.RELOCATOR.get());
                 output.accept(ModItems.SMELTER.get());
+                output.accept(ModItems.COOKING_RANGE.get());
+                output.accept(ModItems.SEARED_REEF_FISH.get());
+                output.accept(ModItems.PREPARED_PUFFERFISH.get());
+                output.accept(ModItems.BURNT_FOOD.get());
                 output.accept(ModItems.FORGING_ANVIL.get());
                 output.accept(ModItems.CRAFTING_BENCH.get());
                 output.accept(ModItems.BANK_CHEST.get());

@@ -69,6 +69,10 @@ public final class ShowcaseClient {
             planAbilities(mc, server);
             return;
         }
+        if ("fishing".equals(System.getProperty("skillcraft.showcase.scene"))) {
+            planFishing(mc, server);
+            return;
+        }
         int t = 20;
         at(t, () -> server.execute(() -> {
             ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -165,6 +169,47 @@ public final class ShowcaseClient {
             mc.options.guiScale().set(0);
             mc.resizeGui();
         });
+        at(t += 40, () -> {
+            SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
+            mc.stop();
+        });
+    }
+
+    // -Pshowcase=fishing: a pond with three fishing spots (overview, then close up), the player
+    // fishing with the line out, and a lit Cooking Range with its screen open
+    private static void planFishing(Minecraft mc, IntegratedServer server) {
+        com.toddlandis.skillcraft.fishing.FishingSpotEntity[] cod = new com.toddlandis.skillcraft.fishing.FishingSpotEntity[1];
+        net.minecraft.world.phys.Vec3[] origin = new net.minecraft.world.phys.Vec3[1];
+        int t = 20;
+        at(t, () -> server.execute(() -> {
+            Showcase.command(server, "time set noon");
+            Showcase.command(server, "weather clear");
+            ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+            origin[0] = net.minecraft.world.phys.Vec3.atBottomCenterOf(player.blockPosition());
+            cod[0] = Showcase.fishingScene(player);
+            Showcase.view(player, origin[0].add(0, 5, -1), 180f, 35f);
+        }));
+        at(t += 5, () -> mc.player.getInventory().setSelectedSlot(0)); // match the rod the server put in slot 0
+        at(t += 155, () -> shot(mc, "fishing_pond"));
+        at(t += 5, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(), origin[0].add(0, 1.5, -6), 180f, 60f)));
+        at(t += 40, () -> shot(mc, "fishing_spot_close"));
+        at(t += 5, () -> server.execute(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+            Showcase.view(player, origin[0].add(0, 0, -4), 180f, 28f);
+            com.toddlandis.skillcraft.fishing.FishingSessions.start(player, cod[0]);
+        }));
+        at(t += 30, () -> shot(mc, "fishing_line"));
+        at(t += 5, () -> mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK));
+        at(t += 20, () -> shot(mc, "fishing_third_person"));
+        at(t += 5, () -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+        at(t += 5, () -> server.execute(() -> Showcase.view(server.getPlayerList().getPlayers().getFirst(), origin[0].add(0.5, 0, -1.5), -135f, 25f)));
+        at(t += 60, () -> shot(mc, "cooking_range"));
+        at(t += 5, () -> server.execute(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+            net.minecraft.core.BlockPos range = net.minecraft.core.BlockPos.containing(origin[0]).offset(3, 0, -4);
+            if (player.level().getBlockEntity(range) instanceof com.toddlandis.skillcraft.cooking.CookingRangeBlockEntity be) player.openMenu(be);
+        }));
+        at(t += 20, () -> shot(mc, "cooking_range_screen"));
         at(t += 40, () -> {
             SkillCraft.LOGGER.info("[showcase] done: {} screenshots", shots);
             mc.stop();
