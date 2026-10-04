@@ -147,7 +147,11 @@ public final class ArenaManager {
                         else if (now - arena.emptySince() >= RESET_SECONDS * 20L) reset(level, arena, boss);
                     } else {
                         arena.setEmptySince(-1);
-                        if (boss != null && boss.isAlive()) {
+                        // While the arena's chunk is still loading its entities the boss can't be looked
+                        // up yet; that isn't "lost" (a busy server can take longer than the grace period)
+                        boolean entitiesLoaded = level.areEntitiesActuallyLoadedAndTicking(
+                                net.minecraft.world.level.ChunkPos.containing(BlockPos.containing(arena.bossSpawn())));
+                        if ((boss != null && boss.isAlive()) || !entitiesLoaded) {
                             arena.setBossMissingSince(-1);
                         } else if (arena.bossMissingSince() < 0) {
                             arena.setBossMissingSince(now);
